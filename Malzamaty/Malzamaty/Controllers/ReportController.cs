@@ -15,7 +15,7 @@ namespace Malzamaty.Controllers
         public ReportController(TheContext dbContext)
         {
             _dbContext = dbContext;
-        }
+        }/*
         [HttpGet]
         public async Task<IActionResult> GetAllReports()
         {
@@ -61,6 +61,6 @@ namespace Malzamaty.Controllers
             _dbContext.Entry(report).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
     }
 }

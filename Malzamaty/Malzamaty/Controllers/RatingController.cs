@@ -15,7 +15,7 @@ namespace Malzamaty.Controllers
         public RatingController(TheContext dbContext)
         {
             _dbContext = dbContext;
-        }
+        }/*
         [HttpGet]
         public async Task<IActionResult> GetAllRatings()
         {
@@ -61,6 +61,6 @@ namespace Malzamaty.Controllers
             _dbContext.Entry(rating).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
     }
 }

@@ -6,11 +6,11 @@ namespace Malzamaty.Model
     public class Schedule
     {
         [Key]
-        public string Sc_ID { get; set; }
+        public Guid ID { get; set; }
         public DateTime? StartStudy { get; set; }
         public DateTime? FinishStudy { get; set; }
         [ForeignKey("St_ID")]
-        public Student Student { get; set; }
+        public User User { get; set; }
         [ForeignKey("Su_ID")]
         public Subject Subject { get; set; }
     }

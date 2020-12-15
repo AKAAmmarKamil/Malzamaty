@@ -18,7 +18,7 @@ namespace Malzamaty.Controllers
         public FileController(TheContext dbContext)
         {
             _dbContext = dbContext;
-        }
+        }/*
         private byte[] ConvertToByte(string filename)
         {
             return System.IO.File.ReadAllBytes(filename);
@@ -26,14 +26,14 @@ namespace Malzamaty.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllFiles()
         {
-            var result = await _dbContext.File.Select(x => new { x.F_Description, x.F_Author, x.F_Type, x.F_Format, x.F_PublishDate, x.C_ID, x.Student.St_ID, x.Su_ID }).ToListAsync();
-            return Ok(result);
+            //var result = await _dbContext.File.Select(x => new { x.F_Description, x.F_Author, x.F_Type, x.F_Format, x.F_PublishDate, x.C_ID, x.User.ID, x.Su_ID }).ToListAsync();
+            return Ok(/*result);
         }
         [HttpGet]
         public async Task<IActionResult> GetAppropriateFile(string St_ID,DateTime Date, double Rate, bool Reports)
         {
-            string Class = await _dbContext.Student.Where(x => x.St_ID == St_ID).Select(x => x.C_ID).FirstAsync();
-            string Subject =await _dbContext.Student.Where(x => x.St_ID == St_ID).Select(x => x.Su_ID).FirstAsync();
+            /*string Class = await _dbContext.Users.Where(x => x.ID == St_ID).Select(x => x.C_ID).FirstAsync();
+            string Subject =await _dbContext.Users.Where(x => x.ID == St_ID).Select(x => x.Su_ID).FirstAsync();
             if (Reports==true)
             {
                 var File = from f in _dbContext.File
@@ -41,8 +41,8 @@ namespace Malzamaty.Controllers
                            on f.C_ID equals c.C_ID
                            join co in _dbContext.Country
                            on c.Co_ID equals co.Co_ID
-                           join St in _dbContext.Student
-                           on f.Student.St_ID equals St.St_ID
+                           join St in _dbContext.Users
+                           on f.User.ID equals St.ID
                            join Ra in _dbContext.Rating
                            on f.F_ID equals Ra.F_ID into Rat
                            from R in Rat.DefaultIfEmpty()
@@ -53,7 +53,7 @@ namespace Malzamaty.Controllers
                            on f.F_ID equals Re.F_ID into Rep
                            from Repo in Rep.DefaultIfEmpty()
                            where f.C_ID == Class && ((f.Su_ID == Subject) || f.Su_ID == null)&&f.F_PublishDate>=Date && Repo.F_ID == null
-                           group f by new { f.F_ID, f.F_Description, f.F_File, f.F_Author, f.F_Type,f.F_Format,f.F_PublishDate, c.C_Name, c.C_Stage, c.C_Type,co.Co_Name, St.St_FullName, o.Su_Name } into g
+                           group f by new { f.F_ID, f.F_Description, f.F_File, f.F_Author, f.F_Type,f.F_Format,f.F_PublishDate, c.C_Name, c.C_Stage, c.C_Type,co.Co_Name, St.FullName, o.Su_Name } into g
                            where _dbContext.Rating.Where(x => x.F_ID == g.Key.F_ID).Average(x => x.Ra_Rate) >= Rate
                            select new
                            {
@@ -66,7 +66,7 @@ namespace Malzamaty.Controllers
                                g.Key.C_Stage,
                                g.Key.C_Type,
                                g.Key.Co_Name,
-                               g.Key.St_FullName,
+                               g.Key.FullName,
                                g.Key.Su_Name,
                                Average = _dbContext.Rating.Where(x => x.F_ID == g.Key.F_ID).Average(x => x.Ra_Rate)
                            };
@@ -79,8 +79,8 @@ namespace Malzamaty.Controllers
                            on f.C_ID equals c.C_ID
                            join co in _dbContext.Country
                            on c.Co_ID equals co.Co_ID
-                           join St in _dbContext.Student
-                           on f.Student.St_ID equals St.St_ID
+                           join St in _dbContext.Users
+                           on f.User.ID equals St.ID
                            join Ra in _dbContext.Rating
                            on f.F_ID equals Ra.F_ID into Rat
                            from R in Rat.DefaultIfEmpty()
@@ -92,7 +92,7 @@ namespace Malzamaty.Controllers
                            from Roo in Rep.DefaultIfEmpty()
 
                            where f.C_ID == Class && ((f.Su_ID == Subject) || f.Su_ID == null)&&f.F_PublishDate>=Date
-                           group f by new { f.F_ID, f.F_Description, f.F_File, f.F_Author, f.F_Type,f.F_Format,f.F_PublishDate, c.C_Name, c.C_Stage, c.C_Type,co.Co_Name, St.St_FullName, o.Su_Name } into g
+                           group f by new { f.F_ID, f.F_Description, f.F_File, f.F_Author, f.F_Type,f.F_Format,f.F_PublishDate, c.C_Name, c.C_Stage, c.C_Type,co.Co_Name, St.FullName, o.Su_Name } into g
                            where _dbContext.Rating.Where(x => x.F_ID == g.Key.F_ID).Average(x => x.Ra_Rate) >= Rate
                            select new
                            {
@@ -105,14 +105,14 @@ namespace Malzamaty.Controllers
                                g.Key.C_Stage,
                                g.Key.C_Type,
                                g.Key.Co_Name,
-                               g.Key.St_FullName,
+                               g.Key.FullName,
                                g.Key.Su_Name,
                                Average = _dbContext.Rating.Where(x => x.F_ID == g.Key.F_ID).Average(x => x.Ra_Rate),
                                Report = from Re in _dbContext.Report
                                         where Re.F_ID == g.Key.F_ID
                                         select new { Description = Re.R_Description }
                            };
-                           return Ok(File);
+                           return Ok(/*File);
             }
         }
         [HttpGet]
@@ -126,7 +126,7 @@ namespace Malzamaty.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFile([FromBody]Model.File file,string St_ID,string @Path)
         {
-            int Different = 0;
+            /*int Different = 0;
             string Format = "";
             var Exist =await _dbContext.Exist.Where(x => x.C_ID == file.C_ID && x.Su_ID == file.Su_ID).Select(x => x.E_ID).FirstOrDefaultAsync();
             for (int i = 0; i < Path.Length; i++)
@@ -156,7 +156,8 @@ namespace Malzamaty.Controllers
                 da.Fill(dt);
                 return Ok(dt);
             }
-            else return BadRequest("هذه المادة ليست متاحة");
+            //else
+            return BadRequest("هذه المادة ليست متاحة");
             }
         [HttpPut]
         public async Task<IActionResult> UpdateFile([FromBody]Report report, string R_ID)
@@ -174,6 +175,6 @@ namespace Malzamaty.Controllers
             _dbContext.Entry(file).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
     }
 }

@@ -17,7 +17,7 @@ namespace Malzamaty.Controllers
         public ExistController(TheContext dbContext)
         {
             _dbContext = dbContext;
-        }
+        }/*
         [HttpGet]
         public async Task<IActionResult> GetAllExistes()
         {
@@ -54,6 +54,6 @@ namespace Malzamaty.Controllers
             _dbContext.Entry(Exist).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
     }
 }

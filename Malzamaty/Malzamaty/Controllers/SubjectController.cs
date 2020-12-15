@@ -13,7 +13,7 @@ namespace Malzamaty.Controllers
         public SubjectController(TheContext dbContext)
         {
             _dbContext = dbContext;
-        }
+        }/*
         [HttpGet]
         public async Task<IActionResult> GetAllSubject()
         {
@@ -47,6 +47,6 @@ namespace Malzamaty.Controllers
             _dbContext.Entry(subject).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
     }
 }

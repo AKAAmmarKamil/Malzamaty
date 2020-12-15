@@ -14,7 +14,7 @@ namespace Malzamaty.Controllers
         public CountryController(TheContext dbContext)
         {
             _dbContext = dbContext;
-        }
+        }/*
         [HttpGet]
         public async Task<IActionResult> GetAllCountries()
         {
@@ -49,6 +49,6 @@ namespace Malzamaty.Controllers
             _dbContext.Entry(Country).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
     }
 }

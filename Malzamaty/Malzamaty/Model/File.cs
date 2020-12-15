@@ -6,18 +6,18 @@ namespace Malzamaty.Model
     public class File
     {
         [Key]
-        public string F_ID { get; set; }
-        public string F_Description { get; set; }
-        public byte[] F_File { get; set; }
-        public string F_Author { get; set; }
-        public string F_Type { get; set; }
-        public string F_Format {get;set;}
-        public DateTimeOffset F_PublishDate { get; set; }
-        public string C_ID { get; set; }
+        public Guid ID { get; set; }
+        public string Description { get; set; }
+        public string FilePath { get; set; }
+        public string Author { get; set; }
+        public string Type { get; set; }
+        public string Format {get;set;}
+        public DateTimeOffset PublishDate { get; set; }
+        public Guid C_ID { get; set; }
         public Class Class { get; set; }
-        [ForeignKey("St_ID")]
-        public Student Student { get; set; }
-        public string Su_ID { get; set; }
+        [ForeignKey("Us_ID")]
+        public User User { get; set; }
+        public Guid Su_ID { get; set; }
         public Subject Subject { get; set; }
     }
 }

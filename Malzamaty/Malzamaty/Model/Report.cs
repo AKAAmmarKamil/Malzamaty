@@ -6,10 +6,10 @@ namespace Malzamaty.Model
     public class Report
     {
         [Key]
-        public string R_ID { get; set; }
-        public string R_Description { get; set; }
-        public DateTimeOffset R_Date { get; set; }
-        public string F_ID { get; set; }
+        public Guid ID { get; set; }
+        public string Description { get; set; }
+        public DateTimeOffset Date { get; set; }
+        public Guid F_ID { get; set; }
         [ForeignKey("F_ID")]
         public File File { get; set; }
     }

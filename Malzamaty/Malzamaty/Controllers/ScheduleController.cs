@@ -15,7 +15,7 @@ namespace Malzamaty.Controllers
         public ScheduleController(TheContext dbContext)
         {
             _dbContext = dbContext;
-        }
+        }/*
         [HttpGet]
         public async Task<IActionResult> GetAllSchedules()
         {
@@ -63,6 +63,6 @@ namespace Malzamaty.Controllers
             _dbContext.Entry(Schedule).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return Ok();
-        }
+        }*/
     }
 }
