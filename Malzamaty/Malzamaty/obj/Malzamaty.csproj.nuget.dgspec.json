@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Projects\\Malzamaty\\Malzamaty\\Malzamaty.csproj": {}
+    "F:\\Malzamaty\\Malzamaty\\Malzamaty\\Malzamaty.csproj": {}
   },
   "projects": {
-    "F:\\Projects\\Malzamaty\\Malzamaty\\Malzamaty.csproj": {
+    "F:\\Malzamaty\\Malzamaty\\Malzamaty\\Malzamaty.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Projects\\Malzamaty\\Malzamaty\\Malzamaty.csproj",
+        "projectUniqueName": "F:\\Malzamaty\\Malzamaty\\Malzamaty\\Malzamaty.csproj",
         "projectName": "Malzamaty",
-        "projectPath": "F:\\Projects\\Malzamaty\\Malzamaty\\Malzamaty.csproj",
+        "projectPath": "F:\\Malzamaty\\Malzamaty\\Malzamaty\\Malzamaty.csproj",
         "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-        "outputPath": "F:\\Projects\\Malzamaty\\Malzamaty\\obj\\",
+        "outputPath": "F:\\Malzamaty\\Malzamaty\\Malzamaty\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

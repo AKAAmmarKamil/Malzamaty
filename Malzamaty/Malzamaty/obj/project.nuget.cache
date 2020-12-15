@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QuYz0lTAYzREYZv4K6z4JuslySX+C9vk4T2djm962/yMpe01ZdXVCG/mltBZq1gkKrkpzT4nuEnDglFoS+09tA==",
+  "dgSpecHash": "vlVfTdeW9nssvMku0GOeLDgA4EGYdRqWkw++n750UyoK0dv3j6CfXb1jOjdwdQIHrIWYiWNzenyByHdsRX8CXg==",
   "success": true,
-  "projectFilePath": "F:\\Projects\\Malzamaty\\Malzamaty\\Malzamaty.csproj",
+  "projectFilePath": "F:\\Malzamaty\\Malzamaty\\Malzamaty\\Malzamaty.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lenovo\\.nuget\\packages\\dapper\\1.60.6\\dapper.1.60.6.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.6\\microsoft.aspnet.webapi.client.5.2.6.nupkg.sha512",
