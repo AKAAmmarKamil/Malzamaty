@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Malzamaty.Dto;
 using Malzamaty.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,44 +13,49 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class SubjectController : ControllerBase
     {
-        private readonly TheContext _dbContext;
-        public SubjectController(TheContext dbContext)
+        private readonly IRepositoryWrapper _wrapper;
+        private readonly IMapper _mapper;
+        public SubjectController(IRepositoryWrapper wrapper,IMapper mapper)
         {
-            _dbContext = dbContext;
-        }/*
-        [HttpGet]
-        public async Task<IActionResult> GetAllSubject()
+            _wrapper = wrapper;
+            _mapper = mapper;
+        }
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<ActionResult<SubjectWriteDto>> GetAllSubject(int PageNumber,int Count)
         {
-            var result = await _dbContext.Subject.Select(x => x.Su_Name).ToListAsync();
-            return Ok(result);
+            var result = await _wrapper.Subject.FindAll(PageNumber, Count);
+            var SubjectModel = _mapper.Map<IList<SubjectWriteDto>>(result);
+            return Ok(SubjectModel);
         }
         [HttpPost]
-        public async Task<IActionResult> AddSubject([FromBody]Subject subject)
+        public async Task<ActionResult<SubjectReadDto>> AddSubject([FromBody] SubjectWriteDto subjectWriteDto )
         {
-            Subject Sub = new Subject
+            var SubjectModel = _mapper.Map<Subject>(subjectWriteDto);
+            await _wrapper.Subject.Create(SubjectModel);
+            var UserReadDto = _mapper.Map<SubjectReadDto>(SubjectModel);
+            return Ok(UserReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateSubject(Guid Id,[FromBody]SubjectWriteDto subjectWriteDto)
+        {
+            var SubjectModelFromRepo = _wrapper.Subject.FindById(Id);
+            if (SubjectModelFromRepo.Result == null)
             {
-                Su_Name = subject.Su_Name
-            };
-            _dbContext.Subject.Add(Sub);
-           await _dbContext.SaveChangesAsync();
-            return Ok(subject);
+                return NotFound();
+            }
+            SubjectModelFromRepo.Result.Name = subjectWriteDto.Name;
+            _wrapper.User.SaveChanges();
+            return NoContent();
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateSubject([FromBody]Subject subject, string Su_ID)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSubjects(Guid Id)
         {
-            var Sub = _dbContext.Subject.Find(Su_ID);
-            Sub.Su_Name = subject.Su_Name;
-            _dbContext.Entry(Sub).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            var Subject= _wrapper.Subject.Delete(Id);
+            if (Subject.Result == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteSubjects(string Su_ID)
-        {
-            var subject = new Subject() { Su_ID = Su_ID };
-            _dbContext.Entry(subject).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }*/
     }
 }
