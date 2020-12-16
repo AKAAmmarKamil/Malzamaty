@@ -53,10 +53,12 @@ namespace Malzamaty
 
         public async Task<T> FindById(object id)
         {
-            return table.Find(id);
+            var result=table.Find(id);
+            if (result == null) return null;
+            return result;
         }
 
-       
+
     }
 
 }

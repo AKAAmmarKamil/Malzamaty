@@ -20,6 +20,17 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<SubjectWriteDto>> GetSubjectById(Guid Id)
+        {
+            var result = await _wrapper.Subject.FindById(Id);
+            if (result==null)
+            {
+                return NotFound();
+            }
+            var SubjectModel = _mapper.Map<SubjectWriteDto>(result);
+            return Ok(SubjectModel);
+        }
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<SubjectWriteDto>> GetAllSubject(int PageNumber,int Count)
         {
