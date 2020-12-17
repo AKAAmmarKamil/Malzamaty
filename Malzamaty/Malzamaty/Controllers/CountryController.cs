@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using Malzamaty.Dto;
+using Malzamaty.Model;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Malzamaty.Controllers
@@ -15,40 +19,54 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
-        [HttpGet("{PageNumber}/{Count}")]
-        public async Task<IActionResult> GetAllCountries(int PageNumber,int Count)
+
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<CountryWriteDto>> GetCountryById(Guid Id)
         {
-            var result = await _wrapper.Country.FindAll(PageNumber,Count);
-            return Ok(result);
-        }/*
-        [HttpPost]
-        public async Task<IActionResult> AddCountry([FromBody]Country country)
-        {
-            Country Cou = new Country
+            var result = await _wrapper.Country.FindById(Id);
+            if (result == null)
             {
-                Co_ID = Guid.NewGuid().ToString(),
-                Co_Name = country.Co_Name,
-            };
-            _dbContext.Country.Add(Cou);
-            await _dbContext.SaveChangesAsync();
-            return Ok(country);
+                return NotFound();
+            }
+            var CountryModel = _mapper.Map<CountryWriteDto>(result);
+            return Ok(CountryModel);
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateCountry([FromBody]Country country, string Co_ID)
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<ActionResult<CountryReadDto>> GetAllCountries(int PageNumber, int Count)
         {
-            var Cou = _dbContext.Class.Find(Co_ID);
-            Cou.C_Name = country.Co_Name;
-            _dbContext.Entry(Cou).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            var result = await _wrapper.Country.FindAll(PageNumber, Count);
+            var CountryModel = _mapper.Map<IList<CountryReadDto>>(result);
+            return Ok(CountryModel);
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCountry(string Co_ID)
+        [HttpPost]
+        public async Task<ActionResult<CountryReadDto>> AddCountry([FromBody] CountryWriteDto countryWriteDto)
         {
-            var Country = new Country { Co_ID = Co_ID };
-            _dbContext.Entry(Country).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }*/
+            var CountryModel = _mapper.Map<Country>(countryWriteDto);
+            await _wrapper.Country.Create(CountryModel);
+            var CountryReadDto = _mapper.Map<CountryReadDto>(CountryModel);
+            return Ok(CountryReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCountry(Guid Id, [FromBody] CountryWriteDto countryWriteDto)
+        {
+            var CountryModelFromRepo = _wrapper.Country.FindById(Id);
+            if (CountryModelFromRepo.Result == null)
+            {
+                return NotFound();
+            }
+            CountryModelFromRepo.Result.Name = countryWriteDto.Name;
+            _wrapper.User.SaveChanges();
+            return NoContent();
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCountry(Guid Id)
+        {
+            var Country = _wrapper.Country.Delete(Id);
+            if (Country.Result == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }
