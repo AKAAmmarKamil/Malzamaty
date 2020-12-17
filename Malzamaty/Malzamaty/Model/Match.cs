@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace Malzamaty.Model
 {
-    public class Exist
+    public class Match
     {
         [Key]
         public Guid ID { get; set; }

@@ -8,11 +8,23 @@ namespace Malzamaty.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ClassType",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClassType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Country",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -23,8 +35,8 @@ namespace Malzamaty.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Role = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -32,11 +44,23 @@ namespace Malzamaty.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Stage",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stage", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Subject",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,35 +68,14 @@ namespace Malzamaty.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Class",
-                columns: table => new
-                {
-                    ID = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Stage = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true),
-                    Co_ID = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Class", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Class_Country_Co_ID",
-                        column: x => x.Co_ID,
-                        principalTable: "Country",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    FullName = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
-                    Authentication = table.Column<Guid>(nullable: false)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Authentication = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,46 +89,81 @@ namespace Malzamaty.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Exist",
+                name: "Class",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    C_ID = table.Column<Guid>(nullable: false),
-                    Su_ID = table.Column<Guid>(nullable: false)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    S_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    T_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Co_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exist", x => x.ID);
+                    table.PrimaryKey("PK_Class", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Exist_Class_C_ID",
-                        column: x => x.C_ID,
-                        principalTable: "Class",
+                        name: "FK_Class_ClassType_T_ID",
+                        column: x => x.T_ID,
+                        principalTable: "ClassType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Class_Country_Co_ID",
+                        column: x => x.Co_ID,
+                        principalTable: "Country",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Exist_Subject_Su_ID",
+                        name: "FK_Class_Stage_S_ID",
+                        column: x => x.S_ID,
+                        principalTable: "Stage",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Schedules",
+                columns: table => new
+                {
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartStudy = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FinishStudy = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    St_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedules", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Schedules_Subject_Su_ID",
                         column: x => x.Su_ID,
                         principalTable: "Subject",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Schedules_Users_St_ID",
+                        column: x => x.St_ID,
+                        principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "File",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    FilePath = table.Column<string>(nullable: true),
-                    Author = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true),
-                    Format = table.Column<string>(nullable: true),
-                    PublishDate = table.Column<DateTimeOffset>(nullable: false),
-                    C_ID = table.Column<Guid>(nullable: false),
-                    ClassID = table.Column<Guid>(nullable: true),
-                    Us_ID = table.Column<Guid>(nullable: true),
-                    Su_ID = table.Column<Guid>(nullable: false),
-                    SubjectID = table.Column<Guid>(nullable: true)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Author = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Format = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublishDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClassID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Us_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -154,10 +192,10 @@ namespace Malzamaty.Migrations
                 name: "Interests",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    U_ID = table.Column<Guid>(nullable: false),
-                    C_ID = table.Column<Guid>(nullable: false),
-                    Su_ID = table.Column<Guid>(nullable: false)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    U_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -183,42 +221,40 @@ namespace Malzamaty.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Schedules",
+                name: "Matches",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    StartStudy = table.Column<DateTime>(nullable: true),
-                    FinishStudy = table.Column<DateTime>(nullable: true),
-                    St_ID = table.Column<Guid>(nullable: true),
-                    Su_ID = table.Column<Guid>(nullable: true)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Schedules", x => x.ID);
+                    table.PrimaryKey("PK_Matches", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Schedules_Users_St_ID",
-                        column: x => x.St_ID,
-                        principalTable: "Users",
+                        name: "FK_Matches_Class_C_ID",
+                        column: x => x.C_ID,
+                        principalTable: "Class",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Schedules_Subject_Su_ID",
+                        name: "FK_Matches_Subject_Su_ID",
                         column: x => x.Su_ID,
                         principalTable: "Subject",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Rating",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    Rate = table.Column<int>(nullable: false),
-                    Us_ID = table.Column<Guid>(nullable: true),
-                    F_ID = table.Column<Guid>(nullable: false),
-                    FileID = table.Column<Guid>(nullable: true)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Rate = table.Column<int>(type: "int", nullable: false),
+                    Us_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    F_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -241,10 +277,10 @@ namespace Malzamaty.Migrations
                 name: "Report",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Date = table.Column<DateTimeOffset>(nullable: false),
-                    F_ID = table.Column<Guid>(nullable: false)
+                    ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    F_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -263,14 +299,14 @@ namespace Malzamaty.Migrations
                 column: "Co_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exist_C_ID",
-                table: "Exist",
-                column: "C_ID");
+                name: "IX_Class_S_ID",
+                table: "Class",
+                column: "S_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exist_Su_ID",
-                table: "Exist",
-                column: "Su_ID");
+                name: "IX_Class_T_ID",
+                table: "Class",
+                column: "T_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_File_ClassID",
@@ -301,6 +337,16 @@ namespace Malzamaty.Migrations
                 name: "IX_Interests_U_ID",
                 table: "Interests",
                 column: "U_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Matches_C_ID",
+                table: "Matches",
+                column: "C_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Matches_Su_ID",
+                table: "Matches",
+                column: "Su_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rating_FileID",
@@ -336,10 +382,10 @@ namespace Malzamaty.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Exist");
+                name: "Interests");
 
             migrationBuilder.DropTable(
-                name: "Interests");
+                name: "Matches");
 
             migrationBuilder.DropTable(
                 name: "Rating");
@@ -363,7 +409,13 @@ namespace Malzamaty.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
+                name: "ClassType");
+
+            migrationBuilder.DropTable(
                 name: "Country");
+
+            migrationBuilder.DropTable(
+                name: "Stage");
 
             migrationBuilder.DropTable(
                 name: "Roles");

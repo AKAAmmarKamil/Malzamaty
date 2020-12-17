@@ -10,6 +10,7 @@ namespace Malzamaty
     {
         IUsersRepository User { get; }
         ISubjectRepository Subject { get; }
+        ICountryRepository Country { get; }
         void Save();
     }
 
@@ -18,6 +19,7 @@ namespace Malzamaty
         private TheContext _repoContext;
         private IUsersRepository _user;
         private ISubjectRepository _subect;
+        private ICountryRepository _country;
         public ISubjectRepository Subject
         {
             get
@@ -40,10 +42,18 @@ namespace Malzamaty
                 return _user;
             }
         }
-
+        public ICountryRepository Country
+        {
+            get
+            {
+                if (_country == null)
+                {
+                    _country = new CountryRepository(_repoContext);
+                }
+                return _country;
+            }
+        }
         public IUsersRepository Users => throw new NotImplementedException();
-
-
         public RepositoryWrapper(TheContext repositoryContext)
         {
             _repoContext = repositoryContext;

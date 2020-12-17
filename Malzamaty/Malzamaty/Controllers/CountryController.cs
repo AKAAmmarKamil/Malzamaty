@@ -1,26 +1,26 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Malzamaty.Model;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
     [ApiController]
     public class CountryController : ControllerBase
     {
-        private readonly TheContext _dbContext;
-        public CountryController(TheContext dbContext)
+        private readonly IRepositoryWrapper _wrapper;
+        private readonly IMapper _mapper;
+        public CountryController(IRepositoryWrapper wrapper, IMapper mapper)
         {
-            _dbContext = dbContext;
-        }/*
-        [HttpGet]
-        public async Task<IActionResult> GetAllCountries()
-        {
-            var result = await _dbContext.Country.Select(x => x.Co_Name).ToListAsync();
-            return Ok(result);
+            _wrapper = wrapper;
+            _mapper = mapper;
         }
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<IActionResult> GetAllCountries(int PageNumber,int Count)
+        {
+            var result = await _wrapper.Country.FindAll(PageNumber,Count);
+            return Ok(result);
+        }/*
         [HttpPost]
         public async Task<IActionResult> AddCountry([FromBody]Country country)
         {

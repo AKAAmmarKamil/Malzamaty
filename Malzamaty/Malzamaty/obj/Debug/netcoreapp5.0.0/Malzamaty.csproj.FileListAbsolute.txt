@@ -82,3 +82,5 @@ F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.genruntimec
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.OpenApi.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Humanizer.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.EntityFrameworkCore.Design.dll

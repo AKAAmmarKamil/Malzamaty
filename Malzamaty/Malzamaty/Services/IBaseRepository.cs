@@ -11,7 +11,7 @@ namespace Malzamaty
     public interface IBaseRepository<T> 
     {
         Task<IEnumerable<T>> FindAll(int PageNumber,int count);
-        Task<T> FindById(object k);
+        Task<T> FindById(Guid k);
         Task<T> Create(T entity);
         Task<T> Delete(Guid k);
 
@@ -51,14 +51,14 @@ namespace Malzamaty
             RepositoryContext.SaveChanges();
         }
 
-        public async Task<T> FindById(object id)
+        public async Task<T> FindById(Guid id)
         {
             var result=table.Find(id);
             if (result == null) return null;
             return result;
         }
 
-
+   
     }
 
 }
