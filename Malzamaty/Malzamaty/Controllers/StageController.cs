@@ -34,7 +34,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<CountryReadDto>> GetAllStages(int PageNumber, int Count)
         {
-            var result = await _wrapper.Country.FindAll(PageNumber, Count);
+            var result = await _wrapper.Stage.FindAll(PageNumber, Count);
             var CountryModel = _mapper.Map<IList<CountryReadDto>>(result);
             return Ok(CountryModel);
         }
