@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Malzamaty.Dto;
 using Malzamaty.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,50 +13,61 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class ClassController : ControllerBase
     {
-        private readonly TheContext _dbContext;
-        public ClassController(TheContext dbContext)
+        private readonly IRepositoryWrapper _wrapper;
+        private readonly IMapper _mapper;
+        public ClassController(IRepositoryWrapper wrapper, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _wrapper = wrapper;
+            _mapper = mapper;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAllClasses()
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<ClassReadDto>> GetClassById(Guid Id)
         {
-            //var result = await _dbContext.Class.Select(x => new { x.C_Name, x.C_Stage, x.C_Type, x.Country.Co_Name }).ToListAsync();
-            return Ok(/*result*/);
+            var result = await _wrapper.Class.FindById(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var ClassModel = _mapper.Map<ClassReadDto>(result);
+            return Ok(ClassModel);
+        }
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<ActionResult<ClassReadDto>> GetAllClasses(int PageNumber, int Count)
+        {
+            var result = await _wrapper.Class.FindAll(PageNumber, Count);
+            var ClassModel = _mapper.Map<IList<ClassReadDto>>(result);
+            return Ok(ClassModel);
         }
         [HttpPost]
-        public async Task<IActionResult> AddClass([FromBody]Class Class)
+        public async Task<ActionResult<ClassReadDto>> AddClass([FromBody] ClassWriteDto ClassWriteDto)
         {
-            /*Class Cls = new Class
+            var ClassModel = _mapper.Map<Class>(ClassWriteDto);
+            await _wrapper.Class.Create(ClassModel);
+            var Result = _wrapper.Class.FindById(ClassModel.ID);
+            var ClassReadDto = _mapper.Map<ClassReadDto>(Result.Result);
+            return Ok(ClassReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateClass(Guid Id, [FromBody] ClassWriteDto ClassWriteDto)
+        {
+            var ClassModelFromRepo = _wrapper.Class.FindById(Id);
+            if (ClassModelFromRepo.Result == null)
             {
-                C_Name = Class.C_Name,
-                C_Stage = Class.C_Stage,
-                C_Type = Class.C_Type,
-                Co_ID=Class.Co_ID
-            };
-            _dbContext.Class.Add(Cls);
-          await _dbContext.SaveChangesAsync();*/
-            return Ok(/*Class*/);
+                return NotFound();
+            }
+            ClassModelFromRepo.Result.Name = ClassWriteDto.Name;
+            _wrapper.Class.SaveChanges();
+            return NoContent();
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateClass([FromBody]Class TheClass, string C_ID)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteClass(Guid Id)
         {
-           /*var Cls = _dbContext.Class.Find(C_ID);
-            Cls.C_Name = TheClass.C_Name;
-            Cls.C_Stage = TheClass.C_Stage;
-            Cls.C_Type = TheClass.C_Type;
-            Cls.Co_ID = TheClass.Co_ID;
-           _dbContext.Entry(Cls).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();*/
-            return Ok();
-        }
-        [HttpDelete]
-        public async Task< IActionResult> DeleteClass(string C_ID)
-        {
-          /*  var TheClass = new Class { C_ID = C_ID };
-            _dbContext.Entry(TheClass).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();*/
-            return Ok();
+            var Class = _wrapper.Class.Delete(Id);
+            if (Class.Result == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
     }
 }

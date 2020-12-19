@@ -13,6 +13,7 @@ namespace Malzamaty
         ICountryRepository Country { get; }
         IStageRepository Stage { get; }
         IClassTypeRepository ClassType { get; }
+        IClassRepository Class { get; }
         void Save();
     }
 
@@ -23,7 +24,8 @@ namespace Malzamaty
         private ISubjectRepository _subect;
         private ICountryRepository _country;
         private IStageRepository _stage;
-        private IClassTypeRepository _classType; 
+        private IClassTypeRepository _classType;
+        private IClassRepository _class;
         public ISubjectRepository Subject
         {
             get
@@ -77,6 +79,17 @@ namespace Malzamaty
                     _classType = new ClassTypeRepository(_repoContext);
                 }
                 return _classType;
+            }
+        }
+        public IClassRepository Class
+        {
+            get
+            {
+                if (_class == null)
+                {
+                    _class = new ClassRepository(_repoContext);
+                }
+                return _class;
             }
         }
         public IUsersRepository Users => throw new NotImplementedException();
