@@ -9,6 +9,6 @@ namespace Malzamaty.Repository
     {
         Task<User> Authintication(LoginForm login);
         string GetRole(Guid Id);
-        bool Exist(Guid classes, Guid subjects);
+        bool Match(Guid classes, Guid subjects);
     }
 }

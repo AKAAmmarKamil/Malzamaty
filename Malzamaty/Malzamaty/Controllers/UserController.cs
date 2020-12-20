@@ -51,7 +51,7 @@ namespace Malzamaty.Controllers
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    Check = _wrapper.User.Exist(UserWriteDto.Classes[i], UserWriteDto.Subjects[i]);
+                    Check = _wrapper.User.Match(UserWriteDto.Classes[i], UserWriteDto.Subjects[i]);
                     if (Check == false)
                     {
                         return BadRequest("المادة"+Subject+" والصف غير متوافقان");
@@ -60,7 +60,7 @@ namespace Malzamaty.Controllers
             }
             else if (Role == "Student")
             {
-                Check = _wrapper.User.Exist(UserWriteDto.Classes[0], UserWriteDto.Subjects[0]);
+                Check = _wrapper.User.Match(UserWriteDto.Classes[0], UserWriteDto.Subjects[0]);
                 if (Check==false)
                 {
                     return BadRequest("المادة والصف غير متوافقان");
