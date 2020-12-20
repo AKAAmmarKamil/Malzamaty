@@ -14,7 +14,7 @@ namespace Malzamaty
              CreateMap<ClassWriteDto, Class>().ForMember(x => x.S_ID, opt => opt.MapFrom(x=>x.Stage))
                 .ForMember(x => x.T_ID, opt => opt.MapFrom(x => x.ClassType)).ForMember(x => x.Co_ID, opt => opt.MapFrom(x => x.Country)).ForMember(x => x.Stage, opt => opt.Ignore()).ForMember(x => x.ClassType, opt => opt.Ignore())
                 .ForMember(x => x.Country, opt => opt.Ignore());
-
+            CreateMap<Class,ClassWriteDto >();
         }
     }
 }

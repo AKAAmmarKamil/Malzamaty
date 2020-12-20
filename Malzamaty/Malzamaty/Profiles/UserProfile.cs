@@ -11,7 +11,7 @@ namespace Malzamaty.Profiles
             //Source -> Target
             CreateMap<User, UserReadDto>().ForMember(x=>x.Roles,opt=>opt.MapFrom(x=>x.Roles.Role));
             CreateMap<UserWriteDto, User>();
-
+            CreateMap<User,UserWriteDto >();
         }
     }
 }
