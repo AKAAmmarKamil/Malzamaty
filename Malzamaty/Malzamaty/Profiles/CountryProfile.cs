@@ -10,8 +10,6 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap <Country, CountryReadDto> ();
-            CreateMap <CountryReadDto, Country> ();
-            CreateMap<Country, CountryWriteDto>();
             CreateMap<CountryWriteDto, Country>();
 
         }

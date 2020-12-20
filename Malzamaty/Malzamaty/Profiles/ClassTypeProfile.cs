@@ -10,8 +10,6 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap <ClassType, ClassTypeReadDto> ();
-            CreateMap <ClassTypeReadDto, ClassType> ();
-            CreateMap<ClassType, ClassTypeWriteDto>();
             CreateMap<ClassTypeWriteDto, ClassType>();
 
         }

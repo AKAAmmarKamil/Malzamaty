@@ -28,7 +28,7 @@ namespace Malzamaty
         }
         public async Task<IEnumerable<T>> FindAll(int PageNumber, int count)
         {
-           return await RepositoryContext.Set<T>().Skip((PageNumber * count)+1).Take(count).ToListAsync();
+           return await RepositoryContext.Set<T>().Skip((PageNumber -1) * count).Take(count).ToListAsync();
         }
 
         public async Task<T> Create(T t)

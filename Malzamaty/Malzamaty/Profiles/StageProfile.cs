@@ -10,8 +10,6 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap <Stage, StageReadDto> ();
-            CreateMap <StageReadDto, Stage> ();
-            CreateMap<Stage, StageWriteDto>();
             CreateMap<StageWriteDto, Stage>();
 
         }

@@ -24,7 +24,7 @@ namespace Malzamaty.Data
 
         public async Task<IEnumerable<User>> FindAll(int PageNumber, int count)
         {
-            return await _db.Users.Include(x=>x.Roles).Skip((PageNumber * count)+1).Take(count).ToListAsync();
+            return await _db.Users.Include(x=>x.Roles).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
         }
         public bool Exist(Guid classes,Guid subjects)
         {

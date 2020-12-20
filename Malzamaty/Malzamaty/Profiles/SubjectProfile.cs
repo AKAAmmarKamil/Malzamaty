@@ -10,8 +10,6 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap <Subject, SubjectReadDto > ();
-            CreateMap <SubjectReadDto, Subject > ();
-            CreateMap<Subject, SubjectWriteDto>();
             CreateMap<SubjectWriteDto, Subject>();
 
         }
