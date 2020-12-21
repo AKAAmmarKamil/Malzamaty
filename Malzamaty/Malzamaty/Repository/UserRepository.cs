@@ -28,6 +28,11 @@ namespace Malzamaty.Data
                       .Skip((PageNumber - 1) * count).Take(count).ToListAsync();
             return User;
         }
+        public async Task<User> GetById(Guid Id)
+        {
+            var User = await _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x=>x.ID==Id);
+            return User;
+        }
         public async Task<List<Interests>> GetInterests(Guid Id)
         {
             return await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x=>x.Stage).Include(x=>x.Class).ThenInclude(x=>x.ClassType).Where(x=>x.U_ID==Id).ToListAsync();

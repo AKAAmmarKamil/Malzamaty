@@ -13,5 +13,6 @@ namespace Malzamaty.Repository
         bool Match(Guid classes, Guid subjects);
         Task<List<Interests>> GetInterests(Guid Id);
         Task<List<User>> GetAll(int PageNumber, int count);
+        Task<User> GetById(Guid Id);
     }
 }
