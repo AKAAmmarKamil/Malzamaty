@@ -41,7 +41,8 @@ namespace Malzamaty.Controllers
             var Interest = new List<Interests>();
             var UserInterest = new List<string>();
             var UserList = new List<List<string>>();
-            var Result = new UserReadDto();
+            var UserReadDto = new UserReadDto();
+            var Result = new List<UserReadDto>();
             for (int i = 0; i < User.Count(); i++)
             {
                 Interest= await _wrapper.User.GetInterests(User[i].ID);
@@ -55,11 +56,13 @@ namespace Malzamaty.Controllers
                     UserList.Add(UserInterest);
                     UserInterest = new List<string>();
                 }
-                Result.ID = User[i].ID;
-                Result.UserName = User[i].UserName;
-                Result.Email = User[i].Email;
-                Result.Roles = User[i].Roles.Role;
-                Result.Interests = UserList;
+                UserReadDto.ID = User[i].ID;
+                UserReadDto.UserName = User[i].UserName;
+                UserReadDto.Email = User[i].Email;
+                UserReadDto.Roles = User[i].Roles.Role;
+                UserReadDto.Interests = UserList;
+                Result.Add(UserReadDto);
+                UserReadDto = new UserReadDto();
                 UserList = new List<List<string>>();
             }
             return Ok(Result);
