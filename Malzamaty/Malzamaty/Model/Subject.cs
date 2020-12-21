@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 namespace Malzamaty.Model
 {
@@ -7,5 +8,6 @@ namespace Malzamaty.Model
         [Key]
         public Guid ID { get; set; }
         public string Name { get; set; }
+
     }
 }

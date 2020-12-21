@@ -22,24 +22,24 @@ namespace Malzamaty.Data
              await _db.Users.Where(x => x.UserName == login.Username && x.Password==login.Password)
                  .FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<UserReadDto>> FindAll(int PageNumber, int count)
+        public async Task<List<User>> GetAll(int PageNumber, int count)
         {
-            var User= await _db.Users.Skip((PageNumber - 1) * count).Take(count).ToListAsync();
-            var Interests = _db.Interests.Include(x=>x.User).ThenInclude(x=>x.Roles).Where(x => x.U_ID == User[0].ID).ToListAsync();
-            for (int i = 0; i < User.Count; i++)
-            {
-                Interests = _db.Interests.Include(x => x.User).ThenInclude(x => x.Roles).Where(x => x.U_ID == User[i].ID).ToListAsync();
-            }
-            var UserReadDto = new UserReadDto();
-            UserReadDto.ID=User
-            return Interests;
+            var User= await _db.Users.Include(x => x.Roles)
+                      .Skip((PageNumber - 1) * count).Take(count).ToListAsync();
+            return User;
+        }
+        public async Task<List<Interests>> GetInterests(Guid Id)
+        {
+            return await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x=>x.Stage).Include(x=>x.Class).ThenInclude(x=>x.ClassType).Where(x=>x.U_ID==Id).ToListAsync();
+            
         }
         public bool Match(Guid classes,Guid subjects)
         {
-            var Match= _db.Matches.Where(x => x.C_ID == classes && x.Su_ID == subjects).FirstOrDefault();
+           /* var Match= _db.Matches.Where(x => x.C_ID == classes && x.Su_ID == subjects).FirstOrDefault();
               if (Match == null)
             return false;
-            else return true;       
+            else*/
+                return true;       
         }
         public async Task<User> Create(User t)
         {

@@ -1,6 +1,7 @@
 ﻿using Malzamaty.Model;
 using Malzamaty.Model.Form;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 namespace Malzamaty.Repository
@@ -10,5 +11,7 @@ namespace Malzamaty.Repository
         Task<User> Authintication(LoginForm login);
         string GetRole(Guid Id);
         bool Match(Guid classes, Guid subjects);
+        Task<List<Interests>> GetInterests(Guid Id);
+        Task<List<User>> GetAll(int PageNumber, int count);
     }
 }

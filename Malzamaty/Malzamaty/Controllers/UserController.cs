@@ -37,9 +37,32 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber, int Count)
         {
-            var result = await _wrapper.User.FindAll(PageNumber, Count);
-            var UserModel = _mapper.Map<IList<UserReadDto>>(result);
-            return Ok(UserModel);
+            var User = await _wrapper.User.GetAll(PageNumber, Count);
+            var Interest = new List<Interests>();
+            var UserInterest = new List<string>();
+            var UserList = new List<List<string>>();
+            var Result = new UserReadDto();
+            for (int i = 0; i < User.Count(); i++)
+            {
+                Interest= await _wrapper.User.GetInterests(User[i].ID);
+                for (int j = 0; j < Interest.Count(); j++)
+                {
+                    //UserInterest.Clear();
+                    UserInterest.Add(Interest[j].Subject.Name);
+                    UserInterest.Add(Interest[j].Class.Name);
+                    UserInterest.Add(Interest[j].Class.Stage.Name);
+                    UserInterest.Add(Interest[j].Class.ClassType.Name);
+                    UserList.Add(UserInterest);
+                    UserInterest = new List<string>();
+                }
+                Result.ID = User[i].ID;
+                Result.UserName = User[i].UserName;
+                Result.Email = User[i].Email;
+                Result.Roles = User[i].Roles.Role;
+                Result.Interests = UserList;
+                UserList = new List<List<string>>();
+            }
+            return Ok(Result);
         }
         [HttpPost]
         public async Task<ActionResult<UserReadDto>> AddUser([FromBody]UserWriteDto UserWriteDto)
