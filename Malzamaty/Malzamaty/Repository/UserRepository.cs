@@ -33,11 +33,6 @@ namespace Malzamaty.Data
             var User = await _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x=>x.ID==Id);
             return User;
         }
-        public async Task<List<Interests>> GetInterests(Guid Id)
-        {
-            return await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x=>x.Stage).Include(x=>x.Class).ThenInclude(x=>x.ClassType).Where(x=>x.U_ID==Id).ToListAsync();
-            
-        }
         public bool Match(Guid classes,Guid subjects)
         {
            /* var Match= _db.Matches.Where(x => x.C_ID == classes && x.Su_ID == subjects).FirstOrDefault();

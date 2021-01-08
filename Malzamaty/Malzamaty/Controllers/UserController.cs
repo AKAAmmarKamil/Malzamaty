@@ -31,7 +31,7 @@ namespace Malzamaty.Controllers
             var UserInterest = new List<string>();
             var UserList = new List<List<string>>();
             var UserReadDto = new UserReadDto();
-                Interest = await _wrapper.User.GetInterests(User.ID);
+                //Interest = await _wrapper.Interest.FindById(User.ID);
                 for (int j = 0; j < Interest.Count(); j++)
                 {
                     UserInterest.Add(Interest[j].Subject.Name);
@@ -61,7 +61,7 @@ namespace Malzamaty.Controllers
             var Result = new List<UserReadDto>();
             for (int i = 0; i < User.Count(); i++)
             {
-                Interest= await _wrapper.User.GetInterests(User[i].ID);
+                //Interest= await _wrapper.User.GetInterests(User[i].ID);
                 for (int j = 0; j < Interest.Count(); j++)
                 {
                     UserInterest.Add(Interest[j].Subject.Name);

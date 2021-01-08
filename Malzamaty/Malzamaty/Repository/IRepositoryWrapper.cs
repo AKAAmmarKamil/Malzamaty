@@ -15,6 +15,7 @@ namespace Malzamaty
         IClassTypeRepository ClassType { get; }
         IClassRepository Class { get; }
         IRolesRepository Roles { get; }
+        IInterestRepository Interest { get; }
         void Save();
     }
 
@@ -28,6 +29,7 @@ namespace Malzamaty
         private IClassTypeRepository _classType;
         private IClassRepository _class;
         private IRolesRepository _roles;
+        private IInterestRepository _interest;
         public ISubjectRepository Subject
         {
             get
@@ -103,6 +105,17 @@ namespace Malzamaty
                     _roles = new RolesRepository(_repoContext);
                 }
                 return _roles;
+            }
+        }
+        public IInterestRepository Interest
+        {
+            get
+            {
+                if (_interest == null)
+                {
+                    _interest = new InterestsRepository(_repoContext);
+                }
+                return _interest;
             }
         }
         public IUsersRepository Users => throw new NotImplementedException();
