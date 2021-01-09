@@ -15,7 +15,7 @@ namespace Malzamaty.Model
         public DbSet<Rating> Rating { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Country> Country { get; set; }
-      //  public DbSet<Match> Matches { get; set; }
+        public DbSet<Match> Matches { get; set; }
         public DbSet<Interests> Interests { get; set; }
         public DbSet<Roles> Roles { get; set; }
         public DbSet<Stage> Stage { get; set; }

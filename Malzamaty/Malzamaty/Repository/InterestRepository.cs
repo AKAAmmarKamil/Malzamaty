@@ -20,11 +20,7 @@ namespace Malzamaty.Repository
             var Interests = await _db.Interests.Skip((PageNumber - 1) * count).Take(count).ToListAsync();
             return Interests;
         }
-        public async Task<Interests> GetById(Guid Id)
-        {
-            var Interests = await _db.Interests.FirstOrDefaultAsync(x => x.ID == Id);
-            return Interests;
-        }
+       
         public async Task<List<Interests>> GetInterests(Guid Id)
         {
             return await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType).Where(x => x.U_ID == Id).ToListAsync();
@@ -52,7 +48,7 @@ namespace Malzamaty.Repository
 
         public async Task<Interests> FindById(Guid id)
         {
-            var result = await _db.Interests.FirstOrDefaultAsync(x => x.ID == id);
+            var result = await _db.Interests.FirstOrDefaultAsync(x => x.U_ID == id);
             return result;
         }
     }

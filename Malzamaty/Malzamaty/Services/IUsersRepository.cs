@@ -11,7 +11,6 @@ namespace Malzamaty.Repository
         Task<User> Authintication(LoginForm login);
         string GetRole(Guid Id);
         bool Match(Guid classes, Guid subjects);
-        Task<List<User>> GetAll(int PageNumber, int count);
-        Task<User> GetById(Guid Id);
+        Task<User> GetUser(Guid Id); 
     }
 }

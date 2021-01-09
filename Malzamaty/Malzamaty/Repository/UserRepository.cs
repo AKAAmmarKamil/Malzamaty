@@ -28,11 +28,6 @@ namespace Malzamaty.Data
                       .Skip((PageNumber - 1) * count).Take(count).ToListAsync();
             return User;
         }
-        public async Task<User> GetById(Guid Id)
-        {
-            var User = await _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x=>x.ID==Id);
-            return User;
-        }
         public bool Match(Guid classes,Guid subjects)
         {
            /* var Match= _db.Matches.Where(x => x.C_ID == classes && x.Su_ID == subjects).FirstOrDefault();
@@ -41,10 +36,20 @@ namespace Malzamaty.Data
             else*/
                 return true;       
         }
+        public async Task<User> GetUser(Guid Id)
+        {
+            //var Users = _db.Users.FirstOrDefaultAsync();
+            //var Class = _db.Class.FirstOrDefaultAsync();
+            var User =  _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x=>x.ID==Id);
+            //var Interest = _db.Interests.Where(x => x.U_ID == Id).ToListAsync();
+            //if (Interest == null)
+                return await User;
+            //else return null;
+        }
         public async Task<User> Create(User t)
         {
             await _db.Users.AddAsync(t);
-            await _db.SaveChangesAsync();
+            SaveChanges();
             return t;
         }
         public string GetRole(Guid Id)
@@ -69,7 +74,9 @@ namespace Malzamaty.Data
         public async Task<User> FindById(Guid id)
         {
           var result=  await _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x => x.ID==id);
-            return result;
+          return result;
         }
+
+        
     }
 }

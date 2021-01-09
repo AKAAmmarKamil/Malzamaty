@@ -26,61 +26,20 @@ namespace Malzamaty.Controllers
         [HttpGet("{Id}")]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
         {
-            var User = await _wrapper.User.GetById(Id);
-            var Interest = new List<Interests>();
-            var UserInterest = new List<string>();
-            var UserList = new List<List<string>>();
-            var UserReadDto = new UserReadDto();
-                //Interest = await _wrapper.Interest.FindById(User.ID);
-                for (int j = 0; j < Interest.Count(); j++)
-                {
-                    UserInterest.Add(Interest[j].Subject.Name);
-                    UserInterest.Add(Interest[j].Class.Name);
-                    UserInterest.Add(Interest[j].Class.Stage.Name);
-                    UserInterest.Add(Interest[j].Class.ClassType.Name);
-                    UserList.Add(UserInterest);
-                    UserInterest = new List<string>();
-                }
-                UserReadDto.ID = User.ID;
-                UserReadDto.UserName = User.UserName;
-                UserReadDto.Email = User.Email;
-                UserReadDto.Roles = User.Roles.Role;
-                UserReadDto.Interests = UserList;
-                UserList = new List<List<string>>();
-            
-            return Ok(UserReadDto);
+            var result = await _wrapper.User.FindById(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var UserModel = _mapper.Map<UserReadDto>(result);
+            return Ok(UserModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber, int Count)
         {
-            var User = await _wrapper.User.GetAll(PageNumber, Count);
-            var Interest = new List<Interests>();
-            var UserInterest = new List<string>();
-            var UserList = new List<List<string>>();
-            var UserReadDto = new UserReadDto();
-            var Result = new List<UserReadDto>();
-            for (int i = 0; i < User.Count(); i++)
-            {
-                //Interest= await _wrapper.User.GetInterests(User[i].ID);
-                for (int j = 0; j < Interest.Count(); j++)
-                {
-                    UserInterest.Add(Interest[j].Subject.Name);
-                    UserInterest.Add(Interest[j].Class.Name);
-                    UserInterest.Add(Interest[j].Class.Stage.Name);
-                    UserInterest.Add(Interest[j].Class.ClassType.Name);
-                    UserList.Add(UserInterest);
-                    UserInterest = new List<string>();
-                }
-                UserReadDto.ID = User[i].ID;
-                UserReadDto.UserName = User[i].UserName;
-                UserReadDto.Email = User[i].Email;
-                UserReadDto.Roles = User[i].Roles.Role;
-                UserReadDto.Interests = UserList;
-                Result.Add(UserReadDto);
-                UserReadDto = new UserReadDto();
-                UserList = new List<List<string>>();
-            }
-            return Ok(Result);
+            var Users = _wrapper.User.FindAll(PageNumber, Count);
+            var UserModel= _mapper.Map<UserReadDto>( Users);
+            return Ok(UserModel);
         }
         [HttpPost]
         public async Task<ActionResult<UserReadDto>> AddUser([FromBody]UserWriteDto UserWriteDto)
