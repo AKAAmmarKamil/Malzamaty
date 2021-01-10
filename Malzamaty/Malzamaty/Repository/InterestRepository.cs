@@ -23,8 +23,8 @@ namespace Malzamaty.Repository
        
         public async Task<List<Interests>> GetInterests(Guid Id)
         {
-            return await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType).Where(x => x.U_ID == Id).ToListAsync();
-
+            var Result=await  _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType).Where(x => x.U_ID == Id).ToListAsync();
+            return Result;
         }
         public async Task<Interests> Create(Interests t)
         {
@@ -41,15 +41,13 @@ namespace Malzamaty.Repository
             return result;
         }
 
-        public void SaveChanges()
-        {
-            _db.SaveChanges();
-        }
-
+        
         public async Task<Interests> FindById(Guid id)
         {
-            var result = await _db.Interests.FirstOrDefaultAsync(x => x.U_ID == id);
-            return result;
+            var Result = _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
+
+            if (Result == null) return null;
+            return await Result;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Malzamaty.Model;
+using Malzamaty.Model.Form;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,9 +21,8 @@ namespace Malzamaty.Dto
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid Authentication { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public List<Guid> Classes { get; set; }
-        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public List<Guid> Subjects { get; set; }
+        public List<InterestSimple> Interests { get; set; }
+        
 
     }
 }

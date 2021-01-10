@@ -12,7 +12,7 @@ namespace Malzamaty.Dto
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Roles { get; set; }
-        public List<List<string>> Interests { get; set; }
+        public List<Interests> Interests { get; set; }
 
     }
 }

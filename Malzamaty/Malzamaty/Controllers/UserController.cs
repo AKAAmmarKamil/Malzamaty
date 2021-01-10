@@ -26,12 +26,22 @@ namespace Malzamaty.Controllers
         [HttpGet("{Id}")]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
         {
-            var result = await _wrapper.User.FindById(Id);
-            if (result == null)
+            var User = await _wrapper.User.FindById(Id);
+            if (User == null)
             {
                 return NotFound();
             }
-            var UserModel = _mapper.Map<UserReadDto>(result);
+            var Interests = _wrapper.Interest.GetInterests(Id);
+            var InterestsList = new List<List<string>>();
+            var InterestsList2 = new List<string>();
+
+            //InterestsList2.Add(Interests);
+            var UserModel = new UserReadDto();
+            UserModel.ID = User.ID;
+            UserModel.UserName = User.UserName;
+            UserModel.Email = User.Email;
+            UserModel.Roles = User.Roles.Role;
+            UserModel.Interests = null;
             return Ok(UserModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
@@ -46,32 +56,44 @@ namespace Malzamaty.Controllers
         {
             var Check = false;
             var Role = _wrapper.User.GetRole(UserWriteDto.Authentication);
-            var Subject = _wrapper.Subject.FindById(UserWriteDto.Subjects[0]);
+            var Subject = _wrapper.Subject.FindById(UserWriteDto.Interests[0].Su_ID);
             if (Role == "Teacher")
             {
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < UserWriteDto.Interests.Count; i++)
                 {
-                    Check = _wrapper.User.Match(UserWriteDto.Classes[i], UserWriteDto.Subjects[i]);
+                    Check = _wrapper.User.Match(UserWriteDto.Interests[i].C_ID, UserWriteDto.Interests[i].Su_ID);
                     if (Check == false)
                     {
-                        return BadRequest("المادة"+Subject+" والصف غير متوافقان");
+                        return BadRequest("المادة والصف غير متوافقان");
                     }
                 }
             }
             else if (Role == "Student")
             {
-                Check = _wrapper.User.Match(UserWriteDto.Classes[0], UserWriteDto.Subjects[0]);
-                if (Check==false)
+                Check = _wrapper.User.Match(UserWriteDto.Interests[0].C_ID, UserWriteDto.Interests[0].Su_ID);
+                if (Check == false)
                 {
                     return BadRequest("المادة والصف غير متوافقان");
                 }
-                var UserModel = _mapper.Map<User>(UserWriteDto);
-                await _wrapper.User.Create(UserModel);
-                var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
-                return Ok(UserReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
-
             }
-            return Ok();
+            var UserModel = _mapper.Map<User>(UserWriteDto);
+            await _wrapper.User.Create(UserModel);
+            var Interest = new Interests();
+            for (int i = 0; i < UserWriteDto.Interests.Count; i++)
+            {
+                Interest.U_ID = UserModel.ID;
+                Interest.C_ID = UserWriteDto.Interests[i].C_ID;
+                Interest.U_ID = UserWriteDto.Interests[i].Su_ID;
+                Interest.User = new User();
+                Interest.Class = new Class();
+                Interest.Subject = new Subject();
+
+                await _wrapper.Interest.Create(Interest);
+            }
+            var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
+            return Ok(UserReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+
+            
         }
             /*
         [HttpPut]
