@@ -17,7 +17,7 @@ namespace Malzamaty.Repository
         }
         public async Task<List<Interests>> GetAll(int PageNumber, int count)
         {
-            var Interests = await _db.Interests.Skip((PageNumber - 1) * count).Take(count).ToListAsync();
+            var Interests = await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
             return Interests;
         }
        

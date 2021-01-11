@@ -22,20 +22,20 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
         [HttpGet("{Id}")]
-        public async Task<ActionResult<InterestWriteDto>> GetInterestById(Guid Id)
+        public async Task<ActionResult<InterestReadDto>> GetInterestById(Guid Id)
         {
             var result = await _wrapper.Interest.FindById(Id);
             if (result == null)
             {
                 return NotFound();
             }
-            var InterestModel = _mapper.Map<InterestWriteDto>(result);
+            var InterestModel = _mapper.Map<InterestReadDto>(result);
             return Ok(InterestModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<InterestReadDto>> GetAllInterests(int PageNumber, int Count)
         {
-            var result = await _wrapper.Interest.FindAll(PageNumber, Count);
+            var result = await _wrapper.Interest.GetAll(PageNumber, Count);
             var InterestModel = _mapper.Map<IList<InterestReadDto>>(result);
             return Ok(InterestModel);
         }
