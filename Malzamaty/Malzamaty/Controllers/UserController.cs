@@ -56,7 +56,6 @@ namespace Malzamaty.Controllers
         {
             var Check = false;
             var Role = _wrapper.User.GetRole(UserWriteDto.Authentication);
-            var Subject = _wrapper.Subject.FindById(UserWriteDto.Interests[0].Su_ID);
             if (Role == "Teacher")
             {
                 for (int i = 0; i < UserWriteDto.Interests.Count; i++)
@@ -78,6 +77,10 @@ namespace Malzamaty.Controllers
             }
             var UserModel = _mapper.Map<User>(UserWriteDto);
             await _wrapper.User.Create(UserModel);
+            var InterestModel = _mapper.Map<Interests>(UserWriteDto.Interests);
+            var Result = _wrapper.Interest.FindById(InterestModel.ID);
+            var InterestReadDto = _mapper.Map<InterestReadDto>(Result.Result);
+
             var Interest = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
             {
