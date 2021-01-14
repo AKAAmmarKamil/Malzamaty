@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
-
 namespace Malzamaty.Validation
 {
     public class UserValidation :ValidationAttribute
@@ -19,14 +17,13 @@ namespace Malzamaty.Validation
         protected override ValidationResult IsValid(object value,ValidationContext validationContext)
         {
             var service = (TheContext)validationContext.GetService(typeof(TheContext));
-            var containerType = validationContext.ObjectInstance.GetType();
-            var field = containerType.GetProperty("Authentication");
-            var Property = field.GetValue(validationContext.ObjectInstance, null);
-            var Role = service.Roles.FirstOrDefault(x => x.Id == (Guid)Property);
             var Subject = new Subject();
+            var Role = new Roles();
             var Message = new List<string>();
             if (validationContext.DisplayName == "Authentication")
             {
+                Role = service.Roles.FirstOrDefault(x => x.Id == (Guid)value);
+
                 if (Role == null)
                 { return new ValidationResult("الصلاحية غير موجودة"); }
             }
@@ -39,7 +36,7 @@ namespace Malzamaty.Validation
             }
             else if (validationContext.DisplayName == "Interests")
             {
-                if (Role != null)
+                if (Role != new Roles())
                 {
                  
                     var List = (List<Interests>)value;
