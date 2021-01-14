@@ -17,20 +17,22 @@ namespace Malzamaty.Validation
         }
         protected override ValidationResult IsValid(object value,ValidationContext validationContext)
         {
-            var x= validationContext.DisplayName;
-            if (value.GetType().Name != "String")
+            if (validationContext.DisplayName == "ReWritePassword")
             {
+                if (_comparisonProperty != value.ToString())
+                {
+                    return new ValidationResult("كلمتا السر غير متطابقتان");
+                }
+            }
+            else
+            {
+                var Role = validationContext.ObjectInstance;
                 var List = (List<Interests>)value;
                 if (List.Count > 1)
                 {
                     return new ValidationResult("لا يمكن للطالب إضافة أكثر من إهتمام");
                 }
             }
-            if (_comparisonProperty != value.ToString())
-            {
-                return new ValidationResult("كلمتا السر غير متطابقتان");
-            }
-            
             return ValidationResult.Success;
         }
     }
