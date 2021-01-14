@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace Malzamaty.Dto
 {
-    [AttributeUsage(AttributeTargets.Property |AttributeTargets.Field, AllowMultiple = false)]
-    public class UserWriteDto : ValidationAttribute
+    public class UserWriteDto 
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string UserName { get; set; }
@@ -23,10 +23,7 @@ namespace Malzamaty.Dto
         public Guid Authentication { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public List<Interests> Interests { get; set; }
-        public override bool IsValid(object value)
-        {
-            return false;
-        }
+        
 
     }
 }

@@ -78,16 +78,15 @@ namespace Malzamaty.Controllers
             }
             var UserModel = _mapper.Map<User>(UserWriteDto);
             await _wrapper.User.Create(UserModel);
-            var Interest = new Interests();
+            var Interest = new InterestWriteDto();
+            var InterestModel = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
             {
-                Interest.U_ID = UserModel.ID;
-                Interest.C_ID = UserWriteDto.Interests[i].C_ID;
-                Interest.U_ID = UserWriteDto.Interests[i].Su_ID;
-                Interest.User =await _wrapper.User.FindById(UserModel.ID);
-                Interest.Class = await _wrapper.Class.FindById(UserWriteDto.Interests[i].C_ID);
-                Interest.Subject = await _wrapper.Subject.FindById(UserWriteDto.Interests[i].Su_ID);
-                await _wrapper.Interest.Create(Interest);
+                Interest.User = UserModel.ID;
+                Interest.Class = UserWriteDto.Interests[i].C_ID;
+                Interest.Subject = UserWriteDto.Interests[i].Su_ID;
+                InterestModel = _mapper.Map<Interests>(Interest);
+                await _wrapper.Interest.Create(InterestModel);
             }
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
             return Ok();
