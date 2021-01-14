@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+using Malzamaty.Validation;
 
 namespace Malzamaty.Dto
 {
+
     public class UserWriteDto 
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
@@ -18,10 +19,12 @@ namespace Malzamaty.Dto
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string Password { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
+        [UserValidation("1233")]
         public string ReWritePassword { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid Authentication { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
+        [UserValidation("")]
         public List<Interests> Interests { get; set; }
         
 

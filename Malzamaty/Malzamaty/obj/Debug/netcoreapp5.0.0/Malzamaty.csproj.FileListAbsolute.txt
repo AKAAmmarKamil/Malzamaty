@@ -1,4 +1,3 @@
-F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.csprojAssemblyReference.cache
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.GeneratedMSBuildEditorConfig.editorconfig
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.AssemblyInfoInputs.cache
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.AssemblyInfo.cs
@@ -84,3 +83,4 @@ F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\AutoMapper.Extensions
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Humanizer.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.EntityFrameworkCore.Design.dll
+F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.csprojAssemblyReference.cache
