@@ -1,5 +1,6 @@
 ﻿using Malzamaty.Model;
 using Malzamaty.Repository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,7 +23,6 @@ namespace Malzamaty.Validation
             var field = containerType.GetProperty("Authentication");
             var Property = field.GetValue(validationContext.ObjectInstance, null);
             var Role = service.Roles.FirstOrDefault(x => x.Id == (Guid)Property);
-            var Class = new Class();
             var Subject = new Subject();
             var Message = new List<string>();
             if (validationContext.DisplayName == "Authentication")
@@ -41,12 +41,19 @@ namespace Malzamaty.Validation
             {
                 if (Role != null)
                 {
+                 
                     var List = (List<Interests>)value;
                     for (int i = 0; i < List.Count; i++)
                     {
-                        Class = service.Class.FirstOrDefault(x => x.ID == List[i].C_ID);
-                        Subject = service.Subject.FirstOrDefault(x => x.ID == List[i].C_ID);
-                        if (Class == null)
+                        var Match = service.Matches.Where(x => x.C_ID == List[i].C_ID&&x.Su_ID==List[i].Su_ID).FirstOrDefault();
+                        var  Class = service.Class.Include(x => x.Stage).Include(x => x.ClassType).FirstOrDefault(x => x.ID == List[i].C_ID);
+                        Subject = service.Subject.FirstOrDefault(x => x.ID == List[i].Su_ID);
+
+                        if (Match == null)
+                                {
+                                    Message.Add("مادة ال "+Subject.Name+" غير موجودة في الصف "+Class.Name+" "+Class.Stage.Name+" "+Class.ClassType.Name);
+                                }
+                         if (Class == null)
                         {
                             Message.Add("غير موجود"+" {"+List[i].C_ID+"} "+"الصف الذي يحمل المعرف");
                         }

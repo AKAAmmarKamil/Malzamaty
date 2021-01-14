@@ -54,28 +54,6 @@ namespace Malzamaty.Controllers
         [HttpPost]
         public async Task<ActionResult<UserReadDto>> AddUser([FromBody]UserWriteDto UserWriteDto)
         {
-            var Check = false;
-            var Role = _wrapper.User.GetRole(UserWriteDto.Authentication);
-            if (Role == "Teacher")
-            {
-                for (int i = 0; i < UserWriteDto.Interests.Count; i++)
-                {
-                    Check = _wrapper.User.Match(UserWriteDto.Interests[i].C_ID, UserWriteDto.Interests[i].Su_ID);
-                    if (Check == false)
-                    {
-                        return BadRequest("المادة والصف غير متوافقان");
-                    }
-                }
-            }
-            else if (Role == "Student")
-            {
-                
-                Check = _wrapper.User.Match(UserWriteDto.Interests[0].C_ID, UserWriteDto.Interests[0].Su_ID);
-                if (Check == false)
-                {
-                    return BadRequest("المادة والصف غير متوافقان");
-                }
-            }
             var UserModel = _mapper.Map<User>(UserWriteDto);
             await _wrapper.User.Create(UserModel);
             var Interest = new InterestWriteDto();
