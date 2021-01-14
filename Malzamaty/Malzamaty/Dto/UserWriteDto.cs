@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Malzamaty.Dto
 {
-    public class UserWriteDto
+    [AttributeUsage(AttributeTargets.Property |AttributeTargets.Field, AllowMultiple = false)]
+    public class UserWriteDto : ValidationAttribute
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string UserName { get; set; }
@@ -21,8 +22,11 @@ namespace Malzamaty.Dto
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid Authentication { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public List<InterestSimple> Interests { get; set; }
-        
+        public List<Interests> Interests { get; set; }
+        public override bool IsValid(object value)
+        {
+            return false;
+        }
 
     }
 }

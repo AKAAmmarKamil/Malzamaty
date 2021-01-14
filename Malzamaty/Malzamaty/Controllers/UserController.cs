@@ -69,6 +69,7 @@ namespace Malzamaty.Controllers
             }
             else if (Role == "Student")
             {
+                
                 Check = _wrapper.User.Match(UserWriteDto.Interests[0].C_ID, UserWriteDto.Interests[0].Su_ID);
                 if (Check == false)
                 {
@@ -77,61 +78,44 @@ namespace Malzamaty.Controllers
             }
             var UserModel = _mapper.Map<User>(UserWriteDto);
             await _wrapper.User.Create(UserModel);
-            var InterestModel = _mapper.Map<Interests>(UserWriteDto.Interests);
-            var Result = _wrapper.Interest.FindById(InterestModel.ID);
-            var InterestReadDto = _mapper.Map<InterestReadDto>(Result.Result);
-
             var Interest = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
             {
                 Interest.U_ID = UserModel.ID;
                 Interest.C_ID = UserWriteDto.Interests[i].C_ID;
                 Interest.U_ID = UserWriteDto.Interests[i].Su_ID;
-                Interest.User = new User();
-                Interest.Class = new Class();
-                Interest.Subject = new Subject();
-
+                Interest.User =await _wrapper.User.FindById(UserModel.ID);
+                Interest.Class = await _wrapper.Class.FindById(UserWriteDto.Interests[i].C_ID);
+                Interest.Subject = await _wrapper.Subject.FindById(UserWriteDto.Interests[i].Su_ID);
                 await _wrapper.Interest.Create(Interest);
             }
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
-            return Ok(UserReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return Ok();
 
             
         }
-            /*
-        [HttpPut]
-        public async Task<IActionResult> UpdateStudent([FromBody]User user, string St_ID)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(Guid Id, [FromBody] UserUpdateDto UserUpdateDto)
         {
-            var usr = _dbContext.Users.Find(St_ID);
-            usr.FullName = user.FullName;
-            usr.Email = user.Email;
-            usr.Password = user.Password;
-            usr.Authentication = user.Authentication;
-            usr.C_ID = user.C_ID;
-            usr.Su_ID = user.Su_ID;
-            _dbContext.Entry(usr).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            var UserModelFromRepo = _wrapper.User.FindById(Id);
+            if (UserModelFromRepo.Result == null)
+            {
+                return NotFound();
+            }
+            UserModelFromRepo.Result.UserName = UserUpdateDto.UserName;
+            UserModelFromRepo.Result.Email = UserUpdateDto.Email;
+            _wrapper.User.SaveChanges();
+            return NoContent();
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateIntersted()
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid Id)
         {
-            var con = new SqlConnection("Server=DESKTOP-A1QK3DR;Database=Malzamaty;Trusted_Connection=True;ConnectRetryCount=0");
-            var cmd = new SqlCommand("UpdateInterstings", con);
-            await con.OpenAsync();
-            cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            return Ok(dt);
+            var User = _wrapper.User.Delete(Id);
+            if (User.Result == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteStudent(string ID)
-        {
-            //var user = new User() { ID = ID };
-            //_dbContext.Entry(User).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }*/
     }
 }
