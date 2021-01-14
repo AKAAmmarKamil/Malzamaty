@@ -22,6 +22,7 @@ namespace Malzamaty.Dto
         [UserValidation("1233")]
         public string ReWritePassword { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
+        [UserValidation("")]
         public Guid Authentication { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         [UserValidation("")]
