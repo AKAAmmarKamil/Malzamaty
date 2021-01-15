@@ -66,7 +66,7 @@ namespace Malzamaty.Controllers
         {
             var CheckIfLast = await _wrapper.Interest.CheckIfLast(Id);
             if (CheckIfLast == false)
-                return BadRequest();
+                return BadRequest(new { error = "لا يمكن حذف آخر إهتمام" });
             var Interest = _wrapper.Interest.Delete(Id);
             if (Interest.Result == null)
             {
