@@ -46,8 +46,15 @@ namespace Malzamaty.Repository
         {
             var Result = _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
 
-            if (Result == null) return null;
+            if (Result.Result == null) return null;
             return await Result;
+        }
+        public async Task<bool> CheckIfLast(Guid id)
+        {
+            var Result = _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
+            var CheckIfLast = _db.Interests.Where(x => x.User == Result.Result.User).ToListAsync();
+            if (CheckIfLast.Result.Count <=1) return false;
+            return true;
         }
     }
 }

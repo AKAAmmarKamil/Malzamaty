@@ -64,6 +64,9 @@ namespace Malzamaty.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInterests(Guid Id)
         {
+            var CheckIfLast = await _wrapper.Interest.CheckIfLast(Id);
+            if (CheckIfLast == false)
+                return BadRequest();
             var Interest = _wrapper.Interest.Delete(Id);
             if (Interest.Result == null)
             {

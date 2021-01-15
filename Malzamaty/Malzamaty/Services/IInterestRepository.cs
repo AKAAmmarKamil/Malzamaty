@@ -9,5 +9,6 @@ namespace Malzamaty.Services
     {
         Task<List<Interests>> GetInterests(Guid Id);
         Task<List<Interests>> GetAll(int PageNumber, int count);
+        Task<bool> CheckIfLast(Guid id);
     }
 }
