@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Malzamaty.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Test : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -159,30 +159,29 @@ namespace Malzamaty.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Format = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublishDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClassID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Us_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    DownloadCount = table.Column<int>(type: "int", nullable: false),
+                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    User_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Subject_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_File", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_File_Class_ClassID",
-                        column: x => x.ClassID,
+                        name: "FK_File_Class_C_ID",
+                        column: x => x.C_ID,
                         principalTable: "Class",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_File_Subject_SubjectID",
-                        column: x => x.SubjectID,
+                        name: "FK_File_Subject_Subject_ID",
+                        column: x => x.Subject_ID,
                         principalTable: "Subject",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_File_Users_Us_ID",
-                        column: x => x.Us_ID,
+                        name: "FK_File_Users_User_ID",
+                        column: x => x.User_ID,
                         principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
@@ -194,8 +193,8 @@ namespace Malzamaty.Migrations
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     U_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -309,19 +308,19 @@ namespace Malzamaty.Migrations
                 column: "T_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_ClassID",
+                name: "IX_File_C_ID",
                 table: "File",
-                column: "ClassID");
+                column: "C_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_SubjectID",
+                name: "IX_File_Subject_ID",
                 table: "File",
-                column: "SubjectID");
+                column: "Subject_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_Us_ID",
+                name: "IX_File_User_ID",
                 table: "File",
-                column: "Us_ID");
+                column: "User_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Interests_C_ID",

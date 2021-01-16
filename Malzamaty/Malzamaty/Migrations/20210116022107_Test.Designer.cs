@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Malzamaty.Migrations
 {
     [DbContext(typeof(TheContext))]
-    [Migration("20201217093344_Initial")]
-    partial class Initial
+    [Migration("20210116022107_Test")]
+    partial class Test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -87,14 +87,14 @@ namespace Malzamaty.Migrations
                     b.Property<string>("Author")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("C_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ClassID")
+                    b.Property<Guid?>("C_ID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DownloadCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
@@ -105,25 +105,22 @@ namespace Malzamaty.Migrations
                     b.Property<DateTimeOffset>("PublishDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("Su_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("SubjectID")
+                    b.Property<Guid?>("Subject_ID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("Us_ID")
+                    b.Property<Guid?>("User_ID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ClassID");
+                    b.HasIndex("C_ID");
 
-                    b.HasIndex("SubjectID");
+                    b.HasIndex("Subject_ID");
 
-                    b.HasIndex("Us_ID");
+                    b.HasIndex("User_ID");
 
                     b.ToTable("File");
                 });
@@ -352,15 +349,15 @@ namespace Malzamaty.Migrations
                 {
                     b.HasOne("Malzamaty.Model.Class", "Class")
                         .WithMany()
-                        .HasForeignKey("ClassID");
+                        .HasForeignKey("C_ID");
 
                     b.HasOne("Malzamaty.Model.Subject", "Subject")
                         .WithMany()
-                        .HasForeignKey("SubjectID");
+                        .HasForeignKey("Subject_ID");
 
                     b.HasOne("Malzamaty.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("Us_ID");
+                        .HasForeignKey("User_ID");
 
                     b.Navigation("Class");
 

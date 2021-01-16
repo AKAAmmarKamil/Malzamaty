@@ -13,11 +13,12 @@ namespace Malzamaty.Model
         public string Type { get; set; }
         public string Format {get;set;}
         public DateTimeOffset PublishDate { get; set; }
-        public Guid C_ID { get; set; }
+        public int DownloadCount { get; set; }
+        [ForeignKey("C_ID")]
         public Class Class { get; set; }
-        [ForeignKey("Us_ID")]
+        [ForeignKey("User_ID")]
         public User User { get; set; }
-        public Guid Su_ID { get; set; }
+        [ForeignKey("Subject_ID")]
         public Subject Subject { get; set; }
     }
 }

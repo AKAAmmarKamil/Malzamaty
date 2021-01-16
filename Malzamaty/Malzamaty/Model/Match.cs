@@ -5,7 +5,6 @@ namespace Malzamaty.Model
 {
     public class Match
     {
-        [Key]
         public Guid ID { get; set; }
         public Guid C_ID { get; set; }
         [ForeignKey("C_ID")]

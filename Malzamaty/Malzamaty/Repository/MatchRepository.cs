@@ -16,13 +16,13 @@ namespace Malzamaty.Repository
         {
             _db = context;
         }
-        public async Task<Match> FindById(Guid id)=>
+        public async Task<Match> GetById(Guid id)=>
              await _db.Matches.Include(x => x.Class).Include(x=>x.Subject).FirstOrDefaultAsync(x => x.ID == id);
         public async Task<List<Match>> GetAll(int PageNumber, int count)
         {
-            var User = await _db.Matches.Include(x => x.Class).Include(x=>x.Subject)
+            var Match = await _db.Matches.Include(x => x.Class).Include(x=>x.Subject)
                       .Skip((PageNumber - 1) * count).Take(count).ToListAsync();
-            return User;
+            return Match;
         }
     }
 }

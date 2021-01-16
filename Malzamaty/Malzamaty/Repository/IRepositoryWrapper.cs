@@ -17,6 +17,7 @@ namespace Malzamaty
         IRolesRepository Roles { get; }
         IInterestRepository Interest { get; }
         IMatchRepository Match { get; }
+        IReportRepository Report { get; }
         void Save();
     }
 
@@ -32,6 +33,7 @@ namespace Malzamaty
         private IRolesRepository _roles;
         private IInterestRepository _interest;
         private IMatchRepository _match;
+        private IReportRepository _report;
         public ISubjectRepository Subject
         {
             get
@@ -129,6 +131,17 @@ namespace Malzamaty
                     _match = new MatchRepository(_repoContext);
                 }
                 return _match;
+            }
+        }
+        public IReportRepository Report
+        {
+            get
+            {
+                if (_report == null)
+                {
+                    _report = new ReportRepository(_repoContext);
+                }
+                return _report;
             }
         }
         public IUsersRepository Users => throw new NotImplementedException();

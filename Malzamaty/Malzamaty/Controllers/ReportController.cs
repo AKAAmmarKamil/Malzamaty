@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Malzamaty.Dto;
 using Malzamaty.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,56 +13,61 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
-        private readonly TheContext _dbContext;
-        public ReportController(TheContext dbContext)
+        private readonly IRepositoryWrapper _wrapper;
+        private readonly IMapper _mapper;
+        public ReportController(IRepositoryWrapper wrapper, IMapper mapper)
         {
-            _dbContext = dbContext;
-        }/*
-        [HttpGet]
-        public async Task<IActionResult> GetAllReports()
-        {
-            var result = await _dbContext.Report.Select(x => new { x.R_Description, x.F_ID }).ToListAsync();
-            return Ok(result);
+            _wrapper = wrapper;
+            _mapper = mapper;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetReportsFromStudent(string F_ID)
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<ReportReadDto>> GetReportById(Guid Id)
         {
-            var result = await _dbContext.Report.Where(x => x.F_ID == F_ID).Select(x => new { x.R_Description, x.F_ID }).ToListAsync();
-            return Ok(result);
+            var result = await _wrapper.Report.GetById(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var ReportModel = _mapper.Map<ReportReadDto>(result);
+            return Ok(ReportModel);
+        }
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber, int Count)
+        {
+            var result = await _wrapper.Report.GetAll(PageNumber, Count);
+            var ReportModel = _mapper.Map<IList<ReportReadDto>>(result);
+            return Ok(ReportModel);
         }
         [HttpPost]
-        public async Task<IActionResult> AddReport([FromBody]Report report)
+        public async Task<ActionResult<ReportReadDto>> AddReport([FromBody] ReportWriteDto ReportWriteDto)
         {
-           Report rep = new Report
+            var ReportModel = _mapper.Map<Report>(ReportWriteDto);
+            await _wrapper.Report.Create(ReportModel);
+            var Result = _wrapper.Report.FindById(ReportModel.ID);
+            var ReportReadDto = _mapper.Map<ReportReadDto>(Result.Result);
+            return Ok(ReportReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateReport(Guid Id, [FromBody] ReportWriteDto ReportWriteDto)
+        {
+            var ReportModelFromRepo = await _wrapper.Report.FindById(Id);
+            if (ReportModelFromRepo == null)
             {
-                R_Description = report.R_Description,
-                R_Date=DateTime.Now,
-                F_ID=report.F_ID
-            };
-            _dbContext.Report.Add(rep);
-            await _dbContext.SaveChangesAsync();
-            var St_ID = (from R in _dbContext.Report
-                         join F in _dbContext.File
-                         on R.F_ID equals F.F_ID
-                         select F.Student.St_ID).Take(1);
-                         return Ok(new { report,St_ID });
+                return NotFound();
+            }
+            ReportModelFromRepo.Description = ReportWriteDto.Description;
+            _wrapper.User.SaveChanges();
+            return NoContent();
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateReport([FromBody]Report report, string R_ID)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteReportes(Guid Id)
         {
-            var Rep = _dbContext.Report.Find(R_ID);
-            Rep.R_Description = report.R_Description;
-            _dbContext.Entry(Rep).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            var Report = await _wrapper.Report.Delete(Id);
+            if (Report == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteReport(string R_ID)
-        {
-            var report = new Report() { R_ID = R_ID };
-            _dbContext.Entry(report).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }*/
     }
 }
