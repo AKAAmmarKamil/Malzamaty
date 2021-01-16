@@ -49,20 +49,20 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRole(Guid Id, [FromBody] RolesWriteDto RolesWriteDto)
         {
-            var RolesModelFromRepo = _wrapper.Roles.FindById(Id);
-            if (RolesModelFromRepo.Result == null)
+            var RolesModelFromRepo =await _wrapper.Roles.FindById(Id);
+            if (RolesModelFromRepo == null)
             {
                 return NotFound();
             }
-            RolesModelFromRepo.Result.Role = RolesWriteDto.Role;
+            RolesModelFromRepo.Role = RolesWriteDto.Role;
             _wrapper.Roles.SaveChanges();
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(Guid Id)
         {
-            var Roles = _wrapper.Roles.Delete(Id);
-            if (Roles.Result == null)
+            var Roles =await _wrapper.Roles.Delete(Id);
+            if (Roles == null)
             {
                 return NotFound();
             }

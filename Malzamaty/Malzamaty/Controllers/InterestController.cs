@@ -51,13 +51,13 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInterest(Guid Id, [FromBody] InterestWriteDto InterestWriteDto)
         {
-            var InterestModelFromRepo = _wrapper.Interest.FindById(Id);
-            if (InterestModelFromRepo.Result == null)
+            var InterestModelFromRepo =await _wrapper.Interest.FindById(Id);
+            if (InterestModelFromRepo == null)
             {
                 return NotFound();
             }
-            InterestModelFromRepo.Result.C_ID = InterestWriteDto.Class;
-            InterestModelFromRepo.Result.Su_ID = InterestWriteDto.Subject;
+            InterestModelFromRepo.C_ID = InterestWriteDto.Class;
+            InterestModelFromRepo.Su_ID = InterestWriteDto.Subject;
             _wrapper.User.SaveChanges();
             return NoContent();
         }

@@ -50,20 +50,20 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClass(Guid Id, [FromBody] ClassWriteDto ClassWriteDto)
         {
-            var ClassModelFromRepo = _wrapper.Class.FindById(Id);
-            if (ClassModelFromRepo.Result == null)
+            var ClassModelFromRepo =await _wrapper.Class.FindById(Id);
+            if (ClassModelFromRepo == null)
             {
                 return NotFound();
             }
-            ClassModelFromRepo.Result.Name = ClassWriteDto.Name;
+            ClassModelFromRepo.Name = ClassWriteDto.Name;
             _wrapper.Class.SaveChanges();
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClass(Guid Id)
         {
-            var Class = _wrapper.Class.Delete(Id);
-            if (Class.Result == null)
+            var Class =await _wrapper.Class.Delete(Id);
+            if (Class == null)
             {
                 return NotFound();
             }

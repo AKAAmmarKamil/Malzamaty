@@ -49,20 +49,20 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClassType(Guid Id, [FromBody] ClassTypeWriteDto ClassTypeWriteDto)
         {
-            var ClassTypeModelFromRepo = _wrapper.ClassType.FindById(Id);
-            if (ClassTypeModelFromRepo.Result == null)
+            var ClassTypeModelFromRepo =await _wrapper.ClassType.FindById(Id);
+            if (ClassTypeModelFromRepo == null)
             {
                 return NotFound();
             }
-            ClassTypeModelFromRepo.Result.Name = ClassTypeWriteDto.Name;
+            ClassTypeModelFromRepo.Name = ClassTypeWriteDto.Name;
             _wrapper.ClassType.SaveChanges();
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClassType(Guid Id)
         {
-            var ClassType = _wrapper.ClassType.Delete(Id);
-            if (ClassType.Result == null)
+            var ClassType =await _wrapper.ClassType.Delete(Id);
+            if (ClassType == null)
             {
                 return NotFound();
             }

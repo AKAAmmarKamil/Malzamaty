@@ -49,20 +49,20 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSubject(Guid Id,[FromBody]SubjectWriteDto subjectWriteDto)
         {
-            var SubjectModelFromRepo = _wrapper.Subject.FindById(Id);
-            if (SubjectModelFromRepo.Result == null)
+            var SubjectModelFromRepo =await _wrapper.Subject.FindById(Id);
+            if (SubjectModelFromRepo == null)
             {
                 return NotFound();
             }
-            SubjectModelFromRepo.Result.Name = subjectWriteDto.Name;
+            SubjectModelFromRepo.Name = subjectWriteDto.Name;
             _wrapper.User.SaveChanges();
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubjects(Guid Id)
         {
-            var Subject= _wrapper.Subject.Delete(Id);
-            if (Subject.Result == null)
+            var Subject=await _wrapper.Subject.Delete(Id);
+            if (Subject == null)
             {
                 return NotFound();
             }

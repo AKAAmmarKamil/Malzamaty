@@ -49,20 +49,20 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCountry(Guid Id, [FromBody] CountryWriteDto countryWriteDto)
         {
-            var CountryModelFromRepo = _wrapper.Country.FindById(Id);
-            if (CountryModelFromRepo.Result == null)
+            var CountryModelFromRepo =await _wrapper.Country.FindById(Id);
+            if (CountryModelFromRepo == null)
             {
                 return NotFound();
             }
-            CountryModelFromRepo.Result.Name = countryWriteDto.Name;
+            CountryModelFromRepo.Name = countryWriteDto.Name;
             _wrapper.User.SaveChanges();
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(Guid Id)
         {
-            var Country = _wrapper.Country.Delete(Id);
-            if (Country.Result == null)
+            var Country =await _wrapper.Country.Delete(Id);
+            if (Country == null)
             {
                 return NotFound();
             }

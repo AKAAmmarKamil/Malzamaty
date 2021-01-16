@@ -49,20 +49,20 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStage(Guid Id, [FromBody] StageWriteDto StageWriteDto)
         {
-            var StageModelFromRepo = _wrapper.Stage.FindById(Id);
-            if (StageModelFromRepo.Result == null)
+            var StageModelFromRepo =await _wrapper.Stage.FindById(Id);
+            if (StageModelFromRepo == null)
             {
                 return NotFound();
             }
-            StageModelFromRepo.Result.Name = StageWriteDto.Name;
+            StageModelFromRepo.Name = StageWriteDto.Name;
             _wrapper.Stage.SaveChanges();
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStage(Guid Id)
         {
-            var Stage = _wrapper.Stage.Delete(Id);
-            if (Stage.Result == null)
+            var Stage =await _wrapper.Stage.Delete(Id);
+            if (Stage == null)
             {
                 return NotFound();
             }

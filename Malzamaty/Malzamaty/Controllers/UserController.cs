@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Model.Form;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -75,21 +76,33 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(Guid Id, [FromBody] UserUpdateDto UserUpdateDto)
         {
-            var UserModelFromRepo = _wrapper.User.FindById(Id);
-            if (UserModelFromRepo.Result == null)
+            var UserModelFromRepo =await _wrapper.User.FindById(Id);
+            if (UserModelFromRepo == null)
             {
                 return NotFound();
             }
-            UserModelFromRepo.Result.UserName = UserUpdateDto.UserName;
-            UserModelFromRepo.Result.Email = UserUpdateDto.Email;
+            UserModelFromRepo.UserName = UserUpdateDto.UserName;
+            UserModelFromRepo.Email = UserUpdateDto.Email;
+            _wrapper.User.SaveChanges();
+            return NoContent();
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ChangePassword(Guid Id, [FromBody] ChangePasswordForm ChangePasswordForm)
+        {
+            var UserModelFromRepo =await _wrapper.User.FindById(Id);
+            if (UserModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            UserModelFromRepo.Password = ChangePasswordForm.Password;
             _wrapper.User.SaveChanges();
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid Id)
         {
-            var User = _wrapper.User.Delete(Id);
-            if (User.Result == null)
+            var User =await _wrapper.User.Delete(Id);
+            if (User == null)
             {
                 return NotFound();
             }
