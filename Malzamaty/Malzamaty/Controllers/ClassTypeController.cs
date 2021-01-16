@@ -54,7 +54,7 @@ namespace Malzamaty.Controllers
             {
                 return NotFound();
             }
-            ClassTypeModelFromRepo.Name = ClassTypeWriteDto.Name;
+            ClassTypeModelFromRepo.TypeName = ClassTypeWriteDto.Name;
             _wrapper.ClassType.SaveChanges();
             return NoContent();
         }

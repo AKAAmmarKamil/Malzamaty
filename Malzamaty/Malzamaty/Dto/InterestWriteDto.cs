@@ -44,7 +44,7 @@ namespace Malzamaty.Dto
 
                             if (Match == null)
                             {
-                                yield return new ValidationResult("مادة ال " + Subject.Name + " غير موجودة في الصف " + Class.Name + " " + Class.Stage.Name + " " + Class.ClassType.Name);
+                                yield return new ValidationResult("مادة ال " + Subject.Name + " غير موجودة في الصف " + Class.ClassName + " " + Class.Stage.StageName + " " + Class.ClassType.TypeName);
                             }
                             if (Class == null)
                             {

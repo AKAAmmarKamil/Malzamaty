@@ -17,14 +17,10 @@ namespace Malzamaty.Repository
             _db = context;
         }
         public async Task<Report> GetById(Guid id)=>
-             await _db.Report.Include(x => x.File).ThenInclude(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.File)
-                              .ThenInclude(x => x.Class).ThenInclude(x => x.ClassType).Include(x => x.File).ThenInclude(x => x.User).Include(x => x.File)
-                              .ThenInclude(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
+             await _db.Report.Include(x => x.File).FirstOrDefaultAsync(x => x.ID == id);
         public async Task<List<Report>> GetAll(int PageNumber, int count)
         {
-            var Report = await _db.Report.Include(x => x.File).ThenInclude(x=>x.Class).ThenInclude(x=>x.Stage).Include(x=>x.File)
-                              .ThenInclude(x=>x.Class).ThenInclude(x=>x.ClassType).Include(x=>x.File).ThenInclude(x=>x.User).Include(x=>x.File)
-                              .ThenInclude(x=>x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
+            var Report = await _db.Report.Include(x => x.File).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
             return Report;
         }
     }

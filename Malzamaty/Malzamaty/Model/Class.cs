@@ -8,7 +8,7 @@ namespace Malzamaty.Model
     {
         [Key]
         public Guid ID { get; set; }
-        public string Name { get; set; }
+        public string ClassName { get; set; }
         public Guid S_ID { get; set; }
         [ForeignKey("S_ID")]
         public Stage Stage { get; set; }

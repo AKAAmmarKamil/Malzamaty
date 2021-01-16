@@ -35,7 +35,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber, int Count)
         {
             var result = await _wrapper.Report.GetAll(PageNumber, Count);
-            var ReportModel = _mapper.Map<IList<ReportReadDto>>(result);
+            var ReportModel = _mapper.Map<List<ReportReadDto>>(result);
             return Ok(ReportModel);
         }
         [HttpPost]
