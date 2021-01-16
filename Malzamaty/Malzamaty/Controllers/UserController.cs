@@ -27,29 +27,30 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
         {
             var User = await _wrapper.User.FindById(Id);
+            var Interest = await _wrapper.Interest.GetInterests(Id);
+            var InterestModel= _mapper.Map<List<InterestReadDto>>(Interest);
             if (User == null)
             {
                 return NotFound();
             }
-            var Interests = _wrapper.Interest.GetInterests(Id);
-            var InterestsList = new List<List<string>>();
-            var InterestsList2 = new List<string>();
-
-            //InterestsList2.Add(Interests);
-            var UserModel = new UserReadDto();
-            UserModel.ID = User.ID;
-            UserModel.UserName = User.UserName;
-            UserModel.Email = User.Email;
-            UserModel.Roles = User.Roles.Role;
-            UserModel.Interests = null;
+            var UserModel = _mapper.Map<UserReadDto>(User);
+            UserModel.Interests = InterestModel;
             return Ok(UserModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber, int Count)
         {
-            var Users = _wrapper.User.FindAll(PageNumber, Count);
-            var UserModel= _mapper.Map<UserReadDto>( Users);
-            return Ok(UserModel);
+            var Users = _wrapper.User.GetAll(PageNumber, Count);
+            var Interest = new List<Interests>();
+            var InterestModel = new List<InterestReadDto>();
+            var UserModel= _mapper.Map<List<UserReadDto>>(await Users);
+            for (int i = 0; i < Users.Result.Count(); i++)
+            {
+                Interest = await _wrapper.Interest.GetInterests(Users.Result.ToList()[i].ID);
+                InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
+                UserModel[i].Interests = InterestModel;
+            }
+             return Ok(UserModel);
         }
         [HttpPost]
         public async Task<ActionResult<UserReadDto>> AddUser([FromBody]UserWriteDto UserWriteDto)

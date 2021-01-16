@@ -28,16 +28,6 @@ namespace Malzamaty.Data
                       .Skip((PageNumber - 1) * count).Take(count).ToListAsync();
             return User;
         }
-        public bool Match(Guid classes,Guid subjects)
-        {
-            var Match= _db.Matches.Where(x => x.C_ID == classes && x.Su_ID == subjects).FirstOrDefault();
-              if (Match == null)
-            return false;
-            else
-                return true;       
-        }
-      
-       
         public async Task<User> Create(User t)
         {
             await _db.Users.AddAsync(t);
@@ -66,7 +56,7 @@ namespace Malzamaty.Data
         public async Task<User> FindById(Guid id)
         {
           return  await _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x => x.ID==id);
-          
+       
         }
 
         
