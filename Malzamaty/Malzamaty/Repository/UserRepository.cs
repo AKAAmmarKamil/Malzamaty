@@ -48,8 +48,13 @@ namespace Malzamaty.Data
             _db.SaveChanges();
         }
 
-        public async Task<User> FindById(Guid id)=>  await _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x => x.ID==id);
+        public async Task<User> FindById(Guid id)
+        {
+            var Result = await _db.Users.Include(x => x.Roles).FirstOrDefaultAsync(x => x.ID == id);
+            if (Result == null) return null;
+            return Result;
+        }
 
-        
-    }
+
+        }
 }

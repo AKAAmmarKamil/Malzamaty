@@ -35,7 +35,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<InterestReadDto>> GetAllInterests(int PageNumber, int Count)
         {
-            var result = await _wrapper.Interest.GetAll(PageNumber, Count);
+            var result = await _wrapper.Interest.FindAll(PageNumber, Count);
             var InterestModel = _mapper.Map<IList<InterestReadDto>>(result);
             return Ok(InterestModel);
         }

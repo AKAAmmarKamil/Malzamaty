@@ -15,11 +15,7 @@ namespace Malzamaty.Repository
         {
             _db = context;
         }
-        public async Task<List<Interests>> GetAll(int PageNumber, int count)
-        {
-            var Interests = await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
-            return Interests;
-        }
+        public async Task<IEnumerable<Interests>> FindAll(int PageNumber, int count)=>await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
 
         public async Task<List<Interests>> GetInterests(Guid Id)
         {
@@ -44,10 +40,10 @@ namespace Malzamaty.Repository
         
         public async Task<Interests> FindById(Guid id)
         {
-            var Result = _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
+            var Result =await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
 
-            if (Result.Result == null) return null;
-            return await Result;
+            if (Result == null) return null;
+            return  Result;
         }
         public async Task<bool> CheckIfLast(Guid id)
         {

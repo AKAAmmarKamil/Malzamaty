@@ -23,7 +23,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{Id}")]
         public async Task<ActionResult<ReportReadDto>> GetReportById(Guid Id)
         {
-            var result = await _wrapper.Report.GetById(Id);
+            var result = await _wrapper.Report.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -34,7 +34,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber, int Count)
         {
-            var result = await _wrapper.Report.GetAll(PageNumber, Count);
+            var result =_wrapper.Report.FindAll(PageNumber, Count).Result.ToList();
             var ReportModel = _mapper.Map<List<ReportReadDto>>(result);
             return Ok(ReportModel);
         }

@@ -18,14 +18,12 @@ namespace Malzamaty.Repository
         }
         public async Task<Class> FindById(Guid id)
         {
-            var Result = _db.Class.Include(x => x.Stage).Include(x=>x.ClassType).Include(x => x.Country).FirstOrDefaultAsync(x=>x.ID==id);
+            var Result = await _db.Class.Include(x => x.Stage).Include(x=>x.ClassType).Include(x => x.Country).FirstOrDefaultAsync(x=>x.ID==id);
             
             if (Result == null) return null;
-            return await Result;
+            return  Result;
         }
-        public async Task<IEnumerable<Class>> FindAll(int PageNumber, int count)
-        {
-            return await _db.Class.Include(x => x.Stage).Include(x => x.ClassType).Include(x => x.Country).Skip((PageNumber-1) * count).Take(count).ToListAsync();
-        }
+        public async Task<IEnumerable<Class>> FindAll(int PageNumber, int count)=>await _db.Class.Include(x => x.Stage).Include(x => x.ClassType).Include(x => x.Country).Skip((PageNumber-1) * count).Take(count).ToListAsync();
+        
     }
 }

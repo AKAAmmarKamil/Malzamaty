@@ -7,7 +7,5 @@ namespace Malzamaty.Services
 {
     public interface IMatchRepository : IBaseRepository<Match>
     {
-        Task<Match> GetById(Guid id);
-        Task<List<Match>> GetAll(int PageNumber, int count);
     }
 }
