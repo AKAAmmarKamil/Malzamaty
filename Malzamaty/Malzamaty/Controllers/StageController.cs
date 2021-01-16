@@ -54,7 +54,7 @@ namespace Malzamaty.Controllers
             {
                 return NotFound();
             }
-            StageModelFromRepo.StageName = StageWriteDto.Name;
+            StageModelFromRepo.Name = StageWriteDto.Name;
             _wrapper.Stage.SaveChanges();
             return NoContent();
         }

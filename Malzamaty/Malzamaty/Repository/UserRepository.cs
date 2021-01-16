@@ -22,12 +22,7 @@ namespace Malzamaty.Data
              await _db.Users.Where(x => x.UserName == login.Username && x.Password==login.Password)
                  .FirstOrDefaultAsync();
 
-        public async Task<List<User>> GetAll(int PageNumber, int count)
-        {
-            var User= await _db.Users.Include(x => x.Roles)
-                      .Skip((PageNumber - 1) * count).Take(count).ToListAsync();
-            return User;
-        }
+        public async Task<IEnumerable<User>> FindAll(int PageNumber, int count)=> await _db.Users.Include(x => x.Roles).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
         public async Task<User> Create(User t)
         {
             await _db.Users.AddAsync(t);

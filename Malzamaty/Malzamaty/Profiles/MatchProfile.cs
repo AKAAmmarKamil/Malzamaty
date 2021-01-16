@@ -9,7 +9,7 @@ namespace Malzamaty
         public MatchProfile()
         {
             //Source -> Target
-            CreateMap <Match, MatchReadDto > ().ForMember(x => x.ClassName, opt => opt.MapFrom(x => x.Class.ClassName)).ForMember(x => x.SubjectName, opt => opt.MapFrom(x => x.Subject.Name));
+            CreateMap <Match, MatchReadDto > ().ForMember(x => x.ClassName, opt => opt.MapFrom(x => x.Class.Name)).ForMember(x => x.SubjectName, opt => opt.MapFrom(x => x.Subject.Name));
 
             CreateMap<MatchWriteDto, Match>()
                 .ForMember(x => x.C_ID, opt => opt.MapFrom(x => x.Class)).ForMember(x => x.Su_ID, opt => opt.MapFrom(x => x.Subject)).ForMember(x => x.Class, opt => opt.Ignore())

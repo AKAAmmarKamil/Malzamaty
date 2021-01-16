@@ -41,13 +41,13 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber, int Count)
         {
-            var Users = _wrapper.User.GetAll(PageNumber, Count);
+            var Users = _wrapper.User.FindAll(PageNumber, Count).Result.ToList();
             var Interest = new List<Interests>();
             var InterestModel = new List<InterestReadDto>();
-            var UserModel= _mapper.Map<List<UserReadDto>>(await Users);
-            for (int i = 0; i < Users.Result.Count(); i++)
+            var UserModel= _mapper.Map<List<UserReadDto>>(Users);
+            for (int i = 0; i < Users.Count(); i++)
             {
-                Interest = await _wrapper.Interest.GetInterests(Users.Result.ToList()[i].ID);
+                Interest = await _wrapper.Interest.GetInterests(Users[i].ID);
                 InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
                 UserModel[i].Interests = InterestModel;
             }
