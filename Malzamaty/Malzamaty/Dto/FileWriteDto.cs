@@ -22,7 +22,7 @@ namespace Malzamaty.Dto
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (Enumerable.Range(1900, DateTime.Now.Year).Contains(PublishDate))
+            if (!Enumerable.Range(1900, DateTime.Now.Year).Contains(PublishDate))
                 yield return new ValidationResult("سنة النشر غير صحيحة");
         }
     }

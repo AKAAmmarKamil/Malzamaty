@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 namespace Malzamaty.Repository
 {
@@ -22,7 +23,7 @@ namespace Malzamaty.Repository
             _db = context;
         }
         public async Task<User> Authintication(LoginForm login) =>
-             await _db.Users.Where(x => x.UserName == login.Username && x.Password == login.Password)
+             await _db.Users.Include(x=>x.Roles).Where(x => x.Email == login.EmailAddress && x.Password == login.Password)
                  .FirstOrDefaultAsync();
 
         public async Task<IEnumerable<User>> FindAll(int PageNumber, int count) => await _db.Users.Include(x => x.Roles).Skip((PageNumber - 1) * count).Take(count).ToListAsync();

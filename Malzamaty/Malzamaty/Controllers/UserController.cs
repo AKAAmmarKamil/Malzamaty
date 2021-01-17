@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Malzamaty.Dto;
@@ -11,6 +14,8 @@ using Malzamaty.Model.Form;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
@@ -23,6 +28,36 @@ namespace Malzamaty.Controllers
         {
             _wrapper = wrapper;
             _mapper = mapper;
+        }
+        [HttpPost]
+        public async Task<ActionResult<User>> Login([FromBody] LoginForm form)
+        {
+            var user = await _wrapper.User.Authintication(form);
+            if (user != null)
+            {
+                var claims = new[]
+                {
+                   new Claim("ID", user.ID.ToString()),
+                   new Claim("Username", user.UserName),
+                   new Claim("Email", user.Email),
+                   new Claim("Activated", user.Activated.ToString()),
+                    new Claim(ClaimTypes.Role, user.Roles.Role),
+                    new Claim("Role", user.Roles.Role),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+                var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddDays(30),
+                  notBefore: DateTime.UtcNow, audience: "Audience", issuer: "Issuer",
+                  signingCredentials: new SigningCredentials(
+                      new SymmetricSecurityKey(
+                          Encoding.UTF8.GetBytes("Hlkjds0-324mf34pojf-14r34fwlknef0943")),
+                      SecurityAlgorithms.HmacSha256));
+                var Token = new JwtSecurityTokenHandler().WriteToken(token);
+                var expire = DateTime.UtcNow.AddDays(30);
+                return Ok(new { Token = Token, Expire = expire });
+
+            }
+            else return BadRequest();
+
         }
         [HttpGet("{Id}")]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)

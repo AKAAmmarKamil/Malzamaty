@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using File = Malzamaty.Model.File;
 using Malzamaty.Attachment;
 using Malzamaty.Form;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Malzamaty.Controllers
 {
@@ -22,8 +25,13 @@ namespace Malzamaty.Controllers
     {
         private readonly IRepositoryWrapper _wrapper;
         private readonly IMapper _mapper;
-       // private readonly UploadFile _uploadFile;
-        
+        protected string GetClaim(string claimName)
+        {
+            return (User.Identity as ClaimsIdentity)?.Claims.FirstOrDefault(c =>
+                string.Equals(c.Type, claimName, StringComparison.CurrentCultureIgnoreCase))?.Value;
+        }
+        // private readonly UploadFile _uploadFile;
+
         public FileController(/*UploadFile uploadFile,*/ IRepositoryWrapper wrapper, IMapper mapper)
         {
             _wrapper = wrapper;
@@ -58,10 +66,13 @@ namespace Malzamaty.Controllers
             //var attachmentId =await _uploadFile.Upload(attachment.Body);
             return Ok(/*attachmentId*/);
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         public async Task<ActionResult<FileReadDto>> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
+            var UserId =GetClaim("ID");
             var FileModel = _mapper.Map<File>(FileWriteDto);
+            FileModel.User =await _wrapper.User.FindById(Guid.Parse(UserId));
             await _wrapper.File.Create(FileModel);
             var Result = _wrapper.File.FindById(FileModel.ID);
             var FileReadDto = _mapper.Map<FileReadDto>(Result.Result);
