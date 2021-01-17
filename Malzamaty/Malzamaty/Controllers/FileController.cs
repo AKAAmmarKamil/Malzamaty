@@ -20,10 +20,12 @@ namespace Malzamaty.Controllers
     {
         private readonly IRepositoryWrapper _wrapper;
         private readonly IMapper _mapper;
-        public FileController(IRepositoryWrapper wrapper, IMapper mapper)
+        private readonly UploadFile _uploadFile;
+        public FileController(IRepositoryWrapper wrapper, IMapper mapper,UploadFile uploadFile)
         {
             _wrapper = wrapper;
             _mapper = mapper;
+            _uploadFile =uploadFile;
         }
         [HttpGet("{Id}")]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
@@ -46,7 +48,7 @@ namespace Malzamaty.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> UploadFile(string @Path)
         {
-            var Result= Attachment.UploadFile.Upload(@Path);
+            var Result=await _uploadFile.Upload(@Path);
             return Result;
         }
         [HttpPost]

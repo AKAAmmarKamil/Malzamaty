@@ -12,7 +12,7 @@ namespace Malzamaty.Model
         public string Author { get; set; }
         public string Type { get; set; }
         public string Format {get;set;}
-        public DateTimeOffset PublishDate { get; set; }
+        public int PublishDate { get; set; }
         public int DownloadCount { get; set; }
         [ForeignKey("C_ID")]
         public Class Class { get; set; }

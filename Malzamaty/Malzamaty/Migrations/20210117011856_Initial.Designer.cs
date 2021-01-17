@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Malzamaty.Migrations
 {
     [DbContext(typeof(TheContext))]
-    [Migration("20210116022107_Test")]
-    partial class Test
+    [Migration("20210117011856_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -102,8 +102,8 @@ namespace Malzamaty.Migrations
                     b.Property<string>("Format")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("PublishDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<int>("PublishDate")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("Subject_ID")
                         .HasColumnType("uniqueidentifier");
@@ -298,6 +298,9 @@ namespace Malzamaty.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Activated")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("Authentication")
                         .HasColumnType("uniqueidentifier");

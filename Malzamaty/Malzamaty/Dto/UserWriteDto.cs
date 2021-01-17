@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Malzamaty.Dto
 {
 
@@ -12,6 +14,8 @@ namespace Malzamaty.Dto
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string UserName { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [EmailAddress]
         public string Email { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         [MinLength(8,ErrorMessage ="كلمة السر يجب ان تكون 8 أحرف كحد أدنى")]

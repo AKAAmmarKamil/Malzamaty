@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Malzamaty.Migrations
 {
-    public partial class Test : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,6 +75,7 @@ namespace Malzamaty.Migrations
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Activated = table.Column<bool>(type: "bit", nullable: false),
                     Authentication = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -158,7 +159,7 @@ namespace Malzamaty.Migrations
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Format = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PublishDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    PublishDate = table.Column<int>(type: "int", nullable: false),
                     DownloadCount = table.Column<int>(type: "int", nullable: false),
                     C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     User_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),

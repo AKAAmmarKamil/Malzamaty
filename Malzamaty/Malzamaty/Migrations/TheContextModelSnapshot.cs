@@ -100,8 +100,8 @@ namespace Malzamaty.Migrations
                     b.Property<string>("Format")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("PublishDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<int>("PublishDate")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("Subject_ID")
                         .HasColumnType("uniqueidentifier");
@@ -296,6 +296,9 @@ namespace Malzamaty.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Activated")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("Authentication")
                         .HasColumnType("uniqueidentifier");

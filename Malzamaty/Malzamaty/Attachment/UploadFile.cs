@@ -9,7 +9,7 @@ namespace Malzamaty.Attachment {
 
         public UploadFile(IHostingEnvironment environment) { _environment = environment; }
 
-        public  static string Upload(string bas64)
+        public async Task<string> Upload(string bas64)
         {
             var Format =bas64.Split(".");
             var strm = bas64;
@@ -18,8 +18,8 @@ namespace Malzamaty.Attachment {
             var bytess = Convert.FromBase64String(strm);
 
             using (var fileStream = new FileStream(filepath, FileMode.Create)) {
-                 fileStream.WriteAsync(bytess, 0, bytess.Length);
-                 fileStream.FlushAsync();
+                 await fileStream.WriteAsync(bytess, 0, bytess.Length);
+                 await fileStream.FlushAsync();
             }
 
             return filName.ToString();
