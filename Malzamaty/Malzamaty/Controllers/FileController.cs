@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using File = Malzamaty.Model.File;
 using Malzamaty.Attachment;
+using Malzamaty.Form;
+
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
@@ -20,16 +22,13 @@ namespace Malzamaty.Controllers
     {
         private readonly IRepositoryWrapper _wrapper;
         private readonly IMapper _mapper;
-        private readonly UploadFile _uploadFile;
-        public class AttachmentString
-        {
-            public string Body { get; set; }
-        }
-        public FileController(IRepositoryWrapper wrapper, IMapper mapper,UploadFile uploadFile)
+       // private readonly UploadFile _uploadFile;
+        
+        public FileController(/*UploadFile uploadFile,*/ IRepositoryWrapper wrapper, IMapper mapper)
         {
             _wrapper = wrapper;
             _mapper = mapper;
-            _uploadFile =uploadFile;
+         //   _uploadFile =uploadFile;
         }
         [HttpGet("{Id}")]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
@@ -45,19 +44,19 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber, int Count)
         {
-            var result = _wrapper.File.FindAll(PageNumber, Count);
+            var result =await _wrapper.File.FindAll(PageNumber, Count);
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
         [HttpPost("AddAttachment")]
         public async Task<IActionResult> AddAttachment([FromBody] AttachmentString attachment)
         {
-            if (attachment == null || attachment.Body == null || !UploadFile.IsBase64(attachment.Body))
-            {
-                return StatusCode(400, "attachment is invalid");
-            }
-            var attachmentId = await _uploadFile.Upload(attachment.Body);
-            return Ok(attachmentId);
+            //if (attachment == null || attachment.Body == null || !UploadFile.IsBase64(attachment.Body))
+            //{
+            //    return StatusCode(400, "attachment is invalid");
+            //}
+            //var attachmentId =await _uploadFile.Upload(attachment.Body);
+            return Ok(/*attachmentId*/);
         }
         [HttpPost]
         public async Task<ActionResult<FileReadDto>> AddFile([FromBody] FileWriteDto FileWriteDto)

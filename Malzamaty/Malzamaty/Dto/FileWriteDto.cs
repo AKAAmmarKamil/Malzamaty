@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Malzamaty.Dto
 {
-    public class FileWriteDto : ValidationAttribute
+    public class FileWriteDto : IValidatableObject
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string Description { get; set; }
@@ -15,15 +15,15 @@ namespace Malzamaty.Dto
         public string Author { get; set; }
         public string Type { get; set; }
         public int PublishDate { get; set; }
+        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid Class { get; set; }
-        public Guid User { get; set; }
+        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid Subject { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (Enumerable.Range(1900, DateTime.Now.Year).Contains(PublishDate))
                 yield return new ValidationResult("سنة النشر غير صحيحة");
-
         }
     }
 }
