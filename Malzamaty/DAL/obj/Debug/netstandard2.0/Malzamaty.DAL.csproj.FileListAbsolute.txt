@@ -1,0 +1,12 @@
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\Malzamaty.DAL.csprojAssemblyReference.cache
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\Malzamaty.DAL.AssemblyInfoInputs.cache
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\Malzamaty.DAL.AssemblyInfo.cs
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\Malzamaty.DAL.csproj.CoreCompileInputs.cache
+F:\Malzamaty\Malzamaty\DAL\bin\Debug\netstandard2.0\Malzamaty.DAL.deps.json
+F:\Malzamaty\Malzamaty\DAL\bin\Debug\netstandard2.0\Malzamaty.DAL.dll
+F:\Malzamaty\Malzamaty\DAL\bin\Debug\netstandard2.0\Malzamaty.DAL.pdb
+F:\Malzamaty\Malzamaty\DAL\bin\Debug\netstandard2.0\Malzamaty.Modle.dll
+F:\Malzamaty\Malzamaty\DAL\bin\Debug\netstandard2.0\Malzamaty.Modle.pdb
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\Malzamaty.DAL.csproj.CopyComplete
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\Malzamaty.DAL.dll
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\Malzamaty.DAL.pdb

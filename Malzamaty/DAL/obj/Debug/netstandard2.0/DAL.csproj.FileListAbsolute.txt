@@ -1,0 +1,4 @@
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\DAL.csprojAssemblyReference.cache
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\DAL.AssemblyInfoInputs.cache
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\DAL.AssemblyInfo.cs
+F:\Malzamaty\Malzamaty\DAL\obj\Debug\netstandard2.0\DAL.csproj.CoreCompileInputs.cache

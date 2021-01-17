@@ -68,10 +68,9 @@ namespace Malzamaty.Controllers
                 InterestModel = _mapper.Map<Interests>(Interest);
                 await _wrapper.Interest.Create(InterestModel);
             }
-            var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
-            return Ok();
 
-            
+            var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
+            return Ok(UserReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(Guid Id, [FromBody] UserUpdateDto UserUpdateDto)

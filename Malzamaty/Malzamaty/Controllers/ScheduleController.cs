@@ -11,8 +11,8 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
-        private readonly TheContext _dbContext;
-        public ScheduleController(TheContext dbContext)
+        private readonly MalzamatyContext _dbContext;
+        public ScheduleController(MalzamatyContext dbContext)
         {
             _dbContext = dbContext;
         }/*

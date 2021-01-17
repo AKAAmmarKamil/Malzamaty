@@ -11,8 +11,8 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class RatingController : ControllerBase
     {
-        private readonly TheContext _dbContext;
-        public RatingController(TheContext dbContext)
+        private readonly MalzamatyContext _dbContext;
+        public RatingController(MalzamatyContext dbContext)
         {
             _dbContext = dbContext;
         }/*

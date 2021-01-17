@@ -1,0 +1,8 @@
+F:\Malzamaty\Malzamaty\Modle\obj\Debug\netstandard2.0\Malzamaty.Modle.AssemblyInfoInputs.cache
+F:\Malzamaty\Malzamaty\Modle\obj\Debug\netstandard2.0\Malzamaty.Modle.AssemblyInfo.cs
+F:\Malzamaty\Malzamaty\Modle\obj\Debug\netstandard2.0\Malzamaty.Modle.csproj.CoreCompileInputs.cache
+F:\Malzamaty\Malzamaty\Modle\bin\Debug\netstandard2.0\Malzamaty.Modle.deps.json
+F:\Malzamaty\Malzamaty\Modle\bin\Debug\netstandard2.0\Malzamaty.Modle.dll
+F:\Malzamaty\Malzamaty\Modle\bin\Debug\netstandard2.0\Malzamaty.Modle.pdb
+F:\Malzamaty\Malzamaty\Modle\obj\Debug\netstandard2.0\Malzamaty.Modle.dll
+F:\Malzamaty\Malzamaty\Modle\obj\Debug\netstandard2.0\Malzamaty.Modle.pdb

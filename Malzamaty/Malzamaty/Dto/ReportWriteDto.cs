@@ -14,13 +14,13 @@ namespace Malzamaty.Dto
         public Guid F_ID { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var service = (TheContext)validationContext.GetService(typeof(TheContext));
-            var File = service.File.FirstOrDefault(/*x => x.ID == F_ID*/);
-            if (File == null)
-            {
-                yield return new ValidationResult("الملف غير موجود");
-            }
-            //yield return ValidationResult.Success;
+            //var service = (MalzamatyContext)validationContext.GetService(typeof(MalzamatyContext));
+            //var File = service.File.FirstOrDefault(/*x => x.ID == F_ID*/);
+            //if (File == null)
+            //{
+            //    yield return new ValidationResult("الملف غير موجود");
+            //}
+            yield return ValidationResult.Success;
 
         }
     }
