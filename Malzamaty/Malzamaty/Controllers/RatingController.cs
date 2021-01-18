@@ -9,7 +9,7 @@ namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
     [ApiController]
-    public class RatingController : ControllerBase
+    public class RatingController : BaseController
     {
         private readonly MalzamatyContext _dbContext;
         public RatingController(MalzamatyContext dbContext)

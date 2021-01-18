@@ -12,7 +12,7 @@ namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
     [ApiController]
-    public class InterestController : ControllerBase
+    public class InterestController : BaseController
     {
         private readonly IRepositoryWrapper _wrapper;
         private readonly IMapper _mapper;

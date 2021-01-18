@@ -11,7 +11,7 @@ namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
     [ApiController]
-    public class ReportController : ControllerBase
+    public class ReportController : BaseController
     {
         private readonly IRepositoryWrapper _wrapper;
         private readonly IMapper _mapper;

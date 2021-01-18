@@ -10,7 +10,7 @@ namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
     [ApiController]
-    public class StageController : ControllerBase
+    public class StageController : BaseController
     {
         private readonly IRepositoryWrapper _wrapper;
         private readonly IMapper _mapper;

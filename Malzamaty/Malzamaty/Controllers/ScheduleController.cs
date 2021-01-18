@@ -9,7 +9,7 @@ namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
     [ApiController]
-    public class ScheduleController : ControllerBase
+    public class ScheduleController : BaseController
     {
         private readonly MalzamatyContext _dbContext;
         public ScheduleController(MalzamatyContext dbContext)

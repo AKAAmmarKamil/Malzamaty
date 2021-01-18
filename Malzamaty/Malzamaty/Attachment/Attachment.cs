@@ -1,52 +1,24 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Malzamaty.Form;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Malzamaty.Attachment {
     public class Attachment {
-        private readonly IHostingEnvironment _environment;
-
-        public Attachment(IHostingEnvironment environment) { _environment = environment; }
-
-        public async Task<string> Upload(string bas64)
+        public static async Task<byte[]> ConvertToBytes(string Path) => File.ReadAllBytes(Path);
+        public static async Task<AttachmentString> Upload(byte[] bytes, string filepath, string Type)
         {
-            var Format =bas64.Split(".");
-            var strm = bas64;
-            var filName = Guid.NewGuid();
-            var filepath = _environment.ContentRootPath + @"/wwwroot/Files/" + filName + "."+Format[1];
-            var bytess = Convert.FromBase64String(strm);
-
-            using (var fileStream = new FileStream(filepath, FileMode.Create)) {
-                 await fileStream.WriteAsync(bytess, 0, bytess.Length);
-                 await fileStream.FlushAsync();
+            var GuidKey = Guid.NewGuid();
+            var filName = filepath + GuidKey + "." + Type;
+            using (var fileStream = new FileStream(filName, FileMode.Create))
+            {
+                await fileStream.WriteAsync(bytes, 0, bytes.Length);
+                await fileStream.FlushAsync();
             }
-
-            return filName.ToString();
-        }
-            public static bool IsBase64(string base64String) {
-            var ok = true;
-            if (string.IsNullOrEmpty(base64String)) {
-                ok = false;
-            }
-
-            if (base64String.Length % 4 != 0) {
-                ok = false;
-            }
-
-            if (base64String.Contains(" ") && !base64String.Contains("\t")) {
-                ok = false;
-            }
-
-            if (base64String.Contains("\r")) {
-                ok = false;
-            }
-
-            if (base64String.Contains("\n")) {
-                ok = false;
-            }
-
-            return ok;
+            var AttachmentString = new AttachmentString();
+            AttachmentString.Body = GuidKey + "." + Type.ToString();
+            return AttachmentString;
         }
     }
 }
