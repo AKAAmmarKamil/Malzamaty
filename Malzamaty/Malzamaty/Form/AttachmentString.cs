@@ -7,6 +7,6 @@ namespace Malzamaty.Form
 {
     public class AttachmentString
     {
-        public string  Body { get; set; }
+        public string  FilePath { get; set; }
     }
 }

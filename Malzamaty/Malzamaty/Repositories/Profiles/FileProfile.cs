@@ -16,8 +16,8 @@ namespace Malzamaty
 
             CreateMap<FileWriteDto, File>()
                 .ForMember(x => x.Class, opt => opt.Ignore())
-                .ForMember(x => x.Subject, opt => opt.Ignore())
-                .ForMember(x => x.User, opt => opt.Ignore())
+                .ForMember(x => x.Subject, opt => opt.MapFrom(source => new Subject() { ID = source.Subject }))
+                .ForMember(x => x.User, opt => opt.Ignore()).ReverseMap()
                 ;
                 
             CreateMap<File,FileWriteDto >();

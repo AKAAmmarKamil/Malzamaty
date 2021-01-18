@@ -11,9 +11,7 @@ namespace Malzamaty.Model
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; }
         public bool Activated { get; set; }
-        public Guid Authentication { get; set; }
-        [ForeignKey("Authentication")]
-        public Roles Roles { get; set; }
     }
 }

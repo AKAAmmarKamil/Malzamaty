@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -39,10 +40,12 @@ namespace Malzamaty.Controllers
             var InterestModel = _mapper.Map<IList<InterestReadDto>>(result);
             return Ok(InterestModel);
         }
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Teacher)]
         [HttpPost]
         public async Task<ActionResult<InterestReadDto>> AddInterest([FromBody] InterestWriteDto InterestWriteDto)
         {
             var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
+            InterestModel.User =await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
             await _wrapper.Interest.Create(InterestModel);
             var Result = _wrapper.Interest.FindById(InterestModel.ID);
             var InterestReadDto = _mapper.Map<InterestReadDto>(Result.Result);

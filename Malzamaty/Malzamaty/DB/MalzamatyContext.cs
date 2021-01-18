@@ -19,7 +19,6 @@ namespace Malzamaty
         public DbSet<Country> Country { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Interests> Interests { get; set; }
-        public DbSet<Roles> Roles { get; set; }
         public DbSet<Stage> Stage { get; set; }
         public DbSet<ClassType> ClassType { get; set; }
        

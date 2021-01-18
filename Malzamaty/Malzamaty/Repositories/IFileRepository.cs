@@ -10,7 +10,6 @@ namespace Malzamaty.Services
 {
     public interface IFileRepository : IBaseRepository<File>
     {
-        Task<File> FindByPath(string Path);
     }
     public class FileRepository : BaseRepository<File>, IFileRepository
     {
@@ -25,15 +24,7 @@ namespace Malzamaty.Services
 
             if (Result == null) return null;
             return Result;
-        }
-        public async Task<File> FindByPath(string Path)
-        {
-            var Result = await _db.File.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.FilePath == Path);
-
-            if (Result == null) return null;
-            return Result;
-        }
-       
+        }    
         public async Task<IEnumerable<File>> FindAll(int PageNumber, int count) => await _db.File.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
 
     }

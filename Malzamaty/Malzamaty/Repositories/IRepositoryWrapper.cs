@@ -13,7 +13,6 @@ namespace Malzamaty
         IStageRepository Stage { get; }
         IClassTypeRepository ClassType { get; }
         IClassRepository Class { get; }
-        IRolesRepository Roles { get; }
         IInterestRepository Interest { get; }
         IMatchRepository Match { get; }
         IReportRepository Report { get; }
@@ -30,7 +29,6 @@ namespace Malzamaty
         private IStageRepository _stage;
         private IClassTypeRepository _classType;
         private IClassRepository _class;
-        private IRolesRepository _roles;
         private IInterestRepository _interest;
         private IMatchRepository _match;
         private IReportRepository _report;
@@ -99,17 +97,6 @@ namespace Malzamaty
                     _class = new ClassRepository(_repoContext);
                 }
                 return _class;
-            }
-        }
-        public IRolesRepository Roles
-        {
-            get
-            {
-                if (_roles == null)
-                {
-                    _roles = new RolesRepository(_repoContext);
-                }
-                return _roles;
             }
         }
         public IInterestRepository Interest

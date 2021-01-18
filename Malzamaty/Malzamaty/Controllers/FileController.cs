@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Malzamaty.Dto;
-using Malzamaty.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using File = Malzamaty.Model.File;
-using Malzamaty.Attachment;
-using Malzamaty.Form;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
+using Malzamaty.Form;
 
 namespace Malzamaty.Controllers
 {
@@ -52,8 +45,8 @@ namespace Malzamaty.Controllers
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
-        [HttpPost("AddAttachment")]
-        public async Task<ActionResult<string>> AddAttachment(string Path)
+        [HttpPost]
+        public async Task<ActionResult<AttachmentString>> AddAttachment(string Path)
         {
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Path = Path.Replace("\\", @"\");
@@ -67,24 +60,30 @@ namespace Malzamaty.Controllers
         [HttpPost]
         public async Task<ActionResult<FileReadDto>> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
-            var UserId =GetClaim("ID");
             var FileModel = _mapper.Map<File>(FileWriteDto);
-            FileModel.User =await _wrapper.User.FindById(Guid.Parse(UserId));
-            FileModel.Subject = await _wrapper.Subject.FindById(FileWriteDto.Subject);
+            FileModel.User =await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
             FileModel.Class = await _wrapper.Class.FindById(FileWriteDto.Class);
-            await _wrapper.File.Create(FileModel);
-            var Result =await _wrapper.File.FindById(FileModel.ID);
-            var FileReadDto = _mapper.Map<FileReadDto>(Result);
-            return Ok(FileReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
+            Console.WriteLine(_environment.WebRootPath);
+            var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
+            if (System.IO.File.Exists(FileWriteDto.FilePath))
+            {
+                await _wrapper.File.Create(FileModel);
+                var Result = await _wrapper.File.FindById(FileModel.ID);
+                var FileReadDto = _mapper.Map<FileReadDto>(Result);
+                return Ok(FileReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            }
+            return BadRequest(new { Error="الملف غير موجود" });
         }
         [HttpGet]
-        public async Task<FileStreamResult> DownloadFile(string Path)
+        public async Task<FileStreamResult> DownloadFile(Guid Id)
         {
+            var File = await _wrapper.File.FindById(Id);
+            var Path = File.FilePath;
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
             var FullPath = _environment.WebRootPath +Path;
             var Type = Path.Split(".")[1];
-            var File =await _wrapper.File.FindByPath(FullPath);
             if (File != null&& System.IO.File.Exists(FullPath))
             {
                 File.DownloadCount = Convert.ToInt32(File.DownloadCount) + 1;

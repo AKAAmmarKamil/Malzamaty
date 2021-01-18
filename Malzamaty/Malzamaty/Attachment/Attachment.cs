@@ -17,7 +17,7 @@ namespace Malzamaty.Attachment {
                 await fileStream.FlushAsync();
             }
             var AttachmentString = new AttachmentString();
-            AttachmentString.Body = GuidKey + "." + Type.ToString();
+            AttachmentString.FilePath = GuidKey + "." + Type.ToString();
             return AttachmentString;
         }
     }

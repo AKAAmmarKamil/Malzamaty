@@ -41,8 +41,8 @@ namespace Malzamaty.Controllers
                    new Claim("Username", user.UserName),
                    new Claim("Email", user.Email),
                    new Claim("Activated", user.Activated.ToString()),
-                    new Claim(ClaimTypes.Role, user.Roles.Role),
-                    new Claim("Role", user.Roles.Role),
+                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim("Role", user.Role),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
                 var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddDays(30),
@@ -97,7 +97,6 @@ namespace Malzamaty.Controllers
             var InterestModel = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
             {
-                Interest.User = UserModel.ID;
                 Interest.Class = UserWriteDto.Interests[i].C_ID;
                 Interest.Subject = UserWriteDto.Interests[i].Su_ID;
                 InterestModel = _mapper.Map<Interests>(Interest);
