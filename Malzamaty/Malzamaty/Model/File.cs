@@ -11,7 +11,6 @@ namespace Malzamaty.Model
         public string FilePath { get; set; }
         public string Author { get; set; }
         public string Type { get; set; }
-        public string Format {get;set;}
         public int PublishDate { get; set; }
         public int DownloadCount { get; set; }
         [ForeignKey("C_ID")]

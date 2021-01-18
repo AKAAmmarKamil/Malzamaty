@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Malzamaty.Attachment {
-    public class UploadFile {
+    public class Attachment {
         private readonly IHostingEnvironment _environment;
 
-        public UploadFile(IHostingEnvironment environment) { _environment = environment; }
+        public Attachment(IHostingEnvironment environment) { _environment = environment; }
 
         public async Task<string> Upload(string bas64)
         {
@@ -24,8 +24,7 @@ namespace Malzamaty.Attachment {
 
             return filName.ToString();
         }
-
-        public static bool IsBase64(string base64String) {
+            public static bool IsBase64(string base64String) {
             var ok = true;
             if (string.IsNullOrEmpty(base64String)) {
                 ok = false;

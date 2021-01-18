@@ -16,6 +16,7 @@ using Malzamaty.Form;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Malzamaty.Controllers
 {
@@ -30,13 +31,13 @@ namespace Malzamaty.Controllers
             return (User.Identity as ClaimsIdentity)?.Claims.FirstOrDefault(c =>
                 string.Equals(c.Type, claimName, StringComparison.CurrentCultureIgnoreCase))?.Value;
         }
-        // private readonly UploadFile _uploadFile;
+        private IHostingEnvironment _environment;
 
-        public FileController(/*UploadFile uploadFile,*/ IRepositoryWrapper wrapper, IMapper mapper)
+        public FileController(IHostingEnvironment environment, IRepositoryWrapper wrapper, IMapper mapper)
         {
             _wrapper = wrapper;
             _mapper = mapper;
-         //   _uploadFile =uploadFile;
+            _environment = environment;
         }
         [HttpGet("{Id}")]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
@@ -73,10 +74,29 @@ namespace Malzamaty.Controllers
             var UserId =GetClaim("ID");
             var FileModel = _mapper.Map<File>(FileWriteDto);
             FileModel.User =await _wrapper.User.FindById(Guid.Parse(UserId));
+            FileModel.Subject = await _wrapper.Subject.FindById(FileWriteDto.Subject);
+            FileModel.Class = await _wrapper.Class.FindById(FileWriteDto.Class);
             await _wrapper.File.Create(FileModel);
-            var Result = _wrapper.File.FindById(FileModel.ID);
-            var FileReadDto = _mapper.Map<FileReadDto>(Result.Result);
+            var Result =await _wrapper.File.FindById(FileModel.ID);
+            var FileReadDto = _mapper.Map<FileReadDto>(Result);
             return Ok(FileReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+        }
+        [HttpGet]
+        public async Task<FileStreamResult> DownloadFile(string Path)
+        {
+            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
+            Console.WriteLine(_environment.WebRootPath);
+            var FullPath = _environment.WebRootPath +Path;
+            var Type = Path.Split(".")[1];
+            var File =await _wrapper.File.FindByPath(FullPath);
+            if (File != null)
+            {
+                File.DownloadCount = Convert.ToInt32(File.DownloadCount) + 1;
+                _wrapper.Save();
+                byte[] result = System.IO.File.ReadAllBytes(FullPath);
+                return new FileStreamResult(new MemoryStream(result), "application/" + Type.ToString());
+            }
+            return null;
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFile(Guid Id, [FromBody] FileUpdateDto FileUpdateDto)

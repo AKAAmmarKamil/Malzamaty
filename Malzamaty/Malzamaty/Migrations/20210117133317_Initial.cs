@@ -158,7 +158,6 @@ namespace Malzamaty.DAL.Migrations
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Format = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublishDate = table.Column<int>(type: "int", nullable: false),
                     DownloadCount = table.Column<int>(type: "int", nullable: false),
                     C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
