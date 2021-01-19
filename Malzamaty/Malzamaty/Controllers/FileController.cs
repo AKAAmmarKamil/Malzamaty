@@ -13,7 +13,7 @@ using Malzamaty.Form;
 
 namespace Malzamaty.Controllers
 {
-    [Route("api/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class FileController : BaseController
     {
@@ -72,17 +72,23 @@ namespace Malzamaty.Controllers
             var FileModel = _mapper.Map<File>(FileWriteDto);
             FileModel.User =await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
             FileModel.Class = await _wrapper.Class.FindById(FileWriteDto.Class);
+            FileModel.Subject = await _wrapper.Subject.FindById(FileWriteDto.Subject);
             _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
             var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
-            if (System.IO.File.Exists(FileWriteDto.FilePath))
+            var File =await _wrapper.File.IsExist(FileWriteDto.FilePath);
+            if (File == false)
+            {
+                return BadRequest(new { Error = "لا يمكن إضافة ملف موجود مسبقاً" });
+            }
+            if (System.IO.File.Exists(FullPath))
             {
                 await _wrapper.File.Create(FileModel);
                 var Result = await _wrapper.File.FindById(FileModel.ID);
                 var FileReadDto = _mapper.Map<FileReadDto>(Result);
                 return Ok(FileReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
-            }
-            return BadRequest(new { Error="الملف غير موجود" });
+            }    
+            return BadRequest(new { Error="الملف لم يتم تحميله" });
         }
         [HttpGet]
         public async Task<FileStreamResult> DownloadFile(Guid Id)
@@ -117,14 +123,23 @@ namespace Malzamaty.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFilees(Guid Id)
+        public async Task<IActionResult> DeleteFiles(Guid Id)
         {
-            var File = await _wrapper.File.Delete(Id);
-            if (File == null)
+            var File = await _wrapper.File.FindById(Id);
+            var Path = File.FilePath;
+            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
+            Console.WriteLine(_environment.WebRootPath);
+            var FullPath = _environment.WebRootPath + Path;
+            var Result = await _wrapper.File.Delete(Id);
+            if (Result == null)
             {
                 return NotFound();
             }
-            return NoContent();
+            if (System.IO.File.Exists(FullPath))
+            {
+                System.IO.File.Delete(FullPath);
+            }
+                return NoContent();
         }
     }
 }

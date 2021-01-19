@@ -10,6 +10,7 @@ namespace Malzamaty.Services
 {
     public interface IFileRepository : IBaseRepository<File>
     {
+        Task<bool> IsExist(string FilePath);
         Task<IQueryable<File>> MostDownloaded(Guid Id);
     }
     public class FileRepository : BaseRepository<File>, IFileRepository
@@ -25,7 +26,14 @@ namespace Malzamaty.Services
 
             if (Result == null) return null;
             return Result;
-        }    
+        }
+        public  async Task< bool> IsExist(string FilePath)
+        {
+            var File =await _db.File.Where(x => x.FilePath == FilePath).FirstOrDefaultAsync();
+            if (File != null)
+                 return false;
+            return  true;
+        }
         public async Task<IEnumerable<File>> FindAll(int PageNumber, int count) => await _db.File.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
         public async Task<IQueryable<File>> MostDownloaded(Guid Id)
         {
@@ -33,7 +41,7 @@ namespace Malzamaty.Services
                    where _db.Interests.Any(gi => gi.C_ID == f.Class.ID &&gi.Su_ID==f.Subject.ID)&&
                    f.User.ID== Id
                    select f;
-            return  Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).OrderByDescending(x=>x.DownloadCount);
+            return  Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).OrderByDescending(x=>x.DownloadCount).Take(5);
         }
     }
 }

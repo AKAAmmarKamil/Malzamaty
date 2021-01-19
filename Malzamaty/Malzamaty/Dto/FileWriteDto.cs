@@ -42,6 +42,6 @@ namespace Malzamaty.Dto
             {
                 yield return new ValidationResult("مادة ال " + Subject.Name + " غير موجودة في الصف " + Class.Name + " " + Class.Stage.Name + " " + Class.ClassType.Name);
             }
-            }
+        }
         }
     }
