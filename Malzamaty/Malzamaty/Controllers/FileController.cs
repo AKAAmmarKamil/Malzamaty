@@ -45,6 +45,15 @@ namespace Malzamaty.Controllers
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<FileReadDto>> MostDownloadedFiles()
+        {
+            var User = GetClaim("ID");           
+            var result = await _wrapper.File.MostDownloaded(Guid.Parse(User));
+            var FileModel = _mapper.Map<IList<FileReadDto>>(result);
+            return Ok(FileModel);
+        }
         [HttpPost]
         public async Task<ActionResult<AttachmentString>> AddAttachment(string Path)
         {
