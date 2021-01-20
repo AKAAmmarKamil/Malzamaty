@@ -9,6 +9,7 @@ namespace Malzamaty.Dto
         public string Author { get; set; }
         public string Type { get; set; }
         public int PublishDate { get; set; }
+        public DateTimeOffset UploadDate { get; set; }
         public int DownloadCount { get; set; }
         public string SubjectName { get; set; }
         public string ClassName { get; set; }

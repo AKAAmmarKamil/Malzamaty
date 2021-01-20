@@ -12,6 +12,8 @@ namespace Malzamaty.Services
     {
         Task<bool> IsExist(string FilePath);
         Task<IQueryable<File>> MostDownloaded(Guid Id);
+        Task<IQueryable<File>> NewFiles(Guid Id);
+        Task<IQueryable<File>> RelatedFiles(Guid Id);
     }
     public class FileRepository : BaseRepository<File>, IFileRepository
     {
@@ -42,6 +44,23 @@ namespace Malzamaty.Services
                    f.User.ID== Id
                    select f;
             return  Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).OrderByDescending(x=>x.DownloadCount).Take(5);
+        }
+        public async Task<IQueryable<File>> NewFiles(Guid Id)
+        {
+            var Files = from f in _db.File
+                        where _db.Interests.Any(gi => gi.C_ID == f.Class.ID && gi.Su_ID == f.Subject.ID) &&
+                        f.User.ID == Id
+                        select f;
+            return Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).OrderByDescending(x => x.PublishDate).ThenByDescending(x=>x.UploadDate).Take(5);
+        }
+        public async Task<IQueryable<File>> RelatedFiles(Guid Id)
+        {
+            var File =await FindById(Id);
+            var Files = from f in _db.File
+                        where f.Class.ID==File.Class.ID && f.Subject.ID==File.Subject.ID
+                        && f.ID!=Id
+                        select f;
+            return Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Take(5);
         }
     }
 }
