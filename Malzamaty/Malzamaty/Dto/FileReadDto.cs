@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace Malzamaty.Dto
 {
     public class FileReadDto
@@ -14,6 +16,6 @@ namespace Malzamaty.Dto
         public string SubjectName { get; set; }
         public string ClassName { get; set; }
         public string UserName { get; set; }
-
+        public virtual ICollection<ReportReadDto> Report { get; set; }
     }
 }

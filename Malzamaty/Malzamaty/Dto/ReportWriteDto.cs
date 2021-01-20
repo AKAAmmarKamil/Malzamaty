@@ -15,7 +15,7 @@ namespace Malzamaty.Dto
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var service = (MalzamatyContext)validationContext.GetService(typeof(MalzamatyContext));
-            var File = service.File.FirstOrDefault(/*x => x.ID == F_ID*/);
+            var File = service.File.FirstOrDefault(x => x.ID == F_ID);
             if (File == null)
             {
                 yield return new ValidationResult("الملف غير موجود");

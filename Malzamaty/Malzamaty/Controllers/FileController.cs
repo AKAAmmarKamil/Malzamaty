@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Malzamaty.Form;
+using System.Linq;
+using Malzamaty.Model;
 
 namespace Malzamaty.Controllers
 {
@@ -64,10 +66,10 @@ namespace Malzamaty.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<FileReadDto>> NewFiles()
+        public async Task<ActionResult<FileReadDto>> NewFiles(bool WithReports)
         {
             var User = GetClaim("ID");
-            var result = await _wrapper.File.NewFiles(Guid.Parse(User));
+            var result = await _wrapper.File.NewFiles(Guid.Parse(User),WithReports);
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }

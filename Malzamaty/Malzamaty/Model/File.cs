@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Malzamaty.Dto;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace Malzamaty.Model
@@ -20,5 +22,7 @@ namespace Malzamaty.Model
         public User User { get; set; }
         [ForeignKey("Subject_ID")]
         public Subject Subject { get; set; }
+        public virtual ICollection<Report> Report { get; set; }
+
     }
 }
