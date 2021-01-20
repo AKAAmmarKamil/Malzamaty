@@ -23,7 +23,7 @@ namespace Malzamaty.Services
         }
         public async Task<IEnumerable<Interests>> FindAll(int PageNumber, int count) => await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
 
-        public async Task<List<Interests>> GetInterests(Guid Id)=>  await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType).Where(x => x.U_ID == Id).ToListAsync();
+        public async Task<List<Interests>> GetInterests(Guid Id)=>  await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType).Where(x => x.UserID == Id).ToListAsync();
             
         public async Task<Interests> Create(Interests t)
         {

@@ -37,7 +37,7 @@ namespace Malzamaty.Dto
             {
                 yield return new ValidationResult("المادة غير موجودة");
             }
-            var Matches = service.Matches.Where(x => x.C_ID == this.Class && x.Su_ID == this.Subject).FirstOrDefaultAsync();
+            var Matches = service.Matches.Where(x => x.ClassID == this.Class && x.SubjectID == this.Subject).FirstOrDefaultAsync();
             if (Matches.Result ==null&&Class!=null&&Subject !=null)
             {
                 yield return new ValidationResult("مادة ال " + Subject.Name + " غير موجودة في الصف " + Class.Name + " " + Class.Stage.Name + " " + Class.ClassType.Name);

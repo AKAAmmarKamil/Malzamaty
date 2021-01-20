@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Malzamaty.Migrations
 {
-    public partial class Fix : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -175,12 +175,9 @@ namespace Malzamaty.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    U_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ClassID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClassID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -190,19 +187,19 @@ namespace Malzamaty.Migrations
                         column: x => x.ClassID,
                         principalTable: "Class",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Interests_Subject_SubjectID",
                         column: x => x.SubjectID,
                         principalTable: "Subject",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Interests_Users_UserID",
                         column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,21 +207,21 @@ namespace Malzamaty.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ClassID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Matches", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Matches_Class_C_ID",
-                        column: x => x.C_ID,
+                        name: "FK_Matches_Class_ClassID",
+                        column: x => x.ClassID,
                         principalTable: "Class",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Matches_Subject_Su_ID",
-                        column: x => x.Su_ID,
+                        name: "FK_Matches_Subject_SubjectID",
+                        column: x => x.SubjectID,
                         principalTable: "Subject",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
@@ -324,14 +321,14 @@ namespace Malzamaty.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Matches_C_ID",
+                name: "IX_Matches_ClassID",
                 table: "Matches",
-                column: "C_ID");
+                column: "ClassID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Matches_Su_ID",
+                name: "IX_Matches_SubjectID",
                 table: "Matches",
-                column: "Su_ID");
+                column: "SubjectID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rating_FileID",

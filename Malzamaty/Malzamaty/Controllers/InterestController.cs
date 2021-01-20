@@ -59,8 +59,8 @@ namespace Malzamaty.Controllers
             {
                 return NotFound();
             }
-            InterestModelFromRepo.C_ID = InterestWriteDto.Class;
-            InterestModelFromRepo.Su_ID = InterestWriteDto.Subject;
+            InterestModelFromRepo.ClassID = InterestWriteDto.Class;
+            InterestModelFromRepo.SubjectID = InterestWriteDto.Subject;
             _wrapper.User.SaveChanges();
             return NoContent();
         }

@@ -57,8 +57,8 @@ namespace Malzamaty.Controllers
             {
                 return NotFound();
             }
-            MatchModelFromRepo.C_ID = MatchWriteDto.Class;
-            MatchModelFromRepo.Su_ID = MatchWriteDto.Subject;
+            MatchModelFromRepo.ClassID = MatchWriteDto.Class;
+            MatchModelFromRepo.SubjectID = MatchWriteDto.Subject;
             _wrapper.User.SaveChanges();
             return NoContent();
         }

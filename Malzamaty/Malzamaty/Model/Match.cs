@@ -6,11 +6,11 @@ namespace Malzamaty.Model
     public class Match
     {
         public Guid ID { get; set; }
-        public Guid C_ID { get; set; }
-        [ForeignKey("C_ID")]
+        public Guid ClassID { get; set; }
+        [ForeignKey("ClassID")]
         public Class Class { get; set; }
-        public Guid Su_ID { get; set; }
-        [ForeignKey("Su_ID")]
+        public Guid SubjectID { get; set; }
+        [ForeignKey("SubjectID")]
         public Subject Subject { get; set; }
     }
 }

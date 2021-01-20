@@ -13,7 +13,7 @@ namespace Malzamaty.Services
     {
         Task<bool> IsExist(string FilePath);
         Task<IQueryable<File>> MostDownloaded(Guid Id);
-        Task<IQueryable<dynamic>> NewFiles(Guid Id, bool WithReports);
+        Task<IQueryable<File>> NewFiles(Guid Id, bool WithReports);
         Task<IQueryable<File>> RelatedFiles(Guid Id);
     }
     public class FileRepository : BaseRepository<File>, IFileRepository
@@ -41,31 +41,31 @@ namespace Malzamaty.Services
         public async Task<IQueryable<File>> MostDownloaded(Guid Id)
         {
             var Files= from f in _db.File
-                   where _db.Interests.Any(gi => gi.C_ID == f.Class.ID &&gi.Su_ID==f.Subject.ID)&&
+                   where _db.Interests.Any(gi => gi.ClassID == f.Class.ID &&gi.SubjectID==f.Subject.ID)&&
                    f.User.ID== Id
                    select f;
             return  Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).OrderByDescending(x=>x.DownloadCount).Take(5);
         }
-        public async Task<IQueryable<dynamic>> NewFiles(Guid Id,bool WithReports)
+        public async Task<IQueryable<File>> NewFiles(Guid Id,bool WithReports)
         {
-            var Files = _db.File.Where(x => _db.Interests.Any(y => y.C_ID == x.Class.ID && y.Su_ID == x.Subject.ID) && x.User.ID == Id).
+            var Files = _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) && x.User.ID == Id).
              Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
-                .Select(x => new
-                {
-                    x.ID,
-                    FileDescription = x.Description,
-                    x.Author,
-                    x.Type,
-                    x.PublishDate,
-                    x.UploadDate,
-                    x.DownloadCount,
-                    SubjectName = x.Subject.Name,
-                    ClassName = x.Class.Name,
-                    ClassType = x.Class.ClassType.Name,
-                    Stage = x.Class.Stage.Name,
-                    UserName = x.User.UserName,
-                    x.Report
-                })
+                //.Select(x => new
+                //{
+                //    x.ID,
+                //    FileDescription = x.Description,
+                //    x.Author,
+                //    x.Type,
+                //    x.PublishDate,
+                //    x.UploadDate,
+                //    x.DownloadCount,
+                //    SubjectName = x.Subject.Name,
+                //    ClassName = x.Class.Name,
+                //    ClassType = x.Class.ClassType.Name,
+                //    Stage = x.Class.Stage.Name,
+                //    UserName = x.User.UserName,
+                //    x.Report
+                //})
                 .OrderByDescending(x => x.PublishDate).ThenByDescending(x => x.UploadDate).Take(5);
              return  Files;           
         }

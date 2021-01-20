@@ -66,11 +66,12 @@ namespace Malzamaty.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IQueryable>> NewFiles(bool WithReports)
+        public async Task<ActionResult<FileReadDto>> NewFiles(bool WithReports)
         {
             var User = GetClaim("ID");
             var result = await _wrapper.File.NewFiles(Guid.Parse(User),WithReports);
-             return Ok(result);
+            var FileModel = _mapper.Map<IList<FileReadDto>>(result);
+            return Ok(FileModel);
         }
         [HttpPost]
         public async Task<ActionResult<AttachmentString>> AddAttachment(string Path)

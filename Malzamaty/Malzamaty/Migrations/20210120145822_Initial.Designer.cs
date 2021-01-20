@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Malzamaty.Migrations
 {
     [DbContext(typeof(MalzamatyContext))]
-    [Migration("20210120141810_Fix")]
-    partial class Fix
+    [Migration("20210120145822_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,22 +131,13 @@ namespace Malzamaty.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("C_ID")
+                    b.Property<Guid>("ClassID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ClassID")
+                    b.Property<Guid>("SubjectID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Su_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("SubjectID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("U_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("UserID")
+                    b.Property<Guid>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
@@ -166,17 +157,17 @@ namespace Malzamaty.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("C_ID")
+                    b.Property<Guid>("ClassID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Su_ID")
+                    b.Property<Guid>("SubjectID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("C_ID");
+                    b.HasIndex("ClassID");
 
-                    b.HasIndex("Su_ID");
+                    b.HasIndex("SubjectID");
 
                     b.ToTable("Matches");
                 });
@@ -366,15 +357,21 @@ namespace Malzamaty.Migrations
                 {
                     b.HasOne("Malzamaty.Model.Class", "Class")
                         .WithMany()
-                        .HasForeignKey("ClassID");
+                        .HasForeignKey("ClassID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Malzamaty.Model.Subject", "Subject")
                         .WithMany()
-                        .HasForeignKey("SubjectID");
+                        .HasForeignKey("SubjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Malzamaty.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserID");
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Class");
 
@@ -387,13 +384,13 @@ namespace Malzamaty.Migrations
                 {
                     b.HasOne("Malzamaty.Model.Class", "Class")
                         .WithMany()
-                        .HasForeignKey("C_ID")
+                        .HasForeignKey("ClassID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Malzamaty.Model.Subject", "Subject")
                         .WithMany()
-                        .HasForeignKey("Su_ID")
+                        .HasForeignKey("SubjectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

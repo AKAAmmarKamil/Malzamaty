@@ -97,8 +97,8 @@ namespace Malzamaty.Controllers
             var InterestModel = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
             {
-                Interest.Class = UserWriteDto.Interests[i].C_ID;
-                Interest.Subject = UserWriteDto.Interests[i].Su_ID;
+                Interest.Class = UserWriteDto.Interests[i].ClassID;
+                Interest.Subject = UserWriteDto.Interests[i].SubjectID;
                 InterestModel = _mapper.Map<Interests>(Interest);
                 await _wrapper.Interest.Create(InterestModel);
             }
