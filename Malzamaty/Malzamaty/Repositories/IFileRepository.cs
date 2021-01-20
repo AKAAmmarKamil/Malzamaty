@@ -1,4 +1,5 @@
-﻿using Malzamaty.Model;
+﻿using Malzamaty.Dto;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,7 +13,7 @@ namespace Malzamaty.Services
     {
         Task<bool> IsExist(string FilePath);
         Task<IQueryable<File>> MostDownloaded(Guid Id);
-        Task<IQueryable<File>> NewFiles(Guid Id, bool WithReports);
+        Task<IQueryable<dynamic>> NewFiles(Guid Id, bool WithReports);
         Task<IQueryable<File>> RelatedFiles(Guid Id);
     }
     public class FileRepository : BaseRepository<File>, IFileRepository
@@ -45,13 +46,11 @@ namespace Malzamaty.Services
                    select f;
             return  Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).OrderByDescending(x=>x.DownloadCount).Take(5);
         }
-        public async Task<IQueryable<File>> NewFiles(Guid Id,bool WithReports)
+        public async Task<IQueryable<dynamic>> NewFiles(Guid Id,bool WithReports)
         {
-            var x =(ICollection<Report>) _db.File.Select(x=>x.Report.AsEnumerable().Select(x => new { x.Description, x.Date }));
-            
             var Files = _db.File.Where(x => _db.Interests.Any(y => y.C_ID == x.Class.ID && y.Su_ID == x.Subject.ID) && x.User.ID == Id).
-             Include(x=>x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
-                .Select(x=>new
+             Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
+                .Select(x => new
                 {
                     x.ID,
                     FileDescription = x.Description,
@@ -65,10 +64,10 @@ namespace Malzamaty.Services
                     ClassType = x.Class.ClassType.Name,
                     Stage = x.Class.Stage.Name,
                     UserName = x.User.UserName,
-                    x.Report
+                    Report =(ICollection<Report>) x.Report.Select(y => new Report() { y.ID,Description = y.Description, Date = y.Date })
                 })
-                .OrderByDescending(x => x.PublishDate).ThenByDescending(x=>x.UploadDate).Take(5);
-            return (IQueryable<File>)  Files;
+                .OrderByDescending(x => x.PublishDate).ThenByDescending(x => x.UploadDate).Take(5);
+             return  Files;           
         }
         public async Task<IQueryable<File>> RelatedFiles(Guid Id)
         {
