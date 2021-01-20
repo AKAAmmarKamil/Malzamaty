@@ -84,12 +84,3 @@ F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Humanizer.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.EntityFrameworkCore.Design.dll
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.MvcApplicationPartsAssemblyInfo.cs
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.csprojAssemblyReference.cache
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\EntityFramework.SqlServer.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\EntityFramework.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\System.CodeDom.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\System.Data.SqlClient.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\runtimes\win-arm64\native\sni.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\runtimes\win-x64\native\sni.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\runtimes\win-x86\native\sni.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll

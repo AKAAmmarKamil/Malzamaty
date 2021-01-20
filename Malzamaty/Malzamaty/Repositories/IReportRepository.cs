@@ -20,11 +20,11 @@ namespace Malzamaty.Services
         }
         public async Task<Report> FindById(Guid id)
         {
-            var Result = await _db.Report.Include(x => x.File).FirstOrDefaultAsync(x => x.ID == id);
+            var Result = await _db.Report.FirstOrDefaultAsync(x => x.ID == id);
             if (Result == null) return null;
             return Result;
         }
-        public async Task<IEnumerable<Report>> FindAll(int PageNumber, int count) => await _db.Report.Include(x => x.File).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
+        public async Task<IEnumerable<Report>> FindAll(int PageNumber, int count) => await _db.Report.Skip((PageNumber - 1) * count).Take(count).ToListAsync();
 
     }
 }

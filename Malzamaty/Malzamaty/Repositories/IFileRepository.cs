@@ -64,7 +64,7 @@ namespace Malzamaty.Services
                     ClassType = x.Class.ClassType.Name,
                     Stage = x.Class.Stage.Name,
                     UserName = x.User.UserName,
-                    Report =(ICollection<Report>) x.Report.Select(y => new Report() { y.ID,Description = y.Description, Date = y.Date })
+                    x.Report
                 })
                 .OrderByDescending(x => x.PublishDate).ThenByDescending(x => x.UploadDate).Take(5);
              return  Files;           

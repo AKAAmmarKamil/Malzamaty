@@ -212,12 +212,12 @@ namespace Malzamaty.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("F_ID")
+                    b.Property<Guid>("FileID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("F_ID");
+                    b.HasIndex("FileID");
 
                     b.ToTable("Report");
                 });
@@ -414,13 +414,11 @@ namespace Malzamaty.DAL.Migrations
 
             modelBuilder.Entity("Malzamaty.Model.Report", b =>
                 {
-                    b.HasOne("Malzamaty.Model.File", "File")
-                        .WithMany()
-                        .HasForeignKey("F_ID")
+                    b.HasOne("Malzamaty.Model.File", null)
+                        .WithMany("Report")
+                        .HasForeignKey("FileID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("File");
                 });
 
             modelBuilder.Entity("Malzamaty.Model.Schedule", b =>
@@ -436,6 +434,11 @@ namespace Malzamaty.DAL.Migrations
                     b.Navigation("Subject");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.File", b =>
+                {
+                    b.Navigation("Report");
                 });
 #pragma warning restore 612, 618
         }
