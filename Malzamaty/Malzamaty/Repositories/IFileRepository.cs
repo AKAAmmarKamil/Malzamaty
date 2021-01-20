@@ -12,9 +12,9 @@ namespace Malzamaty.Services
     public interface IFileRepository : IBaseRepository<File>
     {
         Task<bool> IsExist(string FilePath);
-        Task<IQueryable<File>> MostDownloaded(Guid Id);
+        Task<List<File>> MostDownloaded(Guid Id, bool WithReports);
         Task<List<File>> NewFiles(Guid Id, bool WithReports);
-        Task<IQueryable<File>> RelatedFiles(Guid Id);
+        Task<List<File>> RelatedFiles(Guid Id);
     }
     public class FileRepository : BaseRepository<File>, IFileRepository
     {
@@ -38,36 +38,39 @@ namespace Malzamaty.Services
             return  true;
         }
         public async Task<IEnumerable<File>> FindAll(int PageNumber, int count) => await _db.File.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
-        public async Task<IQueryable<File>> MostDownloaded(Guid Id)
+        public async Task<List<File>> MostDownloaded(Guid Id, bool WithReports)
         {
-            var Files= from f in _db.File
-                   where _db.Interests.Any(gi => gi.ClassID == f.Class.ID &&gi.SubjectID==f.Subject.ID)&&
-                   f.User.ID== Id
-                   select f;
-            return  Files.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).OrderByDescending(x=>x.DownloadCount).Take(5);
+            var Files = new List<File>();
+            if (WithReports == true)
+                Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) && x.User.ID == Id).
+                Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
+                   .OrderByDescending(x => x.DownloadCount).Take(5).ToListAsync();
+            else
+                Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) &&
+                        !_db.Report.Any(y => y.FileID == x.ID) && x.User.ID == Id)
+                        .Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
+                        .OrderByDescending(x => x.DownloadCount).Take(5).ToListAsync();
+            return Files;
         }
         public async Task<List<File>> NewFiles(Guid Id,bool WithReports)
         {
             var Files = new List<File>();
             if(WithReports==true)
-             Files = _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) && x.User.ID == Id).
+             Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) && x.User.ID == Id).
              Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
-                .OrderByDescending(x => x.PublishDate).ThenByDescending(x => x.UploadDate).Take(5).ToList();
+                .OrderByDescending(x => x.PublishDate).ThenByDescending(x => x.UploadDate).Take(5).ToListAsync();
             else
-            Files = _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID)&&
-                    _db.Report.Any(y => y.FileID == x.ID) && x.User.ID == Id)
-                    .Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
-                    .OrderByDescending(x => x.PublishDate).ThenByDescending(x => x.UploadDate).Take(5).ToList();
+            Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID)&&
+                    !_db.Report.Any(y => y.FileID == x.ID) && x.User.ID == Id)
+                    .Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
+                    .OrderByDescending(x => x.PublishDate).ThenByDescending(x => x.UploadDate).Take(5).ToListAsync();
             return Files;           
         }
-        public async Task<IQueryable<File>> RelatedFiles(Guid Id)
+        public async Task<List<File>> RelatedFiles(Guid Id)
         {
             var File =await FindById(Id);
-            var Files = from f in _db.File
-                        where f.Class.ID==File.Class.ID && f.Subject.ID==File.Subject.ID
-                        && f.ID!=Id
-                        select f;
-            return Files.Include(x => x.Class).Include(x => x.Subject).Take(5);
+            var Files =await _db.File.Where(x => x.Class.ID == File.Class.ID && x.Subject.ID == File.Subject.ID && x.ID != Id).Include(x => x.Class).Include(x => x.Subject).Include(x=>x.Report).Take(5).ToListAsync();
+            return  Files;
         }
     }
 }

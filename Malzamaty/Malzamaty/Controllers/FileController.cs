@@ -49,19 +49,27 @@ namespace Malzamaty.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<FileReadDto>> MostDownloadedFiles()
+        public async Task<ActionResult<FileReadDto>> MostDownloadedFiles(bool WithReports)
         {
-            var User = GetClaim("ID");           
-            var result = await _wrapper.File.MostDownloaded(Guid.Parse(User));
-            var FileModel = _mapper.Map<IList<FileReadDto>>(result);
-            return Ok(FileModel);
+            var User = GetClaim("ID");
+            var result = await _wrapper.File.MostDownloaded(Guid.Parse(User), WithReports);
+            if (WithReports == true)
+            {
+                var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
+                return Ok(FileWithReportsReadDto);
+            }
+            else
+            {
+                var FileReadDto = _mapper.Map<List<FileReadDto>>(result);
+                return Ok(FileReadDto);
+            }
         }
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<FileReadDto>> RelatedFiles(Guid Id)
         {
             var result = await _wrapper.File.RelatedFiles(Id);
-            var FileModel = _mapper.Map<IList<FileReadDto>>(result);
+            var FileModel = _mapper.Map<List<FileWithReportsReadDto>>(result);
             return Ok(FileModel);
         }
         [Authorize]
