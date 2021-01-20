@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Malzamaty.DAL.Migrations
+namespace Malzamaty.Migrations
 {
     [DbContext(typeof(MalzamatyContext))]
-    [Migration("20210120120622_UpdateFileId")]
-    partial class UpdateFileId
+    [Migration("20210120141810_Fix")]
+    partial class Fix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,25 +27,25 @@ namespace Malzamaty.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Co_ID")
+                    b.Property<Guid>("ClassTypeID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CountryID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("S_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("T_ID")
+                    b.Property<Guid>("StageID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("Co_ID");
+                    b.HasIndex("ClassTypeID");
 
-                    b.HasIndex("S_ID");
+                    b.HasIndex("CountryID");
 
-                    b.HasIndex("T_ID");
+                    b.HasIndex("StageID");
 
                     b.ToTable("Class");
                 });
@@ -87,7 +87,7 @@ namespace Malzamaty.DAL.Migrations
                     b.Property<string>("Author")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("C_ID")
+                    b.Property<Guid?>("ClassID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -102,7 +102,7 @@ namespace Malzamaty.DAL.Migrations
                     b.Property<int>("PublishDate")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("Subject_ID")
+                    b.Property<Guid?>("SubjectID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Type")
@@ -111,16 +111,16 @@ namespace Malzamaty.DAL.Migrations
                     b.Property<DateTimeOffset>("UploadDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid?>("User_ID")
+                    b.Property<Guid?>("UserID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("C_ID");
+                    b.HasIndex("ClassID");
 
-                    b.HasIndex("Subject_ID");
+                    b.HasIndex("SubjectID");
 
-                    b.HasIndex("User_ID");
+                    b.HasIndex("UserID");
 
                     b.ToTable("File");
                 });
@@ -134,19 +134,28 @@ namespace Malzamaty.DAL.Migrations
                     b.Property<Guid>("C_ID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ClassID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("Su_ID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SubjectID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("U_ID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ID");
 
-                    b.HasIndex("C_ID");
+                    b.HasIndex("ClassID");
 
-                    b.HasIndex("Su_ID");
+                    b.HasIndex("SubjectID");
 
-                    b.HasIndex("U_ID");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Interests");
                 });
@@ -307,21 +316,21 @@ namespace Malzamaty.DAL.Migrations
 
             modelBuilder.Entity("Malzamaty.Model.Class", b =>
                 {
+                    b.HasOne("Malzamaty.Model.ClassType", "ClassType")
+                        .WithMany()
+                        .HasForeignKey("ClassTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Malzamaty.Model.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("Co_ID")
+                        .HasForeignKey("CountryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Malzamaty.Model.Stage", "Stage")
                         .WithMany()
-                        .HasForeignKey("S_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Malzamaty.Model.ClassType", "ClassType")
-                        .WithMany()
-                        .HasForeignKey("T_ID")
+                        .HasForeignKey("StageID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -336,15 +345,15 @@ namespace Malzamaty.DAL.Migrations
                 {
                     b.HasOne("Malzamaty.Model.Class", "Class")
                         .WithMany()
-                        .HasForeignKey("C_ID");
+                        .HasForeignKey("ClassID");
 
                     b.HasOne("Malzamaty.Model.Subject", "Subject")
                         .WithMany()
-                        .HasForeignKey("Subject_ID");
+                        .HasForeignKey("SubjectID");
 
                     b.HasOne("Malzamaty.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("User_ID");
+                        .HasForeignKey("UserID");
 
                     b.Navigation("Class");
 
@@ -357,21 +366,15 @@ namespace Malzamaty.DAL.Migrations
                 {
                     b.HasOne("Malzamaty.Model.Class", "Class")
                         .WithMany()
-                        .HasForeignKey("C_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClassID");
 
                     b.HasOne("Malzamaty.Model.Subject", "Subject")
                         .WithMany()
-                        .HasForeignKey("Su_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubjectID");
 
                     b.HasOne("Malzamaty.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("U_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserID");
 
                     b.Navigation("Class");
 

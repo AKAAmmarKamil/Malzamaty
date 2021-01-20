@@ -9,14 +9,14 @@ namespace Malzamaty.Model
         [Key]
         public Guid ID { get; set; }
         public string Name { get; set; }
-        public Guid S_ID { get; set; }
-        [ForeignKey("S_ID")]
+        public Guid StageID { get; set; }
+        [ForeignKey("StageID")]
         public Stage Stage { get; set; }
-        public Guid T_ID { get; set; }
-        [ForeignKey("T_ID")]
+        public Guid ClassTypeID { get; set; }
+        [ForeignKey("ClassTypeID")]
         public ClassType ClassType { get; set; }
-        public Guid Co_ID { get; set; }
-        [ForeignKey("Co_ID")]
+        public Guid CountryID { get; set; }
+        [ForeignKey("CountryID")]
         public Country Country { get; set; }
     }
 }

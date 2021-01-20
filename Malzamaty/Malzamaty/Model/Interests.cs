@@ -9,11 +9,11 @@ namespace Malzamaty.Model
         public Guid U_ID { get; set; }
         public Guid Su_ID { get; set; }
         public Guid C_ID { get; set; }
-        [ForeignKey("U_ID")]
+        [ForeignKey("UserID")]
         public User User { get; set; }
-        [ForeignKey("Su_ID")]
+        [ForeignKey("SubjectID")]
         public Subject Subject { get; set; }
-        [ForeignKey("C_ID")]
+        [ForeignKey("ClassID")]
         public Class Class { get; set; }
 
 

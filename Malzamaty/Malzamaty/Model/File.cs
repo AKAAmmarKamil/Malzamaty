@@ -16,11 +16,11 @@ namespace Malzamaty.Model
         public int PublishDate { get; set; }
         public DateTimeOffset UploadDate { get; set; }
         public int DownloadCount { get; set; }
-        [ForeignKey("C_ID")]
+        [ForeignKey("ClassID")]
         public Class Class { get; set; }
-        [ForeignKey("User_ID")]
+        [ForeignKey("UserID")]
         public User User { get; set; }
-        [ForeignKey("Subject_ID")]
+        [ForeignKey("SubjectID")]
         public Subject Subject { get; set; }
         public virtual ICollection<Report> Report { get; set; }
 

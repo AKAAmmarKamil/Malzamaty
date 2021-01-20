@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Malzamaty.DAL.Migrations
+namespace Malzamaty.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Fix : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,18 +29,6 @@ namespace Malzamaty.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Country", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Roles",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,18 +63,12 @@ namespace Malzamaty.DAL.Migrations
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Activated = table.Column<bool>(type: "bit", nullable: false),
-                    Authentication = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Activated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Users_Roles_Authentication",
-                        column: x => x.Authentication,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,28 +77,28 @@ namespace Malzamaty.DAL.Migrations
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    S_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    T_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Co_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    StageID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClassTypeID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CountryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Class", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Class_ClassType_T_ID",
-                        column: x => x.T_ID,
+                        name: "FK_Class_ClassType_ClassTypeID",
+                        column: x => x.ClassTypeID,
                         principalTable: "ClassType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Class_Country_Co_ID",
-                        column: x => x.Co_ID,
+                        name: "FK_Class_Country_CountryID",
+                        column: x => x.CountryID,
                         principalTable: "Country",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Class_Stage_S_ID",
-                        column: x => x.S_ID,
+                        name: "FK_Class_Stage_StageID",
+                        column: x => x.StageID,
                         principalTable: "Stage",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -159,29 +141,30 @@ namespace Malzamaty.DAL.Migrations
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublishDate = table.Column<int>(type: "int", nullable: false),
+                    UploadDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DownloadCount = table.Column<int>(type: "int", nullable: false),
-                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    User_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Subject_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    ClassID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_File", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_File_Class_C_ID",
-                        column: x => x.C_ID,
+                        name: "FK_File_Class_ClassID",
+                        column: x => x.ClassID,
                         principalTable: "Class",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_File_Subject_Subject_ID",
-                        column: x => x.Subject_ID,
+                        name: "FK_File_Subject_SubjectID",
+                        column: x => x.SubjectID,
                         principalTable: "Subject",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_File_Users_User_ID",
-                        column: x => x.User_ID,
+                        name: "FK_File_Users_UserID",
+                        column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
@@ -194,29 +177,32 @@ namespace Malzamaty.DAL.Migrations
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     U_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Su_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    C_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SubjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ClassID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Interests", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Interests_Class_C_ID",
-                        column: x => x.C_ID,
+                        name: "FK_Interests_Class_ClassID",
+                        column: x => x.ClassID,
                         principalTable: "Class",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Interests_Subject_Su_ID",
-                        column: x => x.Su_ID,
+                        name: "FK_Interests_Subject_SubjectID",
+                        column: x => x.SubjectID,
                         principalTable: "Subject",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Interests_Users_U_ID",
-                        column: x => x.U_ID,
+                        name: "FK_Interests_Users_UserID",
+                        column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,63 +265,63 @@ namespace Malzamaty.DAL.Migrations
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    F_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    FileID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Report", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Report_File_F_ID",
-                        column: x => x.F_ID,
+                        name: "FK_Report_File_FileID",
+                        column: x => x.FileID,
                         principalTable: "File",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Class_Co_ID",
+                name: "IX_Class_ClassTypeID",
                 table: "Class",
-                column: "Co_ID");
+                column: "ClassTypeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Class_S_ID",
+                name: "IX_Class_CountryID",
                 table: "Class",
-                column: "S_ID");
+                column: "CountryID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Class_T_ID",
+                name: "IX_Class_StageID",
                 table: "Class",
-                column: "T_ID");
+                column: "StageID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_C_ID",
+                name: "IX_File_ClassID",
                 table: "File",
-                column: "C_ID");
+                column: "ClassID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_Subject_ID",
+                name: "IX_File_SubjectID",
                 table: "File",
-                column: "Subject_ID");
+                column: "SubjectID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_User_ID",
+                name: "IX_File_UserID",
                 table: "File",
-                column: "User_ID");
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Interests_C_ID",
+                name: "IX_Interests_ClassID",
                 table: "Interests",
-                column: "C_ID");
+                column: "ClassID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Interests_Su_ID",
+                name: "IX_Interests_SubjectID",
                 table: "Interests",
-                column: "Su_ID");
+                column: "SubjectID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Interests_U_ID",
+                name: "IX_Interests_UserID",
                 table: "Interests",
-                column: "U_ID");
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Matches_C_ID",
@@ -358,9 +344,9 @@ namespace Malzamaty.DAL.Migrations
                 column: "Us_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Report_F_ID",
+                name: "IX_Report_FileID",
                 table: "Report",
-                column: "F_ID");
+                column: "FileID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_St_ID",
@@ -371,11 +357,6 @@ namespace Malzamaty.DAL.Migrations
                 name: "IX_Schedules_Su_ID",
                 table: "Schedules",
                 column: "Su_ID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Authentication",
-                table: "Users",
-                column: "Authentication");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -415,9 +396,6 @@ namespace Malzamaty.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Stage");
-
-            migrationBuilder.DropTable(
-                name: "Roles");
         }
     }
 }
