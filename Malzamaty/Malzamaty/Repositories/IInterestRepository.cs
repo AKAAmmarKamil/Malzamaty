@@ -41,9 +41,9 @@ namespace Malzamaty.Services
         }
 
 
-        public async Task<Interests> FindById(Guid id)
+        public async Task<Interests> FindById(Guid Id)
         {
-            var Result = await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
+            var Result = await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == Id);
 
             if (Result == null) return null;
             return Result;

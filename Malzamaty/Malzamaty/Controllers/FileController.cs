@@ -70,8 +70,16 @@ namespace Malzamaty.Controllers
         {
             var User = GetClaim("ID");
             var result = await _wrapper.File.NewFiles(Guid.Parse(User),WithReports);
-            var FileModel = _mapper.Map<IList<FileReadDto>>(result);
-            return Ok(FileModel);
+            if (WithReports == true)
+            {
+                var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
+                return Ok(FileWithReportsReadDto);
+            }
+            else
+            {
+                var FileReadDto = _mapper.Map<List<FileReadDto>>(result);
+                return Ok(FileReadDto);
+            }
         }
         [HttpPost]
         public async Task<ActionResult<AttachmentString>> AddAttachment(string Path)
