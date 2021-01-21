@@ -6,19 +6,21 @@ using System.Linq;
 
 namespace Malzamaty.Dto
 {
-    public class ReportWriteDto : IValidatableObject
+    public class ScheduleWriteDto : IValidatableObject
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public string Description { get; set; }
+        public DateTime? StartStudy { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public Guid FileID { get; set; }
+        public DateTime? FinishStudy { get; set; }
+        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
+        public Guid Subject { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var service = (MalzamatyContext)validationContext.GetService(typeof(MalzamatyContext));
-            var File = service.File.FirstOrDefault(x => x.ID == FileID);
+            var File = service.Subject.FirstOrDefault(x => x.ID == Subject);
             if (File == null)
             {
-                yield return new ValidationResult("الملف غير موجود");
+                yield return new ValidationResult("المادة غير موجودة");
             }
             yield return ValidationResult.Success;
 

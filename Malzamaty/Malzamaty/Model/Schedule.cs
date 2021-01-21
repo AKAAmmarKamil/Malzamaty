@@ -9,9 +9,9 @@ namespace Malzamaty.Model
         public Guid ID { get; set; }
         public DateTime? StartStudy { get; set; }
         public DateTime? FinishStudy { get; set; }
-        [ForeignKey("St_ID")]
+        [ForeignKey("UserID")]
         public User User { get; set; }
-        [ForeignKey("Su_ID")]
+        [ForeignKey("SubjectID")]
         public Subject Subject { get; set; }
     }
 }

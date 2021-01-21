@@ -4,14 +4,16 @@ using Malzamaty;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Malzamaty.Migrations
 {
     [DbContext(typeof(MalzamatyContext))]
-    partial class MalzamatyContextModelSnapshot : ModelSnapshot
+    [Migration("20210120235612_Rating")]
+    partial class Rating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,20 +181,23 @@ namespace Malzamaty.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("F_ID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("FileID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("UserID")
+                    b.Property<Guid?>("Us_ID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
                     b.HasIndex("FileID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("Us_ID");
 
                     b.ToTable("Rating");
                 });
@@ -228,20 +233,20 @@ namespace Malzamaty.Migrations
                     b.Property<DateTime?>("FinishStudy")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("St_ID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("StartStudy")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("SubjectID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("UserID")
+                    b.Property<Guid?>("Su_ID")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("SubjectID");
+                    b.HasIndex("St_ID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("Su_ID");
 
                     b.ToTable("Schedules");
                 });
@@ -397,12 +402,12 @@ namespace Malzamaty.Migrations
             modelBuilder.Entity("Malzamaty.Model.Rating", b =>
                 {
                     b.HasOne("Malzamaty.Model.File", "File")
-                        .WithMany()
+                        .WithMany("Rating")
                         .HasForeignKey("FileID");
 
                     b.HasOne("Malzamaty.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserID");
+                        .HasForeignKey("Us_ID");
 
                     b.Navigation("File");
 
@@ -420,13 +425,13 @@ namespace Malzamaty.Migrations
 
             modelBuilder.Entity("Malzamaty.Model.Schedule", b =>
                 {
-                    b.HasOne("Malzamaty.Model.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectID");
-
                     b.HasOne("Malzamaty.Model.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserID");
+                        .HasForeignKey("St_ID");
+
+                    b.HasOne("Malzamaty.Model.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("Su_ID");
 
                     b.Navigation("Subject");
 
@@ -435,6 +440,8 @@ namespace Malzamaty.Migrations
 
             modelBuilder.Entity("Malzamaty.Model.File", b =>
                 {
+                    b.Navigation("Rating");
+
                     b.Navigation("Report");
                 });
 #pragma warning restore 612, 618

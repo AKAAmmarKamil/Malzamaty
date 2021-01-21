@@ -21,8 +21,10 @@ namespace Malzamaty.Controllers
     {
         private readonly IRepositoryWrapper _wrapper;
         private readonly IMapper _mapper;
+        [Obsolete]
         private IHostingEnvironment _environment;
 
+        [Obsolete]
         public FileController(IHostingEnvironment environment, IRepositoryWrapper wrapper, IMapper mapper)
         {
             _wrapper = wrapper;
@@ -46,6 +48,23 @@ namespace Malzamaty.Controllers
             var result =await _wrapper.File.FindAll(PageNumber, Count);
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
+        }
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<FileReadDto>> TopRatingFiles(bool WithReports)
+        {
+            var User = GetClaim("ID");
+            var result = await _wrapper.File.TopRating(Guid.Parse(User), WithReports);
+            if (WithReports == true)
+            {
+                var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
+                return Ok(FileWithReportsReadDto);
+            }
+            else
+            {
+                var FileReadDto = _mapper.Map<List<FileReadDto>>(result);
+                return Ok(FileReadDto);
+            }
         }
         [Authorize]
         [HttpGet]

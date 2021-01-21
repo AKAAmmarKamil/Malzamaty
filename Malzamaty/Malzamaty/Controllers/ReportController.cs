@@ -42,6 +42,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<ReportReadDto>> AddReport([FromBody] ReportWriteDto ReportWriteDto)
         {
             var ReportModel = _mapper.Map<Report>(ReportWriteDto);
+            ReportModel.File =await _wrapper.File.FindById(ReportWriteDto.FileID);
             await _wrapper.Report.Create(ReportModel);
             var Result = _wrapper.Report.FindById(ReportModel.ID);
             var ReportReadDto = _mapper.Map<ReportReadDto>(Result.Result);

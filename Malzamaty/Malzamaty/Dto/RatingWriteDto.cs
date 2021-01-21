@@ -6,10 +6,12 @@ using System.Linq;
 
 namespace Malzamaty.Dto
 {
-    public class ReportWriteDto : IValidatableObject
+    public class RatingWriteDto : IValidatableObject
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public string Description { get; set; }
+        public string Comment { get; set; }
+        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
+        public int Rate { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid FileID { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

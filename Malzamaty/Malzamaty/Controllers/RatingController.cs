@@ -1,8 +1,11 @@
-﻿using System.Data;
-using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Malzamaty.Dto;
 using Malzamaty.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace Malzamaty.Controllers
@@ -11,56 +14,66 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class RatingController : BaseController
     {
-        private readonly MalzamatyContext _dbContext;
-        public RatingController(MalzamatyContext dbContext)
+        private readonly IRepositoryWrapper _wrapper;
+        private readonly IMapper _mapper;
+        public RatingController(IRepositoryWrapper wrapper, IMapper mapper)
         {
-            _dbContext = dbContext;
-        }/*
-        [HttpGet]
-        public async Task<IActionResult> GetAllRatings()
-        {
-            var result = await _dbContext.Rating.Where(x => x.Ra_Rate != 101).Select(x => new { x.Ra_Comment, x.Ra_Rate, x.Student.St_ID, x.F_ID }).ToListAsync();
-            return Ok(result);
+            _wrapper = wrapper;
+            _mapper = mapper;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetRatingsFromFile(string F_ID)
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<RatingReadDto>> GetRatingById(Guid Id)
         {
-            var result = await _dbContext.Rating.Where(x => x.Ra_Rate != 101 && x.F_ID == F_ID).Select(x => new { x.Ra_Comment, x.Ra_Rate, x.Student.St_ID, x.F_ID }).ToListAsync();
-            return Ok(result);
+            var result = await _wrapper.Rating.FindById(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var RatingModel = _mapper.Map<RatingReadDto>(result);
+            return Ok(RatingModel);
         }
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber, int Count)
+        {
+            var result =_wrapper.Rating.FindAll(PageNumber, Count).Result.ToList();
+            var RatingModel = _mapper.Map<List<RatingReadDto>>(result);
+            return Ok(RatingModel);
+        }
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddRate([FromBody]Rating TheRating, string St_ID,string F_ID)
+        public async Task<ActionResult<RatingReadDto>> AddRating([FromBody] RatingWriteDto RatingWriteDto)
         {
-            var con = new SqlConnection("Server=DESKTOP-A1QK3DR;Database=Malzamaty;Trusted_Connection=True;ConnectRetryCount=0");
-            var cmd = new SqlCommand("RatingProcedure", con);
-                    await con.OpenAsync();
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Ra_Comment", TheRating.Ra_Comment);
-                    cmd.Parameters.AddWithValue("@Ra_Rate", TheRating.Ra_Rate);
-                    cmd.Parameters.AddWithValue("@St_ID", St_ID);
-                    cmd.Parameters.AddWithValue("@F_ID", F_ID);
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            return Ok(dt);
+            GetClaim("ID");
+            var RatingModel = _mapper.Map<Rating>(RatingWriteDto);
+            RatingModel.File =await _wrapper.File.FindById(RatingWriteDto.FileID);
+            RatingModel.User = await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
+            await _wrapper.Rating.Create(RatingModel);
+            var Result = _wrapper.Rating.FindById(RatingModel.ID);
+            var RatingReadDto = _mapper.Map<RatingReadDto>(Result.Result);
+            return Ok(RatingReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateRating([FromBody]Rating rating, string Su_ID)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRating(Guid Id, [FromBody] RatingWriteDto RatingWriteDto)
         {
-            var Rat = _dbContext.Rating.Find(Su_ID);
-            Rat.Ra_Comment = rating.Ra_Comment;
-            Rat.Ra_Rate = rating.Ra_Rate;
-            _dbContext.Entry(Rat).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            var RatingModelFromRepo = await _wrapper.Rating.FindById(Id);
+            if (RatingModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            RatingModelFromRepo.Comment = RatingWriteDto.Comment;
+            RatingModelFromRepo.Rate = RatingWriteDto.Rate;
+            _wrapper.User.SaveChanges();
+            return NoContent();
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteRating(string Ra_ID)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRatinges(Guid Id)
         {
-            var rating = new Rating() { Ra_ID = Ra_ID };
-            _dbContext.Entry(rating).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }*/
+            var Rating = await _wrapper.Rating.Delete(Id);
+            if (Rating == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }

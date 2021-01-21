@@ -1,8 +1,11 @@
-﻿using System.Data;
-using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Malzamaty.Dto;
 using Malzamaty.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace Malzamaty.Controllers
@@ -11,58 +14,74 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class ScheduleController : BaseController
     {
-        private readonly MalzamatyContext _dbContext;
-        public ScheduleController(MalzamatyContext dbContext)
+        private readonly IRepositoryWrapper _wrapper;
+        private readonly IMapper _mapper;
+        public ScheduleController(IRepositoryWrapper wrapper, IMapper mapper)
         {
-            _dbContext = dbContext;
-        }/*
-        [HttpGet]
-        public async Task<IActionResult> GetAllSchedules()
-        {
-            var result = await _dbContext.Schedules.Select(x => new { x.StartStudy, x.FinishStudy, x.Student.St_FullName, x.Subject.Su_Name }).ToListAsync();
-            return Ok(result);
+            _wrapper = wrapper;
+            _mapper = mapper;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetSchedulesFromStudent(string St_ID)
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<ScheduleReadDto>> GetScheduleById(Guid Id)
         {
-            var result = await _dbContext.Schedules.Where(x => x.Student.St_ID == St_ID).Select(x => new { x.StartStudy, x.FinishStudy, x.Student.St_FullName,x.Subject.Su_Name }).ToListAsync();
-            return Ok(result);
+            var result = await _wrapper.Schedule.FindById(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var ScheduleModel = _mapper.Map<ScheduleReadDto>(result);
+            return Ok(ScheduleModel);
         }
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<ActionResult<ScheduleReadDto>> GetAllSchedules(int PageNumber, int Count)
+        {
+            var result =_wrapper.Schedule.FindAll(PageNumber, Count).Result.ToList();
+            var ScheduleModel = _mapper.Map<List<ScheduleReadDto>>(result);
+            return Ok(ScheduleModel);
+        }
+        [Authorize]
+        [HttpGet("{PageNumber}/{Count}")]
+        public async Task<ActionResult<ScheduleReadDto>> GetUserSchedules(int PageNumber, int Count)
+        {
+            var result = _wrapper.Schedule.GetUserSchedules(PageNumber, Count, Guid.Parse(GetClaim("ID"))).Result.ToList();
+            var ScheduleModel = _mapper.Map<List<ScheduleReadDto>>(result);
+            return Ok(ScheduleModel);
+        }
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Addschedule([FromBody]Schedule schedule,string St_ID,string Su_ID)
+        public async Task<ActionResult<ScheduleReadDto>> AddSchedule([FromBody] ScheduleWriteDto ScheduleWriteDto)
         {
-            var con = new SqlConnection("Server=DESKTOP-A1QK3DR;Database=Malzamaty;Trusted_Connection=True;ConnectRetryCount=0");
-            var cmd = new SqlCommand("AddSchedule", con);
-            await con.OpenAsync();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@StartStudy",schedule.StartStudy);
-            cmd.Parameters.AddWithValue("@FinishStudy", schedule.FinishStudy);
-            cmd.Parameters.AddWithValue("@St_ID", St_ID);
-            cmd.Parameters.AddWithValue("@Su_ID", Su_ID);
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            return Ok(dt);
+            var ScheduleModel = _mapper.Map<Schedule>(ScheduleWriteDto);
+            ScheduleModel.User = await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
+            ScheduleModel.Subject = await _wrapper.Subject.FindById(ScheduleWriteDto.Subject);
+            await _wrapper.Schedule.Create(ScheduleModel);
+            var Result = _wrapper.Schedule.FindById(ScheduleModel.ID);
+            var ScheduleReadDto = _mapper.Map<ScheduleReadDto>(Result.Result);
+            return Ok(ScheduleReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateSchedule([FromBody]Schedule schedule, string Su_ID)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateSchedule(Guid Id, [FromBody] ScheduleWriteDto ScheduleWriteDto)
         {
-            var Sch = _dbContext.Schedules.Find(Su_ID);
-            Sch.StartStudy = schedule.StartStudy;
-            Sch.FinishStudy = schedule.FinishStudy;
-            Sch.Student.St_ID = schedule.Student.St_ID;
-            Sch.Subject.Su_ID = schedule.Subject.Su_ID;
-            _dbContext.Entry(Sch).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
+            var ScheduleModelFromRepo = await _wrapper.Schedule.FindById(Id);
+            if (ScheduleModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            ScheduleModelFromRepo.StartStudy = ScheduleWriteDto.StartStudy;
+            ScheduleModelFromRepo.FinishStudy = ScheduleWriteDto.FinishStudy;
+            ScheduleModelFromRepo.Subject =await _wrapper.Subject.FindById(ScheduleWriteDto.Subject);
+            _wrapper.User.SaveChanges();
+            return NoContent();
         }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteSchedules(string Sc_ID)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSchedulees(Guid Id)
         {
-            var Schedule = new Schedule() { Sc_ID = Sc_ID };
-            _dbContext.Entry(Schedule).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }*/
+            var Schedule = await _wrapper.Schedule.Delete(Id);
+            if (Schedule == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
     }
 }
