@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
-
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 namespace Malzamaty
 {
     public class FileProfile : Profile
@@ -32,7 +35,8 @@ namespace Malzamaty
                                                       .ForMember(x => x.ClassType, opt => opt.MapFrom(x => x.Class.ClassType.Name))
                                                       .ForMember(x => x.Stage, opt => opt.MapFrom(x => x.Class.Stage.Name))
                                                       .ForMember(x => x.ClassName, opt => opt.MapFrom(x => x.Class.Name))
-                                                      .ForMember(x => x.SubjectName, opt => opt.MapFrom(x => x.Subject.Name));
+                                                      .ForMember(x => x.SubjectName, opt => opt.MapFrom(x => x.Subject.Name))
+                                                      .ForMember(x => x.Rate, opt => opt.MapFrom(x=>77));
             CreateMap<FileWriteDto, File>()
                 .ForMember(x => x.UploadDate, opt => opt.MapFrom(x => System.DateTime.Now))
                 .ForMember(x => x.Class, opt => opt.Ignore())
@@ -41,6 +45,8 @@ namespace Malzamaty
                 ;
                 
             CreateMap<File,FileWriteDto >();
+           
+
         }
     }
 }

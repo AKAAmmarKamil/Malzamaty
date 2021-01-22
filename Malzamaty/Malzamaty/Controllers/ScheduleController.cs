@@ -85,7 +85,7 @@ namespace Malzamaty.Controllers
             ScheduleModelFromRepo.StartStudy = ScheduleWriteDto.StartStudy;
             ScheduleModelFromRepo.FinishStudy = ScheduleWriteDto.FinishStudy;
             ScheduleModelFromRepo.Subject =await _wrapper.Subject.FindById(ScheduleWriteDto.Subject);
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

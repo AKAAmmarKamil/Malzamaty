@@ -5,26 +5,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace Malzamaty.Repositories
 {
-    public interface IBaseRepository<T> 
+    public interface IBaseRepository<T> where T:class
     {
         Task<IEnumerable<T>> FindAll(int PageNumber,int count);
         Task<T> FindById(Guid k);
         Task<T> Create(T entity);
         Task<T> Delete(Guid k);
-
-        void SaveChanges();
+        IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
     }
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        private readonly MalzamatyContext RepositoryContext;
-        private DbSet<T> table = null;
-        protected BaseRepository(MalzamatyContext context)
+        protected readonly DbContext RepositoryContext;
+
+        public BaseRepository(DbContext context)
         {
             RepositoryContext = context;
-            table = RepositoryContext.Set<T>();
         }
         public async Task<IEnumerable<T>> FindAll(int PageNumber, int count)
         {
@@ -53,12 +52,13 @@ namespace Malzamaty.Repositories
 
         public async Task<T> FindById(Guid id)
         {
-            var result=table.Find(id);
+            var result = RepositoryContext.Set<T>().Find(id);
             if (result == null) return null;
             return result;
         }
 
-   
+        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate) =>RepositoryContext.Set<T>().Where(predicate);
+           
     }
 
 }

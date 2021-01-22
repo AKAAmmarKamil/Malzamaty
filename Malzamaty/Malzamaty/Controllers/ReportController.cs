@@ -57,7 +57,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             ReportModelFromRepo.Description = ReportWriteDto.Description;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

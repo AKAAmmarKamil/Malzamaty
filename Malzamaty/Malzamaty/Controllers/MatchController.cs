@@ -59,7 +59,7 @@ namespace Malzamaty.Controllers
             }
             MatchModelFromRepo.ClassID = MatchWriteDto.Class;
             MatchModelFromRepo.SubjectID = MatchWriteDto.Subject;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

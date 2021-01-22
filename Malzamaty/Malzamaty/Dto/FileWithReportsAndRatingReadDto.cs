@@ -21,5 +21,7 @@ namespace Malzamaty.Dto
         public string UserName { get; set; }
         public double Rate { get; set; }
         public virtual ICollection<ReportReadDto> Report { get; set; }
+        public ICollection<RatingReadDto> Rating { get; set; }
+
     }
 }

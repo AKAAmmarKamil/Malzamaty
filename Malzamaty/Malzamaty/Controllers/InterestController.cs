@@ -67,7 +67,7 @@ namespace Malzamaty.Controllers
                     await _wrapper.Schedule.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false)
                 {
                     InterestModelFromRepo.SubjectID = Schedules[i].Subject.ID;
-                    _wrapper.User.SaveChanges();
+                    _wrapper.Save();
                 }
             }
             return NoContent();
@@ -82,7 +82,7 @@ namespace Malzamaty.Controllers
             }
             InterestModelFromRepo.ClassID = InterestWriteDto.Class;
             InterestModelFromRepo.SubjectID = InterestWriteDto.Subject;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

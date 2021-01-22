@@ -71,7 +71,7 @@ namespace Malzamaty.Controllers
             if (User.Result == null)
                 return BadRequest(new { ERROR = "لم يتم العثور على حسابك" });
                 User.Result.Activated = false;
-                _wrapper.User.SaveChanges();
+                _wrapper.Save();
             if (Code != null)
             {
                 var claims = new[]
@@ -154,7 +154,7 @@ namespace Malzamaty.Controllers
                     return NotFound();
                 }
                 UserModelFromRepo.Password = ChangePasswordForm.Password;
-                _wrapper.User.SaveChanges();
+                _wrapper.Save();
                 return NoContent();
             }
             return BadRequest(new { Message = "الرمز غير صحيح" });
@@ -169,7 +169,7 @@ namespace Malzamaty.Controllers
             }
             UserModelFromRepo.UserName = UserUpdateDto.UserName;
             UserModelFromRepo.Email = UserUpdateDto.Email;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [Authorize]
@@ -182,7 +182,7 @@ namespace Malzamaty.Controllers
             if (CodeForm.Code.ToString() == Code)
             {
                 User.Result.Activated = true;
-                _wrapper.User.SaveChanges();
+                _wrapper.Save();
                 return Ok(new {Message="تم تفعيل حساب المستخدم" });
             }
             return BadRequest(new { Message = "الرمز غير صحيح" });

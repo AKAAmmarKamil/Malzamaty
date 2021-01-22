@@ -56,7 +56,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             ClassModelFromRepo.Name = ClassWriteDto.Name;
-            _wrapper.Class.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

@@ -38,139 +38,19 @@ namespace Malzamaty
         private IFileRepository _file;
         private IRatingRepository _rating;
         private IScheduleRepository _schedule;
-        public ISubjectRepository Subject
-        {
-            get
-            {
-                if (_subect == null)
-                {
-                    _subect = new SubjectRepository(_repoContext);
-                }
-                return _subect;
-            }
-        }
-        public IUsersRepository User
-        {
-            get
-            {
-                if (_user == null)
-                {
-                    _user = new UserRepository(_repoContext);
-                }
-                return _user;
-            }
-        }
-        public ICountryRepository Country
-        {
-            get
-            {
-                if (_country == null)
-                {
-                    _country = new CountryRepository(_repoContext);
-                }
-                return _country;
-            }
-        }
-        public IStageRepository Stage
-        {
-            get
-            {
-                if (_stage == null)
-                {
-                    _stage = new StageRepository(_repoContext);
-                }
-                return _stage;
-            }
-        }
-        public IClassTypeRepository ClassType
-        {
-            get
-            {
-                if (_classType == null)
-                {
-                    _classType = new ClassTypeRepository(_repoContext);
-                }
-                return _classType;
-            }
-        }
-        public IClassRepository Class
-        {
-            get
-            {
-                if (_class == null)
-                {
-                    _class = new ClassRepository(_repoContext);
-                }
-                return _class;
-            }
-        }
-        public IInterestRepository Interest
-        {
-            get
-            {
-                if (_interest == null)
-                {
-                    _interest = new InterestsRepository(_repoContext);
-                }
-                return _interest;
-            }
-        }
-        public IMatchRepository Match
-        {
-            get
-            {
-                if (_match == null)
-                {
-                    _match = new MatchRepository(_repoContext);
-                }
-                return _match;
-            }
-        }
-        public IReportRepository Report
-        {
-            get
-            {
-                if (_report == null)
-                {
-                    _report = new ReportRepository(_repoContext);
-                }
-                return _report;
-            }
-        }
-        public IFileRepository File
-        {
-            get
-            {
-                if (_file == null)
-                {
-                    _file = new FileRepository(_repoContext);
-                }
-                return _file;
-            }
-        }
-        public IRatingRepository Rating
-        {
-            get
-            {
-                if (_rating == null)
-                {
-                    _rating = new RatingRepository(_repoContext);
-                }
-                return _rating;
-            }
-        }
-        public IScheduleRepository Schedule
-        {
-            get
-            {
-                if (_schedule == null)
-                {
-                    _schedule = new ScheduleRepository(_repoContext);
-                }
-                return _schedule;
-            }
-        }
-        public IUsersRepository Users => throw new NotImplementedException();
+        public ISubjectRepository Subject => _subect ??= new SubjectRepository(_repoContext);
+        public IUsersRepository User => _user ??= new UserRepository(_repoContext);
+
+        public ICountryRepository Country =>_country = new CountryRepository(_repoContext);
+        public IStageRepository Stage =>_stage ??= new StageRepository(_repoContext);
+        public IClassTypeRepository ClassType =>_classType ??= new ClassTypeRepository(_repoContext);
+        public IClassRepository Class =>_class ??= new ClassRepository(_repoContext);
+        public IInterestRepository Interest =>_interest ??= new InterestsRepository(_repoContext);
+        public IMatchRepository Match => _match ??= new MatchRepository(_repoContext);
+        public IReportRepository Report=> _report ??= new ReportRepository(_repoContext);
+        public IFileRepository File =>_file ??= new FileRepository(_repoContext);
+        public IRatingRepository Rating =>  _rating ??= new RatingRepository(_repoContext);
+        public IScheduleRepository Schedule=>_schedule ??= new ScheduleRepository(_repoContext);
         public RepositoryWrapper(MalzamatyContext repositoryContext)
         {
             _repoContext = repositoryContext;

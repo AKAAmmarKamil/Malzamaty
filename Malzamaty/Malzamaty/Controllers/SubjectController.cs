@@ -55,7 +55,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             SubjectModelFromRepo.Name = subjectWriteDto.Name;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

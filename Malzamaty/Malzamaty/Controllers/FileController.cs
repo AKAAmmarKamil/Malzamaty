@@ -55,10 +55,11 @@ namespace Malzamaty.Controllers
         {
             var User = GetClaim("ID");
             var result = await _wrapper.File.TopRating(Guid.Parse(User), WithReports);
+
             if (WithReports == true)
             {
-                var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsAndRatingReadDto>>(result);
-                return Ok(FileWithReportsReadDto);
+                var FileReadDto = _mapper.Map<List<FileWithReportsAndRatingReadDto>>(result);
+                return Ok(FileReadDto);
             }
             else
             {
@@ -173,7 +174,7 @@ namespace Malzamaty.Controllers
             FileModelFromRepo.Description = FileUpdateDto.Description;
             FileModelFromRepo.Author = FileUpdateDto.Author;
             FileModelFromRepo.Type = FileUpdateDto.Type;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]
