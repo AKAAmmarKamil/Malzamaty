@@ -22,7 +22,7 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetMatchById")]
         public async Task<ActionResult<MatchReadDto>> GetMatchById(Guid Id)
         {
             var result = await _wrapper.Match.FindById(Id);
@@ -47,7 +47,7 @@ namespace Malzamaty.Controllers
             await _wrapper.Match.Create(MatchModel);
             var Result = _wrapper.Match.FindById(MatchModel.ID);
             var MatchReadDto = _mapper.Map<MatchReadDto>(Result.Result);
-            return Ok(MatchReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return CreatedAtRoute("GetMatchById", new { Id = MatchReadDto.ID }, MatchReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMatch(Guid Id, [FromBody] MatchWriteDto MatchWriteDto)

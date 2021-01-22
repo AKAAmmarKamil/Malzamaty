@@ -31,7 +31,7 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
             _environment = environment;
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetFileById")]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
         {
             var result = await _wrapper.File.FindById(Id);
@@ -140,7 +140,7 @@ namespace Malzamaty.Controllers
                 await _wrapper.File.Create(FileModel);
                 var Result = await _wrapper.File.FindById(FileModel.ID);
                 var FileReadDto = _mapper.Map<FileReadDto>(Result);
-                return Ok(FileReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+                return CreatedAtRoute("GetFileById", new { Id = FileReadDto.Id }, FileReadDto);
             }    
             return BadRequest(new { Error="الملف لم يتم تحميله" });
         }

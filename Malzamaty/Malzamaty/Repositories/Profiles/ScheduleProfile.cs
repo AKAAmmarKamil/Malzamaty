@@ -9,8 +9,7 @@ namespace Malzamaty
         public ScheduleProfile()
         {
             //Source -> Target
-            CreateMap<Schedule, ScheduleReadDto>()/*.ForMember(x => x.Description, opt => opt.MapFrom(x => x.File.Description))
-                                              .ForMember(x => x., opt => opt.MapFrom(x => x.FileID))*/;
+            CreateMap<Schedule, ScheduleReadDto>();
             CreateMap<ScheduleWriteDto, Schedule>().ForMember(x=>x.User,opt=>opt.Ignore()).ForMember(x => x.Subject, opt => opt.Ignore());
             CreateMap<Schedule, ScheduleWriteDto>();
         }

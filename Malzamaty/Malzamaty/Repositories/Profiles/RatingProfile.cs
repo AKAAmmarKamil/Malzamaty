@@ -9,8 +9,7 @@ namespace Malzamaty
         public RatingProfile()
         {
             //Source -> Target
-            CreateMap<Rating, RatingReadDto>()/*.ForMember(x => x.Description, opt => opt.MapFrom(x => x.File.Description))
-                                              .ForMember(x => x., opt => opt.MapFrom(x => x.FileID))*/;
+            CreateMap<Rating, RatingReadDto>();
             CreateMap<RatingWriteDto, Rating>();
             CreateMap<Rating, RatingWriteDto>();
         }

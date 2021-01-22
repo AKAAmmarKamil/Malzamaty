@@ -21,7 +21,7 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetScheduleById")]
         public async Task<ActionResult<ScheduleReadDto>> GetScheduleById(Guid Id)
         {
             var result = await _wrapper.Schedule.FindById(Id);
@@ -72,7 +72,7 @@ namespace Malzamaty.Controllers
             await _wrapper.Schedule.Create(ScheduleModel);
             var Result = _wrapper.Schedule.FindById(ScheduleModel.ID);
             var ScheduleReadDto = _mapper.Map<ScheduleReadDto>(Result.Result);
-            return Ok(ScheduleReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return CreatedAtRoute("GetScheduleById", new { Id = ScheduleReadDto.Id }, ScheduleReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSchedule(Guid Id, [FromBody] ScheduleWriteDto ScheduleWriteDto)

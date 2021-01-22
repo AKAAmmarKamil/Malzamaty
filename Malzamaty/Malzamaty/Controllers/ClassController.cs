@@ -20,7 +20,7 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetClassById")]
         public async Task<ActionResult<ClassReadDto>> GetClassById(Guid Id)
         {
             var result = await _wrapper.Class.FindById(Id);
@@ -45,7 +45,7 @@ namespace Malzamaty.Controllers
             await _wrapper.Class.Create(ClassModel);
             var Result = _wrapper.Class.FindById(ClassModel.ID);
             var ClassReadDto = _mapper.Map<ClassReadDto>(Result.Result);
-            return Ok(ClassReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return CreatedAtRoute("GetClassById", new { Id = ClassReadDto.ID }, ClassReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClass(Guid Id, [FromBody] ClassWriteDto ClassWriteDto)

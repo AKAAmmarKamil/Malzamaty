@@ -9,8 +9,7 @@ namespace Malzamaty
         public ReportProfile()
         {
             //Source -> Target
-            CreateMap<Report, ReportReadDto>()/*.ForMember(x => x.Description, opt => opt.MapFrom(x => x.File.Description))
-                                              .ForMember(x => x., opt => opt.MapFrom(x => x.FileID))*/;
+            CreateMap<Report, ReportReadDto>();
             CreateMap<ReportWriteDto, Report>().ForMember(x => x.Date, opt => opt.MapFrom(x => System.DateTime.Now));
             CreateMap<Report, ReportWriteDto>();
         }

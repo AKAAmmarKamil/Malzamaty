@@ -20,7 +20,7 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetStageById")]
         public async Task<ActionResult<StageWriteDto>> GetStageById(Guid Id)
         {
             var result = await _wrapper.Stage.FindById(Id);
@@ -44,7 +44,7 @@ namespace Malzamaty.Controllers
             var StageModel = _mapper.Map<Stage>(StageWriteDto);
             await _wrapper.Stage.Create(StageModel);
             var StageReadDto = _mapper.Map<StageReadDto>(StageModel);
-            return Ok(StageReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return CreatedAtRoute("GetStageById", new { Id = StageReadDto.ID }, StageReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStage(Guid Id, [FromBody] StageWriteDto StageWriteDto)

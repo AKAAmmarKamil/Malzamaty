@@ -19,7 +19,7 @@ namespace Malzamaty.Dto
         public string ClassType { get; set; }
         public string Stage { get; set; }
         public string UserName { get; set; }
-        public virtual ICollection<RatingReadDto> Ratings { get; set; }
+        public double Rate { get; set; }
         public virtual ICollection<ReportReadDto> Report { get; set; }
     }
 }

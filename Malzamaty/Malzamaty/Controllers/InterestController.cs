@@ -22,7 +22,7 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetInterestById")]
         public async Task<ActionResult<InterestReadDto>> GetInterestById(Guid Id)
         {
             var result = await _wrapper.Interest.FindById(Id);
@@ -49,7 +49,7 @@ namespace Malzamaty.Controllers
             await _wrapper.Interest.Create(InterestModel);
             var Result = _wrapper.Interest.FindById(InterestModel.ID);
             var InterestReadDto = _mapper.Map<InterestReadDto>(Result.Result);
-            return Ok(InterestReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return CreatedAtRoute("GetInterestById", new { Id = InterestReadDto.ID }, InterestReadDto);
         }
         [Authorize(Roles =UserRole.Admin+","+UserRole.Student)]
         [HttpPut]

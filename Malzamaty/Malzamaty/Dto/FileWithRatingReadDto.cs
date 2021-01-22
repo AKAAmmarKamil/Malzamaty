@@ -19,6 +19,8 @@ namespace Malzamaty.Dto
         public string ClassType { get; set; }
         public string Stage { get; set; }
         public string UserName { get; set; }
-        public virtual ICollection<RatingReadDto> Ratings { get; set; }
+        public double AverageRating { get; set; }
+        public ICollection<Rating> Rating { get; set; }
+
     }
 }

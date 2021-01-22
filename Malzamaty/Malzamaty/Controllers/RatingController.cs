@@ -21,7 +21,7 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetRatingById")]
         public async Task<ActionResult<RatingReadDto>> GetRatingById(Guid Id)
         {
             var result = await _wrapper.Rating.FindById(Id);
@@ -50,7 +50,7 @@ namespace Malzamaty.Controllers
             await _wrapper.Rating.Create(RatingModel);
             var Result = _wrapper.Rating.FindById(RatingModel.ID);
             var RatingReadDto = _mapper.Map<RatingReadDto>(Result.Result);
-            return Ok(RatingReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return CreatedAtRoute("GetRatingById", new { Id = RatingReadDto.Id }, RatingReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRating(Guid Id, [FromBody] RatingWriteDto RatingWriteDto)

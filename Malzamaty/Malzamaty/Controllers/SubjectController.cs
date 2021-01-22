@@ -20,7 +20,7 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetSubjectById")]
         public async Task<ActionResult<SubjectWriteDto>> GetSubjectById(Guid Id)
         {
             var result = await _wrapper.Subject.FindById(Id);
@@ -43,8 +43,8 @@ namespace Malzamaty.Controllers
         {
             var SubjectModel = _mapper.Map<Subject>(subjectWriteDto);
             await _wrapper.Subject.Create(SubjectModel);
-            var UserReadDto = _mapper.Map<SubjectReadDto>(SubjectModel);
-            return Ok(UserReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            var SubjectReadDto = _mapper.Map<SubjectReadDto>(SubjectModel);
+            return CreatedAtRoute("GetSubjectById", new { Id = SubjectReadDto.ID }, SubjectReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSubject(Guid Id,[FromBody]SubjectWriteDto subjectWriteDto)

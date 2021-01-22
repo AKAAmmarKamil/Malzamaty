@@ -20,7 +20,7 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetCountryById")]
         public async Task<ActionResult<CountryWriteDto>> GetCountryById(Guid Id)
         {
             var result = await _wrapper.Country.FindById(Id);
@@ -44,7 +44,7 @@ namespace Malzamaty.Controllers
             var CountryModel = _mapper.Map<Country>(countryWriteDto);
             await _wrapper.Country.Create(CountryModel);
             var CountryReadDto = _mapper.Map<CountryReadDto>(CountryModel);
-            return Ok(CountryReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
+            return CreatedAtRoute("GetCountryById", new { Id = CountryReadDto.ID }, CountryReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCountry(Guid Id, [FromBody] CountryWriteDto countryWriteDto)

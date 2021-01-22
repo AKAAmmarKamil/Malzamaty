@@ -93,7 +93,7 @@ namespace Malzamaty.Controllers
             }
             else return BadRequest();
         }
-        [HttpGet("{Id}")]
+        [HttpGet("{Id}",Name = "GetUserById")]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
         {
             var User = await _wrapper.User.FindById(Id);
@@ -138,7 +138,7 @@ namespace Malzamaty.Controllers
             }
 
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
-            return Ok(UserReadDto);
+            return CreatedAtRoute("GetUserById", new { Id = UserReadDto.ID }, UserReadDto);
         }
         [Authorize]
         [HttpPut]
