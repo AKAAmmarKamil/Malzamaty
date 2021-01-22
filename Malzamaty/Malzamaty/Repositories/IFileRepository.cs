@@ -70,28 +70,15 @@ namespace Malzamaty.Services
         public async Task<List<File>> TopRating(Guid Id, bool WithReports)
         {
             var Files = new List<File>();
-            //if (WithReports == true)
-            //    Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) && x.User.ID == Id).
-            //    Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
-            //       .OrderByDescending(x => x.DownloadCount).Take(5).ToListAsync();
-            //else
-           var XFiles= from File in _db.File
-            join Rating in _db.Rating on File.ID equals Rating.File.ID into RatingTemp
-            from Rating in RatingTemp.DefaultIfEmpty()
-            group File by new { File.ID, File.Description, File.FilePath, File.Author, File.Type, File.PublishDate } into g
-                   select new
-                   {
-                       g.Key.Description,
-                       g.Key.Author,
-                       g.Key.Type,
-                       g.Key.PublishDate,
-                       Average = _db.Rating.Where(x => x.File.ID == g.Key.ID).Average(x => x.Rate)
-                   };
-            //new {,Rate= grouping.Average(m => m == null ? 0 : m.Rate) };
-            //Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) &&
-            //        !_db.Report.Any(y => y.File.ID == x.ID) && x.User.ID == Id)
-            //        .Include(x=>x.Rating).Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
-            //        .OrderByDescending(x => x.DownloadCount).Take(5).ToListAsync();
+            if (WithReports == true)
+                Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID)) 
+                    .Include(h => h.Rating).Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
+                    .OrderByDescending(x => x.Rating.Average(o => (double?)o.Rate)).Take(5).ToListAsync();
+           else
+                Files = await _db.File.Where(x => _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) &&
+                     !_db.Report.Any(y => y.File.ID == x.ID) && x.User.ID == Id)
+                     .Include(h => h.Rating).Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
+                     .OrderByDescending(x => x.Rating.Average(o => (double?)o.Rate)).Take(5).ToListAsync();
             return Files;
         }
         public async Task<List<File>> RelatedFiles(Guid Id)

@@ -12,6 +12,7 @@ namespace Malzamaty.Services
     {
         Task<List<Interests>> GetInterests(Guid Id);
         Task<bool> CheckIfLast(Guid id);
+        Task<Interests> FindByUser(Guid Id);
     }
     public class InterestsRepository : BaseRepository<Interests>, IInterestRepository
     {
@@ -27,6 +28,13 @@ namespace Malzamaty.Services
         public async Task<Interests> FindById(Guid Id)
         {
             var Result = await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == Id);
+
+            if (Result == null) return null;
+            return Result;
+        }
+        public async Task<Interests> FindByUser(Guid Id)
+        {
+            var Result = await _db.Interests.Where(x=>x.UserID==Id).Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync();
 
             if (Result == null) return null;
             return Result;

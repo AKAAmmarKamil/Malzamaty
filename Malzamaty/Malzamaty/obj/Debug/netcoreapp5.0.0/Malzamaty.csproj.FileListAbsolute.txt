@@ -84,3 +84,6 @@ F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Humanizer.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.EntityFrameworkCore.Design.dll
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.MvcApplicationPartsAssemblyInfo.cs
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.csprojAssemblyReference.cache
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\RestSharp.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\SendGrid.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\StarkbankEcdsa.dll

@@ -57,12 +57,12 @@ namespace Malzamaty.Controllers
             var result = await _wrapper.File.TopRating(Guid.Parse(User), WithReports);
             if (WithReports == true)
             {
-                var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
+                var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsAndRatingReadDto>>(result);
                 return Ok(FileWithReportsReadDto);
             }
             else
             {
-                var FileReadDto = _mapper.Map<List<FileReadDto>>(result);
+                var FileReadDto = _mapper.Map<List<FileWithRatingReadDto>>(result);
                 return Ok(FileReadDto);
             }
         }

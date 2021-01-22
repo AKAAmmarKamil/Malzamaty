@@ -10,7 +10,9 @@ namespace Malzamaty.Services
 {
     public interface IScheduleRepository : IBaseRepository<Schedule>
     {
+        Task<IEnumerable<Schedule>> GetUserSchedules(Guid Id);
         Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count, Guid Id);
+        Task<bool> IsBewteenTwoDates(DateTime dt, DateTime start, DateTime end);
     }
     public class ScheduleRepository : BaseRepository<Schedule>, IScheduleRepository
     {
@@ -18,6 +20,10 @@ namespace Malzamaty.Services
         public ScheduleRepository(MalzamatyContext context) : base(context)
         {
             _db = context;
+        }
+        public async Task<bool> IsBewteenTwoDates(DateTime dt, DateTime start, DateTime end)
+        { 
+            return dt >= start && dt <= end;
         }
         public async Task<Schedule> FindById(Guid id)
         {
@@ -30,9 +36,8 @@ namespace Malzamaty.Services
         {
             return await _db.Schedules.Include(x => x.Subject).Skip((PageNumber - 1) * Count).Take(Count).ToListAsync();
         }
-        public async Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count,Guid Id)
-        {
-            return await _db.Schedules.Include(x=>x.Subject).Where(x=>x.User.ID==Id).Skip((PageNumber - 1) * Count).Take(Count).ToListAsync();
-        }
+        public async Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count,Guid Id)=> await _db.Schedules.Include(x=>x.Subject).Where(x=>x.User.ID==Id).Skip((PageNumber - 1) * Count).Take(Count).ToListAsync();
+        public async Task<IEnumerable<Schedule>> GetUserSchedules(Guid Id) => await _db.Schedules.Include(x => x.Subject).Where(x => x.User.ID == Id).ToListAsync();
+
     }
 }

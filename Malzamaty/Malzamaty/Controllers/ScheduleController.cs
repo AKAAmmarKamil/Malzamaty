@@ -51,6 +51,21 @@ namespace Malzamaty.Controllers
         [HttpPost]
         public async Task<ActionResult<ScheduleReadDto>> AddSchedule([FromBody] ScheduleWriteDto ScheduleWriteDto)
         {
+            var Schedules = _wrapper.Schedule.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
+            var UserClass = _wrapper.Interest.FindByUser(Guid.Parse(GetClaim("ID")));
+            var Match =await _wrapper.Match.FindByClass(UserClass.Result.ClassID,ScheduleWriteDto.Subject);
+            if (Match.Count()==0) 
+            {
+                return BadRequest(new { Error = "المادة غير متوافقة مع صفك" });
+            }
+            for (int i = 0; i < Schedules.Count; i++)
+            {
+                if (await _wrapper.Schedule.IsBewteenTwoDates(ScheduleWriteDto.StartStudy,Schedules[i].StartStudy,Schedules[i].FinishStudy)==true||
+                    await _wrapper.Schedule.IsBewteenTwoDates(ScheduleWriteDto.FinishStudy, Schedules[i].StartStudy, Schedules[i].FinishStudy) == true)
+                {
+                    return BadRequest(new {Error="التاريخ محجوز لدراسة مادة أخرى" });
+                }
+            }
             var ScheduleModel = _mapper.Map<Schedule>(ScheduleWriteDto);
             ScheduleModel.User = await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
             ScheduleModel.Subject = await _wrapper.Subject.FindById(ScheduleWriteDto.Subject);

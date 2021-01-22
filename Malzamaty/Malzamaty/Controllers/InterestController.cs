@@ -51,6 +51,27 @@ namespace Malzamaty.Controllers
             var InterestReadDto = _mapper.Map<InterestReadDto>(Result.Result);
             return Ok(InterestReadDto);//CreatedAtRoute(nameof(GetUserById), new { Id = UserReadDto.Id }, UserReadDto);
         }
+        [Authorize(Roles =UserRole.Admin+","+UserRole.Student)]
+        [HttpPut]
+        public async Task<IActionResult> UpdateInterestBySchedule()
+        {
+            var InterestModelFromRepo = await _wrapper.Interest.FindByUser(Guid.Parse(GetClaim("ID")));
+            if (InterestModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            var Schedules = _wrapper.Schedule.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
+            for (int i = 0; i < Schedules.Count; i++)
+            {
+                if (await _wrapper.Schedule.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false &&
+                    await _wrapper.Schedule.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false)
+                {
+                    InterestModelFromRepo.SubjectID = Schedules[i].Subject.ID;
+                    _wrapper.User.SaveChanges();
+                }
+            }
+            return NoContent();
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInterest(Guid Id, [FromBody] InterestWriteDto InterestWriteDto)
         {

@@ -9,12 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Malzamaty.Dto;
+using Malzamaty.Form;
 using Malzamaty.Model;
 using Malzamaty.Model.Form;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using RestSharp;
 
 namespace Malzamaty.Controllers
 {
@@ -29,8 +32,9 @@ namespace Malzamaty.Controllers
             _wrapper = wrapper;
             _mapper = mapper;
         }
+
         [HttpPost]
-        public async Task<ActionResult<User>> Login([FromBody] LoginForm form)
+        public async Task<IActionResult> Login([FromBody] LoginForm form)
         {
             var user = await _wrapper.User.Authintication(form);
             if (user != null)
@@ -58,6 +62,36 @@ namespace Malzamaty.Controllers
             }
             else return BadRequest();
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword([FromBody] EmailForm EmailForm)
+        {
+            var Code=SendEmail.SendMessage(EmailForm.Email);
+            var User = _wrapper.User.GetUserByEmail(EmailForm.Email);
+            if (User.Result == null)
+                return BadRequest(new { ERROR = "لم يتم العثور على حسابك" });
+                User.Result.Activated = false;
+                _wrapper.User.SaveChanges();
+            if (Code != null)
+            {
+                var claims = new[]
+                {
+                   new Claim("Email", EmailForm.Email),
+                   new Claim("Code", Code.ToString()),
+                   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+                var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddMinutes(5),
+                  notBefore: DateTime.UtcNow, audience: "Audience", issuer: "Issuer",
+                  signingCredentials: new SigningCredentials(
+                      new SymmetricSecurityKey(
+                          Encoding.UTF8.GetBytes("Hlkjds0-324mf34pojf-14r34fwlknef0943")),
+                      SecurityAlgorithms.HmacSha256));
+                var Token = new JwtSecurityTokenHandler().WriteToken(token);
+                var expire = DateTime.UtcNow.AddMinutes(1);
+                return Ok(new { Token = Token, Expire = expire });
+
+            }
+            else return BadRequest();
         }
         [HttpGet("{Id}")]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
@@ -106,6 +140,25 @@ namespace Malzamaty.Controllers
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
             return Ok(UserReadDto);
         }
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordForm ChangePasswordForm)
+        {
+            var Email = GetClaim("Email");
+            var User =await _wrapper.User.GetUserByEmail(Email);
+            if (User.Activated == true)
+            {
+                var UserModelFromRepo = await _wrapper.User.GetUserByEmail(Email);
+                if (UserModelFromRepo == null)
+                {
+                    return NotFound();
+                }
+                UserModelFromRepo.Password = ChangePasswordForm.Password;
+                _wrapper.User.SaveChanges();
+                return NoContent();
+            }
+            return BadRequest(new { Message = "الرمز غير صحيح" });
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(Guid Id, [FromBody] UserUpdateDto UserUpdateDto)
         {
@@ -119,18 +172,22 @@ namespace Malzamaty.Controllers
             _wrapper.User.SaveChanges();
             return NoContent();
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> ChangePassword(Guid Id, [FromBody] ChangePasswordForm ChangePasswordForm)
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> SendCode([FromBody] CodeForm CodeForm )
         {
-            var UserModelFromRepo =await _wrapper.User.FindById(Id);
-            if (UserModelFromRepo == null)
+            var Code= GetClaim("Code");
+            var Email = GetClaim("Email");
+            var User = _wrapper.User.GetUserByEmail(Email);
+            if (CodeForm.Code.ToString() == Code)
             {
-                return NotFound();
+                User.Result.Activated = true;
+                _wrapper.User.SaveChanges();
+                return Ok(new {Message="تم تفعيل حساب المستخدم" });
             }
-            UserModelFromRepo.Password = ChangePasswordForm.Password;
-            _wrapper.User.SaveChanges();
-            return NoContent();
+            return BadRequest(new { Message = "الرمز غير صحيح" });
         }
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid Id)
         {

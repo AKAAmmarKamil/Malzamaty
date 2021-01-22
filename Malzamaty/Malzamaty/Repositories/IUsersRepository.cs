@@ -12,6 +12,7 @@ namespace Malzamaty.Repository
     public interface IUsersRepository : IBaseRepository<User>
     {
         Task<User> Authintication(LoginForm login);
+        Task<User> GetUserByEmail(string Email);
     }
     public class UserRepository : BaseRepository<User>, IUsersRepository
     {
@@ -24,7 +25,16 @@ namespace Malzamaty.Repository
         public async Task<User> Authintication(LoginForm login) =>
              await _db.Users.Where(x => x.Email == login.EmailAddress && x.Password == login.Password)
                  .FirstOrDefaultAsync();
-
+        public async Task<User> GetUserByEmail(string Email)
+        {
+           var result= await _db.Users.Where(x => x.Email == Email)
+                .FirstOrDefaultAsync();
+            if (result==null)
+            {
+                return null;
+            }
+            return result;
+        }
         public async Task<User> Create(User t)
         {
             await _db.Users.AddAsync(t);

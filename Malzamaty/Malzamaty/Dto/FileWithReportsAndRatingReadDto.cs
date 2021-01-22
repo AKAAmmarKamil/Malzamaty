@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Malzamaty.Dto
 {
-    public class FileWithReportsReadDto
+    public class FileWithReportsAndRatingReadDto
     {          
         public Guid Id { get; set; }
         public string FileDescription { get; set; }
@@ -19,6 +19,7 @@ namespace Malzamaty.Dto
         public string ClassType { get; set; }
         public string Stage { get; set; }
         public string UserName { get; set; }
+        public virtual ICollection<RatingReadDto> Ratings { get; set; }
         public virtual ICollection<ReportReadDto> Report { get; set; }
     }
 }

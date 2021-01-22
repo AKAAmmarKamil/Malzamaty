@@ -23,6 +23,6 @@ namespace Malzamaty.Model
         [ForeignKey("SubjectID")]
         public Subject Subject { get; set; }
         public virtual ICollection<Report> Report { get; set; }
-       // public virtual ICollection<Rating> Rating { get; set; }
+        public virtual IEnumerable<Rating> Rating { get; set; }
     }
 }

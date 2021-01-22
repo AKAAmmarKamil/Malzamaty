@@ -7,8 +7,8 @@ namespace Malzamaty.Model
     {
         [Key]
         public Guid ID { get; set; }
-        public DateTime? StartStudy { get; set; }
-        public DateTime? FinishStudy { get; set; }
+        public DateTime StartStudy { get; set; }
+        public DateTime FinishStudy { get; set; }
         [ForeignKey("UserID")]
         public User User { get; set; }
         [ForeignKey("SubjectID")]
