@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,18 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class ClassTypeController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly IClassTypeService _classTypeService;
         private readonly IMapper _mapper;
-        public ClassTypeController(IRepositoryWrapper wrapper, IMapper mapper)
+        public ClassTypeController(IClassTypeService classTypeService, IMapper mapper)
         {
-            _wrapper = wrapper;
+            _classTypeService = classTypeService;
             _mapper = mapper;
         }
 
         [HttpGet("{Id}",Name = "GetClassTypeById")]
         public async Task<ActionResult<ClassTypeWriteDto>> GetClassTypeById(Guid Id)
         {
-            var result = await _wrapper.ClassType.FindById(Id);
+            var result = await _classTypeService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -34,7 +35,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<ClassTypeReadDto>> GetAllClassTypes(int PageNumber,int Count)
         {
-            var result = await _wrapper.ClassType.FindAll(PageNumber,Count);
+            var result = await _classTypeService.All(PageNumber,Count);
             var ClassTypesModel = _mapper.Map<IList<ClassTypeReadDto>>(result);
             return Ok(ClassTypesModel);
         }
@@ -42,26 +43,26 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<ClassTypeReadDto>> AddClassType([FromBody] ClassTypeWriteDto ClassTypeWriteDto)
         {
             var ClassTypeModel = _mapper.Map<ClassType>(ClassTypeWriteDto);
-            await _wrapper.ClassType.Create(ClassTypeModel);
+            await _classTypeService.Create(ClassTypeModel);
             var ClassTypeReadDto = _mapper.Map<ClassTypeReadDto>(ClassTypeModel);
             return CreatedAtRoute("GetClassTypeById", new { Id = ClassTypeReadDto.ID }, ClassTypeReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClassType(Guid Id, [FromBody] ClassTypeWriteDto ClassTypeWriteDto)
         {
-            var ClassTypeModelFromRepo =await _wrapper.ClassType.FindById(Id);
+            var ClassTypeModelFromRepo =await _classTypeService.FindById(Id);
             if (ClassTypeModelFromRepo == null)
             {
                 return NotFound();
             }
-            ClassTypeModelFromRepo.Name = ClassTypeWriteDto.Name;
-            _wrapper.Save();
+            var ClassTypeModel = _mapper.Map<ClassType>(ClassTypeWriteDto);
+            await _classTypeService.Modify(Id, ClassTypeModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClassType(Guid Id)
         {
-            var ClassType =await _wrapper.ClassType.Delete(Id);
+            var ClassType =await _classTypeService.Delete(Id);
             if (ClassType == null)
             {
                 return NotFound();

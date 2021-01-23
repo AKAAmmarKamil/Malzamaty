@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -49,10 +50,19 @@ namespace Malzamaty
             });
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Put title here", Description = "DotNet Core Api 3 - with swagger" }); });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            //services.AddAutoMapper(configuration =>
-            //{
-            //    configuration.AddProfile<FileProfile>();
-            //});
+            services.AddScoped<IClassService, ClassService>();
+            services.AddScoped<IClassTypeService, ClassTypeService>();
+            services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IInterestService, InterestService>();
+            services.AddScoped<IMatchService, MatchService>();
+            services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IRatingService, RatingService>();
+            services.AddScoped<IScheduleService, ScheduleService>();
+            services.AddScoped<IStageService, StageService>();
+            services.AddScoped<ISubjectService, SubjectService>();
+            services.AddScoped<IUserService, UserService>();
+
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

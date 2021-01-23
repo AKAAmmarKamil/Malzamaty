@@ -18,8 +18,8 @@ namespace Malzamaty.Repository
     public class UserRepository : BaseRepository<User>, IUsersRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly Mapper _mapper;
-        public UserRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
+        protected readonly IMapper _mapper;
+        public UserRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
         }
@@ -35,26 +35,6 @@ namespace Malzamaty.Repository
                 return null;
             }
             return result;
-        }
-        public async Task<User> Create(User t)
-        {
-            await _db.Users.AddAsync(t);
-            SaveChanges();
-            return t;
-        }
-
-        public async Task<User> Delete(Guid id)
-        {
-            var result = await FindById(id);
-            if (result == null) return null;
-            _db.Remove(result);
-            await _db.SaveChangesAsync();
-            return result;
-        }
-
-        public void SaveChanges()
-        {
-            _db.SaveChanges();
         }
 
 

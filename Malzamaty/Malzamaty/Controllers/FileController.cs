@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Malzamaty.Form;
 using System.Linq;
 using Malzamaty.Model;
+using Malzamaty.Services;
 
 namespace Malzamaty.Controllers
 {
@@ -19,22 +20,29 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class FileController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly IFileService _fileService;
+        private readonly IUserService _userService;
+        private readonly ISubjectService _subjectService;
+        private readonly IClassService _classService;
         private readonly IMapper _mapper;
         [Obsolete]
         private IHostingEnvironment _environment;
 
         [Obsolete]
-        public FileController(IHostingEnvironment environment, IRepositoryWrapper wrapper, IMapper mapper)
+        public FileController(IHostingEnvironment environment, IFileService fileService,IUserService userService,
+            ISubjectService subjectService,IClassService classService, IMapper mapper)
         {
-            _wrapper = wrapper;
+            _fileService = fileService;
+            _userService = userService;
+            _subjectService = subjectService;
+            _classService = classService;
             _mapper = mapper;
             _environment = environment;
         }
         [HttpGet("{Id}",Name = "GetFileById")]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
         {
-            var result = await _wrapper.File.FindById(Id);
+            var result = await _fileService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -45,7 +53,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber,int Count)
         {
-            var result =await _wrapper.File.FindAll(PageNumber,Count);
+            var result =await _fileService.All(PageNumber,Count);
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
@@ -54,7 +62,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> TopRatingFiles(bool WithReports)
         {
             var User = GetClaim("ID");
-            var result = await _wrapper.File.TopRating(Guid.Parse(User), WithReports);
+            var result = await _fileService.TopRating(Guid.Parse(User), WithReports);
 
             if (WithReports == true)
             {
@@ -72,7 +80,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> MostDownloadedFiles(bool WithReports)
         {
             var User = GetClaim("ID");
-            var result = await _wrapper.File.MostDownloaded(Guid.Parse(User), WithReports);
+            var result = await _fileService.MostDownloaded(Guid.Parse(User), WithReports);
             if (WithReports == true)
             {
                 var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
@@ -88,7 +96,7 @@ namespace Malzamaty.Controllers
         [HttpGet]
         public async Task<ActionResult<FileReadDto>> RelatedFiles(Guid Id)
         {
-            var result = await _wrapper.File.RelatedFiles(Id);
+            var result = await _fileService.RelatedFiles(Id);
             var FileModel = _mapper.Map<List<FileWithReportsReadDto>>(result);
             return Ok(FileModel);
         }
@@ -97,7 +105,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> NewFiles(bool WithReports)
         {
             var User = GetClaim("ID");
-            var result = await _wrapper.File.NewFiles(Guid.Parse(User),WithReports);
+            var result = await _fileService.NewFiles(Guid.Parse(User),WithReports);
             if (WithReports == true)
             {
                 var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
@@ -125,21 +133,21 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
             var FileModel = _mapper.Map<File>(FileWriteDto);
-            FileModel.User =await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
-            FileModel.Class = await _wrapper.Class.FindById(FileWriteDto.Class);
-            FileModel.Subject = await _wrapper.Subject.FindById(FileWriteDto.Subject);
+            FileModel.User =await _userService.FindById(Guid.Parse(GetClaim("ID")));
+            FileModel.Class = await _classService.FindById(FileWriteDto.Class);
+            FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
             _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
             var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
-            var File =await _wrapper.File.IsExist(FileWriteDto.FilePath);
+            var File =await _fileService.IsExist(FileWriteDto.FilePath);
             if (File == false)
             {
                 return BadRequest(new { Error = "لا يمكن إضافة ملف موجود مسبقاً" });
             }
             if (System.IO.File.Exists(FullPath))
             {
-                await _wrapper.File.Create(FileModel);
-                var Result = await _wrapper.File.FindById(FileModel.ID);
+                await _fileService.Create(FileModel);
+                var Result = await _fileService.FindById(FileModel.ID);
                 var FileReadDto = _mapper.Map<FileReadDto>(Result);
                 return CreatedAtRoute("GetFileById", new { Id = FileReadDto.Id }, FileReadDto);
             }    
@@ -148,7 +156,7 @@ namespace Malzamaty.Controllers
         [HttpGet]
         public async Task<FileStreamResult> DownloadFile(Guid Id)
         {
-            var File = await _wrapper.File.FindById(Id);
+            var File = await _fileService.FindById(Id);
             var Path = File.FilePath;
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
@@ -156,8 +164,7 @@ namespace Malzamaty.Controllers
             var Type = Path.Split(".")[1];
             if (File != null&& System.IO.File.Exists(FullPath))
             {
-                File.DownloadCount = Convert.ToInt32(File.DownloadCount) + 1;
-                _wrapper.Save();
+                await _fileService.ModifyDownloadCount(Id);
                 var result = await Attachment.Attachment.ConvertToBytes(FullPath);
                 return new FileStreamResult(new MemoryStream(result), "application/" + Type.ToString());
             }
@@ -166,26 +173,24 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFile(Guid Id, [FromBody] FileUpdateDto FileUpdateDto)
         {
-            var FileModelFromRepo = await _wrapper.File.FindById(Id);
+            var FileModelFromRepo = await _fileService.FindById(Id);
             if (FileModelFromRepo == null)
             {
                 return NotFound();
             }
-            FileModelFromRepo.Description = FileUpdateDto.Description;
-            FileModelFromRepo.Author = FileUpdateDto.Author;
-            FileModelFromRepo.Type = FileUpdateDto.Type;
-            _wrapper.Save();
+            var FileModel = _mapper.Map<File>(FileUpdateDto);
+            await _fileService.Modify(Id,FileModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFiles(Guid Id)
         {
-            var File = await _wrapper.File.FindById(Id);
+            var File = await _fileService.FindById(Id);
             var Path = File.FilePath;
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
             var FullPath = _environment.WebRootPath + Path;
-            var Result = await _wrapper.File.Delete(Id);
+            var Result = await _fileService.Delete(Id);
             if (Result == null)
             {
                 return NotFound();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,18 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class CountryController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
-        public CountryController(IRepositoryWrapper wrapper, IMapper mapper)
+        public CountryController(IMapper mapper,ICountryService countryService)
         {
-            _wrapper = wrapper;
+            _countryService = countryService;
             _mapper = mapper;
         }
 
         [HttpGet("{Id}",Name = "GetCountryById")]
         public async Task<ActionResult<CountryWriteDto>> GetCountryById(Guid Id)
         {
-            var result = await _wrapper.Country.FindById(Id);
+            var result = await _countryService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -34,7 +35,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<CountryReadDto>> GetAllCountries(int PageNumber, int Count)
         {
-            var result = await _wrapper.Country.FindAll(PageNumber, Count);
+            var result = await _countryService.All(PageNumber, Count);
             var CountryModel = _mapper.Map<IList<CountryReadDto>>(result);
             return Ok(CountryModel);
         }
@@ -42,26 +43,26 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<CountryReadDto>> AddCountry([FromBody] CountryWriteDto countryWriteDto)
         {
             var CountryModel = _mapper.Map<Country>(countryWriteDto);
-            await _wrapper.Country.Create(CountryModel);
+            await _countryService.Create(CountryModel);
             var CountryReadDto = _mapper.Map<CountryReadDto>(CountryModel);
             return CreatedAtRoute("GetCountryById", new { Id = CountryReadDto.ID }, CountryReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCountry(Guid Id, [FromBody] CountryWriteDto countryWriteDto)
         {
-            var CountryModelFromRepo =await _wrapper.Country.FindById(Id);
+            var CountryModelFromRepo =await _countryService.FindById(Id);
             if (CountryModelFromRepo == null)
             {
                 return NotFound();
             }
-            CountryModelFromRepo.Name = countryWriteDto.Name;
-            _wrapper.Save();
+            var CountryModel = _mapper.Map<Country>(countryWriteDto);
+            await _countryService.Modify(Id, CountryModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(Guid Id)
         {
-            var Country =await _wrapper.Country.Delete(Id);
+            var Country =await _countryService.Delete(Id);
             if (Country == null)
             {
                 return NotFound();

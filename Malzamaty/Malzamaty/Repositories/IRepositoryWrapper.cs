@@ -27,7 +27,7 @@ namespace Malzamaty
     public class RepositoryWrapper : IRepositoryWrapper
     {
         private MalzamatyContext _repoContext;
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
         private IUsersRepository _user;
         private ISubjectRepository _subect;
         private ICountryRepository _country;
@@ -54,7 +54,7 @@ namespace Malzamaty
         public IFileRepository File =>_file ??= new FileRepository(_repoContext, _mapper);
         public IRatingRepository Rating =>  _rating ??= new RatingRepository(_repoContext, _mapper);
         public IScheduleRepository Schedule=>_schedule ??= new ScheduleRepository(_repoContext, _mapper);
-        public RepositoryWrapper(MalzamatyContext repositoryContext,Mapper mapper)
+        public RepositoryWrapper(MalzamatyContext repositoryContext,IMapper mapper)
         {
             _repoContext = repositoryContext;
             _mapper = mapper;

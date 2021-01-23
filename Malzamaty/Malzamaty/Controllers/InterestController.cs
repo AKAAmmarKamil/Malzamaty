@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +16,21 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class InterestController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly IInterestService _interestService;
+        private readonly IUserService _userService;
+        private readonly IScheduleService _scheduleService;
         private readonly IMapper _mapper;
-        public InterestController(IRepositoryWrapper wrapper, IMapper mapper)
+        public InterestController(IInterestService interestService,IUserService userService,IScheduleService scheduleService, IMapper mapper)
         {
-            _wrapper = wrapper;
+            _interestService = interestService;
+            _userService = userService;
+            _scheduleService = scheduleService;
             _mapper = mapper;
         }
         [HttpGet("{Id}",Name = "GetInterestById")]
         public async Task<ActionResult<InterestReadDto>> GetInterestById(Guid Id)
         {
-            var result = await _wrapper.Interest.FindById(Id);
+            var result = await _interestService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -36,7 +41,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<InterestReadDto>> GetAllInterests(int PageNumber,int Count)
         {
-            var result = await _wrapper.Interest.FindAll(PageNumber,Count);
+            var result = await _interestService.All(PageNumber,Count);
             var InterestModel = _mapper.Map<IList<InterestReadDto>>(result);
             return Ok(InterestModel);
         }
@@ -45,9 +50,9 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<InterestReadDto>> AddInterest([FromBody] InterestWriteDto InterestWriteDto)
         {
             var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
-            InterestModel.User =await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
-            await _wrapper.Interest.Create(InterestModel);
-            var Result = _wrapper.Interest.FindById(InterestModel.ID);
+            InterestModel.User =await _userService.FindById(Guid.Parse(GetClaim("ID")));
+            await _interestService.Create(InterestModel);
+            var Result = _interestService.FindById(InterestModel.ID);
             var InterestReadDto = _mapper.Map<InterestReadDto>(Result.Result);
             return CreatedAtRoute("GetInterestById", new { Id = InterestReadDto.ID }, InterestReadDto);
         }
@@ -55,43 +60,42 @@ namespace Malzamaty.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateInterestBySchedule()
         {
-            var InterestModelFromRepo = await _wrapper.Interest.FindByUser(Guid.Parse(GetClaim("ID")));
+            var InterestModelFromRepo = await _interestService.FindByUser(Guid.Parse(GetClaim("ID")));
             if (InterestModelFromRepo == null)
             {
                 return NotFound();
             }
-            var Schedules = _wrapper.Schedule.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
+            var Schedules = _scheduleService.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
             for (int i = 0; i < Schedules.Count; i++)
             {
-                if (await _wrapper.Schedule.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false &&
-                    await _wrapper.Schedule.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false)
+                if (await _scheduleService.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false &&
+                    await _scheduleService.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false)
                 {
-                    InterestModelFromRepo.SubjectID = Schedules[i].Subject.ID;
-                    _wrapper.Save();
+                   await _interestService.ModifyBySchedule(Guid.Parse(GetClaim("ID")), Schedules[i].Subject.ID);
                 }
             }
             return NoContent();
         }
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInterest(Guid Id, [FromBody] InterestWriteDto InterestWriteDto)
         {
-            var InterestModelFromRepo =await _wrapper.Interest.FindById(Id);
+            var InterestModelFromRepo =await _interestService.FindById(Id);
             if (InterestModelFromRepo == null)
             {
                 return NotFound();
             }
-            InterestModelFromRepo.ClassID = InterestWriteDto.Class;
-            InterestModelFromRepo.SubjectID = InterestWriteDto.Subject;
-            _wrapper.Save();
+            var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
+            await _interestService.Modify(Id,InterestModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInterests(Guid Id)
         {
-            var CheckIfLast = await _wrapper.Interest.CheckIfLast(Id);
+            var CheckIfLast = await _interestService.CheckIfLast(Id);
             if (CheckIfLast == false)
                 return BadRequest(new { error = "لا يمكن حذف آخر إهتمام" });
-            var Interest = _wrapper.Interest.Delete(Id);
+            var Interest = _interestService.Delete(Id);
             if (Interest.Result == null)
             {
                 return NotFound();

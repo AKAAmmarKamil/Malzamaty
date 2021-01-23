@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,18 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class StageController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly IStageService _stageService;
         private readonly IMapper _mapper;
-        public StageController(IRepositoryWrapper wrapper, IMapper mapper)
+        public StageController(IMapper mapper,IStageService stageService)
         {
-            _wrapper = wrapper;
+            _stageService = stageService;
             _mapper = mapper;
         }
 
         [HttpGet("{Id}",Name = "GetStageById")]
         public async Task<ActionResult<StageWriteDto>> GetStageById(Guid Id)
         {
-            var result = await _wrapper.Stage.FindById(Id);
+            var result = await _stageService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -34,7 +35,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<StageReadDto>> GetAllStages(int PageNumber,int Count)
         {
-            var result = await _wrapper.Stage.FindAll(PageNumber,Count);
+            var result = await _stageService.All(PageNumber,Count);
             var StageModel = _mapper.Map<IList<StageReadDto>>(result);
             return Ok(StageModel);
         }
@@ -42,26 +43,26 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<StageReadDto>> AddStage([FromBody] StageWriteDto StageWriteDto)
         {
             var StageModel = _mapper.Map<Stage>(StageWriteDto);
-            await _wrapper.Stage.Create(StageModel);
+            await _stageService.Create(StageModel);
             var StageReadDto = _mapper.Map<StageReadDto>(StageModel);
             return CreatedAtRoute("GetStageById", new { Id = StageReadDto.ID }, StageReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStage(Guid Id, [FromBody] StageWriteDto StageWriteDto)
         {
-            var StageModelFromRepo =await _wrapper.Stage.FindById(Id);
+            var StageModelFromRepo =await _stageService.FindById(Id);
             if (StageModelFromRepo == null)
             {
                 return NotFound();
             }
-            StageModelFromRepo.Name = StageWriteDto.Name;
-            _wrapper.Save();
+            var StageModel = _mapper.Map<Stage>(StageWriteDto);
+            await _stageService.Modify(Id, StageModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStage(Guid Id)
         {
-            var Stage =await _wrapper.Stage.Delete(Id);
+            var Stage =await _stageService.Delete(Id);
             if (Stage == null)
             {
                 return NotFound();

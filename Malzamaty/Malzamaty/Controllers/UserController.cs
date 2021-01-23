@@ -12,6 +12,7 @@ using Malzamaty.Dto;
 using Malzamaty.Form;
 using Malzamaty.Model;
 using Malzamaty.Model.Form;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,18 +26,20 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class UserController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly IUserService _userService;
+        private readonly IInterestService _interestService;
         private readonly IMapper _mapper;
-        public UserController(IRepositoryWrapper wrapper, IMapper mapper)
+        public UserController(IUserService userService,IInterestService interestService,IMapper mapper)
         {
-            _wrapper = wrapper;
+            _userService = userService;
+            _interestService = interestService;
             _mapper = mapper;
         }
 
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginForm form)
         {
-            var user = await _wrapper.User.Authintication(form);
+            var user = await _userService.Authintication(form);
             if (user != null)
             {  
                 var claims = new[]
@@ -67,11 +70,10 @@ namespace Malzamaty.Controllers
         public async Task<IActionResult> ForgetPassword([FromBody] EmailForm EmailForm)
         {
             var Code=SendEmail.SendMessage(EmailForm.Email);
-            var User = _wrapper.User.GetUserByEmail(EmailForm.Email);
-            if (User.Result == null)
+            var User =await _userService.GetUserByEmail(EmailForm.Email);
+            if (User == null)
                 return BadRequest(new { ERROR = "لم يتم العثور على حسابك" });
-                User.Result.Activated = false;
-                _wrapper.Save();
+            await _userService.ChangeStatus(User.ID, false);
             if (Code != null)
             {
                 var claims = new[]
@@ -96,8 +98,8 @@ namespace Malzamaty.Controllers
         [HttpGet("{Id}",Name = "GetUserById")]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
         {
-            var User = await _wrapper.User.FindById(Id);
-            var Interest = await _wrapper.Interest.GetInterests(Id);
+            var User = await _userService.FindById(Id);
+            var Interest = await _interestService.GetInterests(Id);
             var InterestModel= _mapper.Map<List<InterestReadDto>>(Interest);
             if (User == null)
             {
@@ -110,13 +112,13 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber,int Count)
         {
-            var Users = _wrapper.User.FindAll(PageNumber,Count).Result.ToList();
+            var Users = _userService.All(PageNumber,Count).Result.ToList();
             var Interest = new List<Interests>();
             var InterestModel = new List<InterestReadDto>();
             var UserModel= _mapper.Map<List<UserReadDto>>(Users);
             for (int i = 0; i < Users.Count(); i++)
             {
-                Interest = await _wrapper.Interest.GetInterests(Users[i].ID);
+                Interest = await _interestService.GetInterests(Users[i].ID);
                 InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
                 UserModel[i].Interests = InterestModel;
             }
@@ -126,7 +128,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<UserReadDto>> AddUser([FromBody]UserWriteDto UserWriteDto)
         {
             var UserModel = _mapper.Map<User>(UserWriteDto);
-            await _wrapper.User.Create(UserModel);
+            await _userService.Create(UserModel);
             var Interest = new InterestWriteDto();
             var InterestModel = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
@@ -134,7 +136,7 @@ namespace Malzamaty.Controllers
                 Interest.Class = UserWriteDto.Interests[i].ClassID;
                 Interest.Subject = UserWriteDto.Interests[i].SubjectID;
                 InterestModel = _mapper.Map<Interests>(Interest);
-                await _wrapper.Interest.Create(InterestModel);
+                await _interestService.Create(InterestModel);
             }
 
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
@@ -145,16 +147,15 @@ namespace Malzamaty.Controllers
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordForm ChangePasswordForm)
         {
             var Email = GetClaim("Email");
-            var User =await _wrapper.User.GetUserByEmail(Email);
+            var User =await _userService.GetUserByEmail(Email);
             if (User.Activated == true)
             {
-                var UserModelFromRepo = await _wrapper.User.GetUserByEmail(Email);
+                var UserModelFromRepo = await _userService.GetUserByEmail(Email);
                 if (UserModelFromRepo == null)
                 {
                     return NotFound();
                 }
-                UserModelFromRepo.Password = ChangePasswordForm.Password;
-                _wrapper.Save();
+                await _userService.ChangePassword(UserModelFromRepo.ID,ChangePasswordForm.Password);
                 return NoContent();
             }
             return BadRequest(new { Message = "الرمز غير صحيح" });
@@ -162,14 +163,13 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(Guid Id, [FromBody] UserUpdateDto UserUpdateDto)
         {
-            var UserModelFromRepo =await _wrapper.User.FindById(Id);
+            var UserModelFromRepo =await _userService.FindById(Id);
             if (UserModelFromRepo == null)
             {
                 return NotFound();
             }
-            UserModelFromRepo.UserName = UserUpdateDto.UserName;
-            UserModelFromRepo.Email = UserUpdateDto.Email;
-            _wrapper.Save();
+            var UserModel = _mapper.Map<User>(UserUpdateDto);
+            await _userService.Modify(Id,UserModel);
             return NoContent();
         }
         [Authorize]
@@ -178,11 +178,10 @@ namespace Malzamaty.Controllers
         {
             var Code= GetClaim("Code");
             var Email = GetClaim("Email");
-            var User = _wrapper.User.GetUserByEmail(Email);
+            var User =await _userService.GetUserByEmail(Email);
             if (CodeForm.Code.ToString() == Code)
             {
-                User.Result.Activated = true;
-                _wrapper.Save();
+                await _userService.ChangeStatus(User.ID,true);
                 return Ok(new {Message="تم تفعيل حساب المستخدم" });
             }
             return BadRequest(new { Message = "الرمز غير صحيح" });
@@ -191,7 +190,7 @@ namespace Malzamaty.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid Id)
         {
-            var User =await _wrapper.User.Delete(Id);
+            var User =await _userService.Delete(Id);
             if (User == null)
             {
                 return NotFound();

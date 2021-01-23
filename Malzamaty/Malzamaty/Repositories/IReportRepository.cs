@@ -11,8 +11,8 @@ namespace Malzamaty.Services
     public class ReportRepository : BaseRepository<Report>, IReportRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly Mapper _mapper;
-        public ReportRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
+        protected readonly IMapper _mapper;
+        public ReportRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
         }

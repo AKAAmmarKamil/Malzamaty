@@ -20,8 +20,8 @@ namespace Malzamaty.Repositories
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected readonly DbContext RepositoryContext;
-        protected readonly Mapper _mapper;
-        public BaseRepository(DbContext context,Mapper mapper)
+        protected readonly IMapper _mapper;
+        public BaseRepository(DbContext context,IMapper mapper)
         {
             RepositoryContext = context;
             _mapper = mapper;

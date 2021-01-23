@@ -16,9 +16,9 @@ namespace Malzamaty.Services
     public class MatchRepository : BaseRepository<Match>, IMatchRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly Mapper _mapper;
+        protected readonly IMapper _mapper;
 
-        public MatchRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
+        public MatchRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
         }

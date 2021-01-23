@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,17 +16,17 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class MatchController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly IMatchService _matchService;
         private readonly IMapper _mapper;
-        public MatchController(IRepositoryWrapper wrapper, IMapper mapper)
+        public MatchController(IMatchService matchService, IMapper mapper)
         {
-            _wrapper = wrapper;
+            _matchService = matchService;
             _mapper = mapper;
         }
         [HttpGet("{Id}",Name = "GetMatchById")]
         public async Task<ActionResult<MatchReadDto>> GetMatchById(Guid Id)
         {
-            var result = await _wrapper.Match.FindById(Id);
+            var result = await  _matchService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -36,7 +37,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<MatchReadDto>> GetAllMatches(int PageNumber,int Count)
         {
-            var result =await _wrapper.Match.FindAll(PageNumber,Count);
+            var result =await _matchService.All(PageNumber,Count);
             var MatchModel = _mapper.Map<IList<MatchReadDto>>(result);
             return Ok(MatchModel);
         }
@@ -44,28 +45,27 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<MatchReadDto>> AddMatch([FromBody] MatchWriteDto MatchWriteDto)
         {
             var MatchModel = _mapper.Map<Match>(MatchWriteDto);
-            await _wrapper.Match.Create(MatchModel);
-            var Result = _wrapper.Match.FindById(MatchModel.ID);
-            var MatchReadDto = _mapper.Map<MatchReadDto>(Result.Result);
+            await _matchService.Create(MatchModel);
+            var Result =await _matchService.FindById(MatchModel.ID);
+            var MatchReadDto = _mapper.Map<MatchReadDto>(Result);
             return CreatedAtRoute("GetMatchById", new { Id = MatchReadDto.ID }, MatchReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMatch(Guid Id, [FromBody] MatchWriteDto MatchWriteDto)
         {
-            var MatchModelFromRepo = await _wrapper.Match.FindById(Id);
+            var MatchModelFromRepo = await _matchService.FindById(Id);
             if (MatchModelFromRepo == null)
             {
                 return NotFound();
             }
-            MatchModelFromRepo.ClassID = MatchWriteDto.Class;
-            MatchModelFromRepo.SubjectID = MatchWriteDto.Subject;
-            _wrapper.Save();
+             var MatchModel = _mapper.Map<Match>(MatchWriteDto);
+            await _matchService.Modify(Id, MatchModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMatches(Guid Id)
         {
-            var Match =await _wrapper.Match.Delete(Id);
+            var Match =await _matchService.Delete(Id);
             if (Match == null)
             {
                 return NotFound();

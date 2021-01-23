@@ -11,9 +11,9 @@ namespace Malzamaty.Services
     public class ClassTypeRepository : BaseRepository<ClassType>, IClassTypeRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly Mapper _mapper;
+        protected readonly IMapper _mapper;
 
-        public ClassTypeRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
+        public ClassTypeRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
         }

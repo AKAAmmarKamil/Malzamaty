@@ -21,8 +21,8 @@ namespace Malzamaty.Services
     public class FileRepository : BaseRepository<File>, IFileRepository
     {
         private readonly MalzamatyContext _db;
-        private readonly Mapper _mapper;
-        public FileRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
+        private readonly IMapper _mapper;
+        public FileRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
         }

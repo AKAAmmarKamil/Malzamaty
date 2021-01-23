@@ -18,8 +18,8 @@ namespace Malzamaty.Services
     public class InterestsRepository : BaseRepository<Interests>, IInterestRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly Mapper _mapper;
-        public InterestsRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
+        protected readonly IMapper _mapper;
+        public InterestsRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
         }

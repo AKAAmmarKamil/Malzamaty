@@ -11,8 +11,8 @@ namespace Malzamaty.Services
     public class RatingRepository : BaseRepository<Rating>, IRatingRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly Mapper _mapper;
-        public RatingRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
+        protected readonly IMapper _mapper;
+        public RatingRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +15,22 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class RatingController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
+        private readonly IRatingService _ratingService;
+        private readonly IFileService _fileService;
+        private readonly IUserService _userService;
+
         private readonly IMapper _mapper;
-        public RatingController(IRepositoryWrapper wrapper, IMapper mapper)
+        public RatingController(IRatingService ratingService,IFileService fileService,IUserService userService, IMapper mapper)
         {
-            _wrapper = wrapper;
+            _ratingService = ratingService;
+            _fileService = fileService;
+            _userService = userService;
             _mapper = mapper;
         }
         [HttpGet("{Id}",Name = "GetRatingById")]
         public async Task<ActionResult<RatingReadDto>> GetRatingById(Guid Id)
         {
-            var result = await _wrapper.Rating.FindById(Id);
+            var result = await _ratingService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -35,8 +41,8 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber,int Count)
         {
-            var result =_wrapper.Rating.FindAll(PageNumber,Count).Result.ToList();
-            var RatingModel = _mapper.Map<List<RatingReadDto>>(result);
+            var result =await _ratingService.All(PageNumber,Count);
+            var RatingModel = _mapper.Map<IList<RatingReadDto>>(result);
             return Ok(RatingModel);
         }
         [Authorize]
@@ -45,30 +51,29 @@ namespace Malzamaty.Controllers
         {
             GetClaim("ID");
             var RatingModel = _mapper.Map<Rating>(RatingWriteDto);
-            RatingModel.File =await _wrapper.File.FindById(RatingWriteDto.FileID);
-            RatingModel.User = await _wrapper.User.FindById(Guid.Parse(GetClaim("ID")));
-            await _wrapper.Rating.Create(RatingModel);
-            var Result = _wrapper.Rating.FindById(RatingModel.ID);
+            RatingModel.File =await _fileService.FindById(RatingWriteDto.FileID);
+            RatingModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
+            await _ratingService.Create(RatingModel);
+            var Result = _ratingService.FindById(RatingModel.ID);
             var RatingReadDto = _mapper.Map<RatingReadDto>(Result.Result);
             return CreatedAtRoute("GetRatingById", new { Id = RatingReadDto.Id }, RatingReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRating(Guid Id, [FromBody] RatingWriteDto RatingWriteDto)
         {
-            var RatingModelFromRepo = await _wrapper.Rating.FindById(Id);
+            var RatingModelFromRepo = await _ratingService.FindById(Id);
             if (RatingModelFromRepo == null)
             {
                 return NotFound();
             }
-            RatingModelFromRepo.Comment = RatingWriteDto.Comment;
-            RatingModelFromRepo.Rate = RatingWriteDto.Rate;
-            _wrapper.Save();
+            var RatingModel = _mapper.Map<Rating>(RatingWriteDto);
+            await _ratingService.Modify(Id, RatingModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRatinges(Guid Id)
         {
-            var Rating = await _wrapper.Rating.Delete(Id);
+            var Rating = await _ratingService.Delete(Id);
             if (Rating == null)
             {
                 return NotFound();

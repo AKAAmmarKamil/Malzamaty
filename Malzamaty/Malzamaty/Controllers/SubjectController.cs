@@ -14,19 +14,17 @@ namespace Malzamaty.Controllers
     [ApiController]
     public class SubjectController : BaseController
     {
-        private readonly IRepositoryWrapper _wrapper;
-        private readonly SubjectService _subjectService;
+        private readonly ISubjectService _subjectService;
         private readonly IMapper _mapper;
-        public SubjectController(IRepositoryWrapper wrapper,SubjectService subjectService,IMapper mapper)
+        public SubjectController(ISubjectService subjectService,IMapper mapper)
         {
-            _wrapper = wrapper;
             _subjectService = subjectService;
             _mapper = mapper;
         }
         [HttpGet("{Id}",Name = "GetSubjectById")]
         public async Task<ActionResult<SubjectWriteDto>> GetSubjectById(Guid Id)
         {
-            var result = await _wrapper.Subject.FindById(Id);
+            var result = await _subjectService.FindById(Id);
             if (result==null)
             {
                 return NotFound();
@@ -37,7 +35,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<SubjectReadDto>> GetAllSubjects(int PageNumber,int Count)
         {
-            var result = await _wrapper.Subject.FindAll(PageNumber,Count);
+            var result = await _subjectService.All(PageNumber,Count);
             var SubjectModel = _mapper.Map<IList<SubjectReadDto>>(result);
             return Ok(SubjectModel);
         }
@@ -45,26 +43,26 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<SubjectReadDto>> AddSubject([FromBody] SubjectWriteDto subjectWriteDto )
         {
             var SubjectModel = _mapper.Map<Subject>(subjectWriteDto);
-            await _wrapper.Subject.Create(SubjectModel);
+            await _subjectService.Create(SubjectModel);
             var SubjectReadDto = _mapper.Map<SubjectReadDto>(SubjectModel);
             return CreatedAtRoute("GetSubjectById", new { Id = SubjectReadDto.ID }, SubjectReadDto);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSubject(Guid Id,[FromBody]SubjectWriteDto subjectWriteDto)
         {
-            var SubjectModelFromRepo =await _wrapper.Subject.FindById(Id);
+            var SubjectModelFromRepo =await _subjectService.FindById(Id);
             if (SubjectModelFromRepo == null)
             {
                 return NotFound();
             }
-            SubjectModelFromRepo.Name = subjectWriteDto.Name;
-            _wrapper.Save();
+            var SubjectModel = _mapper.Map<Subject>(subjectWriteDto);
+            await _subjectService.Modify(Id,SubjectModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubjects(Guid Id)
         {
-            var Subject=await _wrapper.Subject.Delete(Id);
+            var Subject=await _subjectService.Delete(Id);
             if (Subject == null)
             {
                 return NotFound();
