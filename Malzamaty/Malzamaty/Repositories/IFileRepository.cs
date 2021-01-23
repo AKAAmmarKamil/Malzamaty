@@ -28,7 +28,8 @@ namespace Malzamaty.Services
         }
         public async Task<File> FindById(Guid id)
         {
-            var Result = await _db.File.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == id);
+            var Result = await _db.File.Include(x => x.Subject).Include(x => x.User).Include(x => x.Class)
+            .ThenInclude(x => x.ClassType).Include(x => x.Class).ThenInclude(x => x.Stage).FirstOrDefaultAsync(x => x.ID == id);
 
             if (Result == null) return null;
             return Result;
@@ -40,7 +41,8 @@ namespace Malzamaty.Services
                  return false;
             return  true;
         }
-        public async Task<IEnumerable<File>> FindAll(int PageNumber, int count) => await _db.File.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
+        public async Task<IEnumerable<File>> FindAll(int PageNumber, int count) => await _db.File.Include(x => x.Subject).Include(x => x.User).Include(x => x.Class)
+            .ThenInclude(x=>x.ClassType).Include(x=>x.Class).ThenInclude(x=>x.Stage).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
         public async Task<List<File>> MostDownloaded(Guid Id, bool WithReports)
         {
             var Files = new List<File>();

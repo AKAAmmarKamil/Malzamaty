@@ -38,6 +38,17 @@ namespace Malzamaty.Controllers
             var RatingModel = _mapper.Map<RatingReadDto>(result);
             return Ok(RatingModel);
         }
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<RatingReadDto>> GetRatingByFile(Guid Id)
+        {
+            var result = await _ratingService.GetRatingByFile(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var RatingModel = _mapper.Map<List<RatingReadDto>>(result);
+            return Ok(RatingModel);
+        }
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber,int Count)
         {
