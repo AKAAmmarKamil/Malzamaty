@@ -1,4 +1,5 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,8 +18,8 @@ namespace Malzamaty.Services
     public class InterestsRepository : BaseRepository<Interests>, IInterestRepository
     {
         private readonly MalzamatyContext _db;
-
-        public InterestsRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+        public InterestsRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }

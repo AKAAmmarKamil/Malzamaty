@@ -1,5 +1,7 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
+using System;
 
 namespace Malzamaty.Services
 {
@@ -9,7 +11,8 @@ namespace Malzamaty.Services
     public class StageRepository : BaseRepository<Stage>, IStageRepository
     {
         private readonly MalzamatyContext _db;
-        public StageRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+        public StageRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }

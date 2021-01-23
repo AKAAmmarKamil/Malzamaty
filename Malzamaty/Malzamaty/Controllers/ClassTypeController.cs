@@ -32,9 +32,9 @@ namespace Malzamaty.Controllers
             return Ok(ClassTypeModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<ClassTypeReadDto>> GetAllClassTypes(int PageNumber, int Count)
+        public async Task<ActionResult<ClassTypeReadDto>> GetAllClassTypes(int PageNumber,int Count)
         {
-            var result = await _wrapper.ClassType.FindAll(PageNumber, Count);
+            var result = await _wrapper.ClassType.FindAll(PageNumber,Count);
             var ClassTypesModel = _mapper.Map<IList<ClassTypeReadDto>>(result);
             return Ok(ClassTypesModel);
         }
@@ -55,7 +55,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             ClassTypeModelFromRepo.Name = ClassTypeWriteDto.Name;
-            _wrapper.ClassType.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

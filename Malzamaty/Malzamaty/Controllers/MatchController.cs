@@ -34,9 +34,9 @@ namespace Malzamaty.Controllers
             return Ok(MatchModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<MatchReadDto>> GetAllMatches(int PageNumber, int Count)
+        public async Task<ActionResult<MatchReadDto>> GetAllMatches(int PageNumber,int Count)
         {
-            var result = _wrapper.Match.FindAll(PageNumber, Count).Result.ToList();
+            var result =await _wrapper.Match.FindAll(PageNumber,Count);
             var MatchModel = _mapper.Map<IList<MatchReadDto>>(result);
             return Ok(MatchModel);
         }

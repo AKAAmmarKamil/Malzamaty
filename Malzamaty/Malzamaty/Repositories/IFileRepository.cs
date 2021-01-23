@@ -1,4 +1,5 @@
-﻿using Malzamaty.Dto;
+﻿using AutoMapper;
+using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,8 @@ namespace Malzamaty.Services
     public class FileRepository : BaseRepository<File>, IFileRepository
     {
         private readonly MalzamatyContext _db;
-        public FileRepository(MalzamatyContext context) : base(context)
+        private readonly Mapper _mapper;
+        public FileRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }

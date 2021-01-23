@@ -1,4 +1,5 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Model.Form;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,8 @@ namespace Malzamaty.Repository
     public class UserRepository : BaseRepository<User>, IUsersRepository
     {
         private readonly MalzamatyContext _db;
-
-        public UserRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+        public UserRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }

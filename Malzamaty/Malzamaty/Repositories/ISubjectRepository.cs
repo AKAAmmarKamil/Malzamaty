@@ -1,5 +1,8 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
+using System;
+
 namespace Malzamaty
 {
     public interface ISubjectRepository : IBaseRepository<Subject>
@@ -8,7 +11,8 @@ namespace Malzamaty
     public class SubjectRepository : BaseRepository<Subject>, ISubjectRepository
     {
         private readonly MalzamatyContext _db;
-        public SubjectRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+        public SubjectRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }

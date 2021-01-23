@@ -55,7 +55,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             CountryModelFromRepo.Name = countryWriteDto.Name;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

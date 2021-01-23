@@ -43,9 +43,9 @@ namespace Malzamaty.Controllers
             return Ok(FileModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber, int Count)
+        public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber,int Count)
         {
-            var result =await _wrapper.File.FindAll(PageNumber, Count);
+            var result =await _wrapper.File.FindAll(PageNumber,Count);
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }

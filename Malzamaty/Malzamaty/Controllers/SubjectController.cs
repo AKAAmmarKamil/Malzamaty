@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using Malzamaty.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace Malzamaty.Controllers
@@ -14,10 +15,12 @@ namespace Malzamaty.Controllers
     public class SubjectController : BaseController
     {
         private readonly IRepositoryWrapper _wrapper;
+        private readonly SubjectService _subjectService;
         private readonly IMapper _mapper;
-        public SubjectController(IRepositoryWrapper wrapper,IMapper mapper)
+        public SubjectController(IRepositoryWrapper wrapper,SubjectService subjectService,IMapper mapper)
         {
             _wrapper = wrapper;
+            _subjectService = subjectService;
             _mapper = mapper;
         }
         [HttpGet("{Id}",Name = "GetSubjectById")]
@@ -34,7 +37,7 @@ namespace Malzamaty.Controllers
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<SubjectReadDto>> GetAllSubjects(int PageNumber,int Count)
         {
-            var result = await _wrapper.Subject.FindAll(PageNumber, Count);
+            var result = await _wrapper.Subject.FindAll(PageNumber,Count);
             var SubjectModel = _mapper.Map<IList<SubjectReadDto>>(result);
             return Ok(SubjectModel);
         }

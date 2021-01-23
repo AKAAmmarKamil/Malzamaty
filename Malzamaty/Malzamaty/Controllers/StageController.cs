@@ -32,9 +32,9 @@ namespace Malzamaty.Controllers
             return Ok(StageModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<StageReadDto>> GetAllStages(int PageNumber, int Count)
+        public async Task<ActionResult<StageReadDto>> GetAllStages(int PageNumber,int Count)
         {
-            var result = await _wrapper.Stage.FindAll(PageNumber, Count);
+            var result = await _wrapper.Stage.FindAll(PageNumber,Count);
             var StageModel = _mapper.Map<IList<StageReadDto>>(result);
             return Ok(StageModel);
         }
@@ -55,7 +55,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             StageModelFromRepo.Name = StageWriteDto.Name;
-            _wrapper.Stage.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

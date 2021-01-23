@@ -33,9 +33,9 @@ namespace Malzamaty.Controllers
             return Ok(RatingModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber, int Count)
+        public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber,int Count)
         {
-            var result =_wrapper.Rating.FindAll(PageNumber, Count).Result.ToList();
+            var result =_wrapper.Rating.FindAll(PageNumber,Count).Result.ToList();
             var RatingModel = _mapper.Map<List<RatingReadDto>>(result);
             return Ok(RatingModel);
         }
@@ -62,7 +62,7 @@ namespace Malzamaty.Controllers
             }
             RatingModelFromRepo.Comment = RatingWriteDto.Comment;
             RatingModelFromRepo.Rate = RatingWriteDto.Rate;
-            _wrapper.User.SaveChanges();
+            _wrapper.Save();
             return NoContent();
         }
         [HttpDelete("{id}")]

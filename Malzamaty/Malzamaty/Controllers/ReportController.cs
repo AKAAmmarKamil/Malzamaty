@@ -32,9 +32,9 @@ namespace Malzamaty.Controllers
             return Ok(ReportModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber, int Count)
+        public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber,int Count)
         {
-            var result =_wrapper.Report.FindAll(PageNumber, Count).Result.ToList();
+            var result =_wrapper.Report.FindAll(PageNumber,Count).Result.ToList();
             var ReportModel = _mapper.Map<List<ReportReadDto>>(result);
             return Ok(ReportModel);
         }

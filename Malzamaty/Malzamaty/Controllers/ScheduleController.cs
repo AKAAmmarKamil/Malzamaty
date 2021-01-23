@@ -33,9 +33,9 @@ namespace Malzamaty.Controllers
             return Ok(ScheduleModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<ScheduleReadDto>> GetAllSchedules(int PageNumber, int Count)
+        public async Task<ActionResult<ScheduleReadDto>> GetAllSchedules(int PageNumber,int Count)
         {
-            var result =_wrapper.Schedule.FindAll(PageNumber, Count).Result.ToList();
+            var result =_wrapper.Schedule.FindAll(PageNumber,Count).Result.ToList();
             var ScheduleModel = _mapper.Map<List<ScheduleReadDto>>(result);
             return Ok(ScheduleModel);
         }

@@ -1,4 +1,5 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,8 @@ namespace Malzamaty.Services
     public class CountryRepository : BaseRepository<Country>, ICountryRepository
     {
         private readonly MalzamatyContext _db;
-        public CountryRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+        public CountryRepository(MalzamatyContext context,Mapper mapper) : base(context,mapper)
         {
             _db = context;
         }

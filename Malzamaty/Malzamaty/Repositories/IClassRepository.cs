@@ -1,4 +1,5 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,14 +15,15 @@ namespace Malzamaty
     public class ClassRepository : BaseRepository<Class>, IClassRepository
     {
         private readonly MalzamatyContext _db;
-        public ClassRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+
+        public ClassRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }
         public async Task<Class> FindById(Guid id)
         {
             var Result = await _db.Class.Include(x => x.Stage).Include(x => x.ClassType).Include(x => x.Country).FirstOrDefaultAsync(x => x.ID == id);
-
             if (Result == null) return null;
             return Result;
         }

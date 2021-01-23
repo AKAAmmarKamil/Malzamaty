@@ -1,4 +1,5 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,7 +16,9 @@ namespace Malzamaty.Services
     public class MatchRepository : BaseRepository<Match>, IMatchRepository
     {
         private readonly MalzamatyContext _db;
-        public MatchRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+
+        public MatchRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }

@@ -2,16 +2,16 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.Collections.Generic;
 
 namespace Malzamaty.Repositories
 {
-    public interface IBaseRepository<T> where T:class
+    public interface IBaseRepository<T> where T : class
     {
-        Task<IEnumerable<T>> FindAll(int PageNumber,int count);
+        Task<IEnumerable<T>> FindAll(int PageNumber, int count);
         Task<T> FindById(Guid k);
         Task<T> Create(T entity);
         Task<T> Delete(Guid k);
@@ -20,14 +20,15 @@ namespace Malzamaty.Repositories
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected readonly DbContext RepositoryContext;
-
-        public BaseRepository(DbContext context)
+        protected readonly Mapper _mapper;
+        public BaseRepository(DbContext context,Mapper mapper)
         {
             RepositoryContext = context;
+            _mapper = mapper;
         }
         public async Task<IEnumerable<T>> FindAll(int PageNumber, int count)
         {
-           return await RepositoryContext.Set<T>().Skip((PageNumber -1) * count).Take(count).ToListAsync();
+            return await RepositoryContext.Set<T>().Skip((PageNumber - 1) * count).Take(count).ToListAsync();
         }
 
         public async Task<T> Create(T t)
@@ -57,8 +58,7 @@ namespace Malzamaty.Repositories
             return result;
         }
 
-        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate) =>RepositoryContext.Set<T>().Where(predicate);
-           
-    }
+        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate) => RepositoryContext.Set<T>().Where(predicate);
 
+    }
 }

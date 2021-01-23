@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace Malzamaty.Services
 {
@@ -17,7 +18,8 @@ namespace Malzamaty.Services
     public class ScheduleRepository : BaseRepository<Schedule>, IScheduleRepository
     {
         private readonly MalzamatyContext _db;
-        public ScheduleRepository(MalzamatyContext context) : base(context)
+        protected readonly Mapper _mapper;
+        public ScheduleRepository(MalzamatyContext context, Mapper mapper) : base(context, mapper)
         {
             _db = context;
         }

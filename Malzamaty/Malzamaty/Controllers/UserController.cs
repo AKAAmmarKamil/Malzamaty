@@ -108,9 +108,9 @@ namespace Malzamaty.Controllers
             return Ok(UserModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber, int Count)
+        public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber,int Count)
         {
-            var Users = _wrapper.User.FindAll(PageNumber, Count).Result.ToList();
+            var Users = _wrapper.User.FindAll(PageNumber,Count).Result.ToList();
             var Interest = new List<Interests>();
             var InterestModel = new List<InterestReadDto>();
             var UserModel= _mapper.Map<List<UserReadDto>>(Users);
