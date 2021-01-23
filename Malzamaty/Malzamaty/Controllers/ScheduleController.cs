@@ -13,6 +13,7 @@ namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
     [ApiController]
+    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student)]
     public class ScheduleController : BaseController
     {
         private readonly IScheduleService _scheduleService;
@@ -63,8 +64,8 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<ScheduleReadDto>> AddSchedule([FromBody] ScheduleWriteDto ScheduleWriteDto)
         {
             var Schedules = _scheduleService.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
-            var UserClass = _interestService.FindByUser(Guid.Parse(GetClaim("ID")));
-            var Match =await _matchService.FindByClass(UserClass.Result.ClassID,ScheduleWriteDto.Subject);
+            var UserClass =await _interestService.FindByUser(Guid.Parse(GetClaim("ID")));
+            var Match =await _matchService.FindByClass(UserClass.ClassID,ScheduleWriteDto.Subject);
             if (Match.Count()==0) 
             {
                 return BadRequest(new { Error = "المادة غير متوافقة مع صفك" });
@@ -79,10 +80,9 @@ namespace Malzamaty.Controllers
             }
             var ScheduleModel = _mapper.Map<Schedule>(ScheduleWriteDto);
             ScheduleModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
-            ScheduleModel.Subject = await _subjectService.FindById(ScheduleWriteDto.Subject);
-            await _scheduleService.Create(ScheduleModel);
-            var Result = _scheduleService.FindById(ScheduleModel.ID);
-            var ScheduleReadDto = _mapper.Map<ScheduleReadDto>(Result.Result);
+            ScheduleModel.Subject = await _subjectService.FindById(ScheduleWriteDto.Subject);   
+            var Result = await _scheduleService.Create(ScheduleModel);
+            var ScheduleReadDto = _mapper.Map<ScheduleReadDto>(Result);
             return CreatedAtRoute("GetScheduleById", new { Id = ScheduleReadDto.Id }, ScheduleReadDto);
         }
         [HttpPut("{id}")]

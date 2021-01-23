@@ -45,8 +45,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<MatchReadDto>> AddMatch([FromBody] MatchWriteDto MatchWriteDto)
         {
             var MatchModel = _mapper.Map<Match>(MatchWriteDto);
-            await _matchService.Create(MatchModel);
-            var Result =await _matchService.FindById(MatchModel.ID);
+            var Result = await _matchService.Create(MatchModel);
             var MatchReadDto = _mapper.Map<MatchReadDto>(Result);
             return CreatedAtRoute("GetMatchById", new { Id = MatchReadDto.ID }, MatchReadDto);
         }

@@ -46,9 +46,8 @@ namespace Malzamaty.Controllers
         {
             var ReportModel = _mapper.Map<Report>(ReportWriteDto);
             ReportModel.File =await _fileService.FindById(ReportWriteDto.FileID);
-            await _reportService.Create(ReportModel);
-            var Result = _reportService.FindById(ReportModel.ID);
-            var ReportReadDto = _mapper.Map<ReportReadDto>(Result.Result);
+            var Result = await _reportService.Create(ReportModel);
+            var ReportReadDto = _mapper.Map<ReportReadDto>(Result);
             return CreatedAtRoute("GetReportById", new { Id = ReportReadDto.Id }, ReportReadDto);
         }
         [HttpPut("{id}")]

@@ -225,11 +225,11 @@ namespace Malzamaty.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("FinishStudy")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("FinishStudy")
+                        .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTime>("StartStudy")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("StartStudy")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("SubjectID")
                         .HasColumnType("uniqueidentifier");
@@ -397,7 +397,7 @@ namespace Malzamaty.Migrations
             modelBuilder.Entity("Malzamaty.Model.Rating", b =>
                 {
                     b.HasOne("Malzamaty.Model.File", "File")
-                        .WithMany()
+                        .WithMany("Rating")
                         .HasForeignKey("FileID");
 
                     b.HasOne("Malzamaty.Model.User", "User")
@@ -435,6 +435,8 @@ namespace Malzamaty.Migrations
 
             modelBuilder.Entity("Malzamaty.Model.File", b =>
                 {
+                    b.Navigation("Rating");
+
                     b.Navigation("Report");
                 });
 #pragma warning restore 612, 618

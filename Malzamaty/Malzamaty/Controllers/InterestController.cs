@@ -51,15 +51,15 @@ namespace Malzamaty.Controllers
         {
             var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
             InterestModel.User =await _userService.FindById(Guid.Parse(GetClaim("ID")));
-            await _interestService.Create(InterestModel);
-            var Result = _interestService.FindById(InterestModel.ID);
-            var InterestReadDto = _mapper.Map<InterestReadDto>(Result.Result);
+            var Result = await _interestService.Create(InterestModel);
+            var InterestReadDto = _mapper.Map<InterestReadDto>(Result);
             return CreatedAtRoute("GetInterestById", new { Id = InterestReadDto.ID }, InterestReadDto);
         }
         [Authorize(Roles =UserRole.Admin+","+UserRole.Student)]
         [HttpPut]
         public async Task<IActionResult> UpdateInterestBySchedule()
         {
+            var Now = DateTime.Now;
             var InterestModelFromRepo = await _interestService.FindByUser(Guid.Parse(GetClaim("ID")));
             if (InterestModelFromRepo == null)
             {
@@ -68,8 +68,7 @@ namespace Malzamaty.Controllers
             var Schedules = _scheduleService.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
             for (int i = 0; i < Schedules.Count; i++)
             {
-                if (await _scheduleService.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false &&
-                    await _scheduleService.IsBewteenTwoDates(DateTime.Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == false)
+                if (await _scheduleService.IsBewteenTwoDates(Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == true)
                 {
                    await _interestService.ModifyBySchedule(Guid.Parse(GetClaim("ID")), Schedules[i].Subject.ID);
                 }

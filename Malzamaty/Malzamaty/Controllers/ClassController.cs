@@ -43,8 +43,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<ClassReadDto>> AddClass([FromBody] ClassWriteDto ClassWriteDto)
         {
             var ClassModel = _mapper.Map<Class>(ClassWriteDto);
-            await _classService.Create(ClassModel);
-            var Result =await _classService.FindById(ClassModel.ID);
+            var Result = await _classService.Create(ClassModel);
             var ClassReadDto = _mapper.Map<ClassReadDto>(Result);
             return CreatedAtRoute("GetClassById", new { Id = ClassReadDto.ID }, ClassReadDto);
         }

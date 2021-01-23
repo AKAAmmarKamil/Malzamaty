@@ -64,9 +64,8 @@ namespace Malzamaty.Controllers
             var RatingModel = _mapper.Map<Rating>(RatingWriteDto);
             RatingModel.File =await _fileService.FindById(RatingWriteDto.FileID);
             RatingModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
-            await _ratingService.Create(RatingModel);
-            var Result = _ratingService.FindById(RatingModel.ID);
-            var RatingReadDto = _mapper.Map<RatingReadDto>(Result.Result);
+            var Result = await _ratingService.Create(RatingModel);
+            var RatingReadDto = _mapper.Map<RatingReadDto>(Result);
             return CreatedAtRoute("GetRatingById", new { Id = RatingReadDto.Id }, RatingReadDto);
         }
         [HttpPut("{id}")]

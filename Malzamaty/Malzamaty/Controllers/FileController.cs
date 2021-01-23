@@ -146,8 +146,7 @@ namespace Malzamaty.Controllers
             }
             if (System.IO.File.Exists(FullPath))
             {
-                await _fileService.Create(FileModel);
-                var Result = await _fileService.FindById(FileModel.ID);
+                var Result = await _fileService.Create(FileModel);
                 var FileReadDto = _mapper.Map<FileReadDto>(Result);
                 return CreatedAtRoute("GetFileById", new { Id = FileReadDto.Id }, FileReadDto);
             }    

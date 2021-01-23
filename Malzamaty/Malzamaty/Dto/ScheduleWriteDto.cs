@@ -9,24 +9,25 @@ namespace Malzamaty.Dto
     public class ScheduleWriteDto : IValidatableObject
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public DateTime StartStudy { get; set; }
+        public DateTimeOffset StartStudy { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public DateTime FinishStudy { get; set; }
+        public DateTimeOffset FinishStudy { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid Subject { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var service = (MalzamatyContext)validationContext.GetService(typeof(MalzamatyContext));
-            var File = service.Subject.FirstOrDefault(x => x.ID == Subject);
-            if (File == null)
+            var subject = service.Subject.FirstOrDefault(x => x.ID ==Subject);
+            if (subject == null)
             {
                 yield return new ValidationResult("المادة غير موجودة");
             }
-            if (StartStudy<DateTime.Now|| FinishStudy < DateTime.Now)
+            var Now = DateTimeOffset.Now;
+            if (StartStudy < Now || FinishStudy < Now)
             {
                 yield return new ValidationResult("يجب أن يكون التاريخ أكبر من التاريخ الحالي");
             }
-            if ((StartStudy-DateTime.Now).TotalDays>365|| (FinishStudy - DateTime.Now).TotalDays > 365)
+            if ((StartStudy-Now).TotalDays>365|| (FinishStudy - Now).TotalDays > 365)
             {
                 yield return new ValidationResult("لا يمكن أن يكون التاريخ بعد سنة كاملة");
             }

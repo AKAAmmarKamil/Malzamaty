@@ -13,7 +13,7 @@ namespace Malzamaty.Services
     {
         Task<IEnumerable<Schedule>> GetUserSchedules(Guid Id);
         Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count, Guid Id);
-        Task<bool> IsBewteenTwoDates(DateTime dt, DateTime start, DateTime end);
+        Task<bool> IsBewteenTwoDates(DateTimeOffset dt, DateTimeOffset start, DateTimeOffset end);
     }
     public class ScheduleRepository : BaseRepository<Schedule>, IScheduleRepository
     {
@@ -23,7 +23,7 @@ namespace Malzamaty.Services
         {
             _db = context;
         }
-        public async Task<bool> IsBewteenTwoDates(DateTime dt, DateTime start, DateTime end)
+        public async Task<bool> IsBewteenTwoDates(DateTimeOffset dt, DateTimeOffset start, DateTimeOffset end)
         { 
             return dt >= start && dt <= end;
         }
