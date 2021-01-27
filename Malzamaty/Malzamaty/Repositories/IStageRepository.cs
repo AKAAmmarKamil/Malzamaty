@@ -11,7 +11,6 @@ namespace Malzamaty.Services
     public class StageRepository : BaseRepository<Stage>, IStageRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly IMapper _mapper;
         public StageRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;

@@ -56,7 +56,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             var ClassModel = _mapper.Map<Class>(ClassUpdateDto);
-            _classService.Modify(Id, ClassModel);
+            await _classService.Modify(Id, ClassModel);
             return NoContent();
         }
         [HttpDelete("{id}")]

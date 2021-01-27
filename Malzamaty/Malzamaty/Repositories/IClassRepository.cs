@@ -15,8 +15,6 @@ namespace Malzamaty
     public class ClassRepository : BaseRepository<Class>, IClassRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly IMapper _mapper;
-
         public ClassRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;

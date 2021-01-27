@@ -2,8 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using Malzamaty.Form;
-using Microsoft.AspNetCore.Hosting;
-
 namespace Malzamaty.Attachment {
     public class Attachment {
         public static async Task<byte[]> ConvertToBytes(string Path) => File.ReadAllBytes(Path);

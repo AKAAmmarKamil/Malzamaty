@@ -23,14 +23,14 @@ namespace Malzamaty.Controllers
         private readonly IFileService _fileService;
         private readonly IUserService _userService;
         private readonly ISubjectService _subjectService;
+        private readonly IRatingService _ratingService;
         private readonly IClassService _classService;
         private readonly IMapper _mapper;
-        [Obsolete]
         private IHostingEnvironment _environment;
 
         [Obsolete]
         public FileController(IHostingEnvironment environment, IFileService fileService,IUserService userService,
-            ISubjectService subjectService,IClassService classService, IMapper mapper)
+            ISubjectService subjectService,IClassService classService,IRatingService ratingService, IMapper mapper)
         {
             _fileService = fileService;
             _userService = userService;
@@ -38,6 +38,7 @@ namespace Malzamaty.Controllers
             _classService = classService;
             _mapper = mapper;
             _environment = environment;
+            _ratingService = ratingService;
         }
         [HttpGet("{Id}",Name = "GetFileById")]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
@@ -63,7 +64,6 @@ namespace Malzamaty.Controllers
         {
             var User = GetClaim("ID");
             var result = await _fileService.TopRating(Guid.Parse(User), WithReports);
-
             if (WithReports == true)
             {
                 var FileReadDto = _mapper.Map<List<FileWithReportsAndRatingReadDto>>(result);

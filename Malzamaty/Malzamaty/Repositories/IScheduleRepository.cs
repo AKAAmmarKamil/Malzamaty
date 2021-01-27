@@ -18,7 +18,6 @@ namespace Malzamaty.Services
     public class ScheduleRepository : BaseRepository<Schedule>, IScheduleRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly IMapper _mapper;
         public ScheduleRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;

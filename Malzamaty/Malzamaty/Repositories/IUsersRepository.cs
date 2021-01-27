@@ -3,10 +3,7 @@ using Malzamaty.Model;
 using Malzamaty.Model.Form;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 namespace Malzamaty.Repository
 {
@@ -18,7 +15,6 @@ namespace Malzamaty.Repository
     public class UserRepository : BaseRepository<User>, IUsersRepository
     {
         private readonly MalzamatyContext _db;
-        protected readonly IMapper _mapper;
         public UserRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
