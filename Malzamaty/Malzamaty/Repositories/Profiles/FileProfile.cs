@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
-using Malzamaty.Repositories.Profiles;
 using Malzamaty.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -41,12 +40,11 @@ namespace Malzamaty
                                                       .ForMember(x => x.SubjectName, opt => opt.MapFrom(x => x.Subject.Name))
                                                       .ForMember(x => x.Rate, opt => opt.MapFrom(x=>x.Rating.Average(a=>a.Rate)));
             CreateMap<FileWriteDto, File>()
-                .ForMember(x => x.UploadDate, opt => opt.MapFrom(x => System.DateTime.Now))
+                .ForMember(x => x.UploadDate, opt => opt.MapFrom(x => DateTime.Now))
                 .ForMember(x => x.Class, opt => opt.Ignore())
-                .ForMember(x => x.Subject, opt => opt.Ignore())
                 .ForMember(x => x.User, opt => opt.Ignore())
-                ;
-                
+                .ForMember(source => source.Subject, opt => opt.Ignore());
+
             CreateMap<File,FileWriteDto >();
            
 

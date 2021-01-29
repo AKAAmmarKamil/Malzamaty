@@ -8,7 +8,6 @@ namespace Malzamaty.Dto
 {
     public class RatingWriteDto : IValidatableObject
     {
-        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string Comment { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public int Rate { get; set; }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
+using System;
 
 namespace Malzamaty
 {
@@ -10,7 +11,8 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap<Rating, RatingReadDto>();
-            CreateMap<RatingWriteDto, Rating>();
+            CreateMap<RatingWriteDto, Rating>().ForMember(d => d.File,
+                 opt => opt.MapFrom(s => s));
             CreateMap<Rating, RatingWriteDto>();
         }
     }

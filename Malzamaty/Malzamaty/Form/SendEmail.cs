@@ -18,30 +18,51 @@ namespace Malzamaty.Form
             var StarsToString = "*****";           
             var HideEmail = Email.Substring(0,2)+StarsToString + Domain;
             var Message = GetMessage(Code, HideEmail);
-            var mail = new MailMessage("AmmarKamil909@gmail.com",Email,"تغيير كلمة مرور",Message);
+            var mail = new MailMessage("malzamatyplatform@gmail.com",Email,"تغيير كلمة مرور",Message);
             mail.IsBodyHtml = true;
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
-                Credentials = new NetworkCredential("AmmarKamil909@gmail.com", "Gou=aka333@"),
-                EnableSsl = true,
+                Credentials = new NetworkCredential("malzamatyplatform@gmail.com", "123*Qwer"),
+                EnableSsl = true
             };
             smtpClient.Send(mail);
             return Code;
         }
         public static string GetMessage(string Code,string Email)
         {
-            return @"<html><Body><table dir ='rtl'><tbody><tr><td> حساب ملزمتي </td></tr><tr><td> رمز إعادة تعيين كلمة مرور</td></tr><tr><td> الرجاء استخدام هذا الرمز لإعادة تعيين كلمة مرور حساب &lrm;<a href='mailto:am*****@gmail.com' target='_blank'>am***** @gmail.com</a>&nbsp; على ملزمتي.</td></tr><tr><td> فيما يلي الرمز الخاص بك:<span id = 'CodeId' > 7151647 </ span >
-            < button onClick= 'copy()' > نسخ الرمز</button></td></tr><tr><td><tr><td> شكرًا،</td></tr><tr><td> فريق حساب ملزمتي</td></tr></tbody></table></Body><script>function copy() {var copyText = document.getElementById('CodeId');
+            return @"<html>
+<Body>
+<table dir=""rtl"">
+      <tbody><tr><td id = ""m_-1042003640292068949i1"" style = ""padding:0;font-family:'Segoe UI Semibold','Segoe UI Bold','Segoe UI','Helvetica Neue Medium',Arial,sans-serif;font-size:17px;color:#707070""> حساب ملزمتي </ td></ tr>
+           
+                 <tr><td id = ""m_-1042003640292068949i2"" style = ""padding:0;font-family:'Segoe UI Light','Segoe UI','Helvetica Neue Medium',Arial,sans-serif;font-size:41px;color:#2672ec""> رمز إعادة تعيين كلمة مرور</ td></ tr>
+                    
+                          <tr><td id = ""m_-1042003640292068949i3"" style = ""padding:0;padding-top:25px;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a""> الرجاء استخدام هذا الرمز لإعادة تعيين كلمة مرور حساب &lrm;<a dir = ""ltr"" id = ""m_-1042003640292068949iAccount"" class=""m_-1042003640292068949link"" style=""color:#2672ec;text-decoration:none"" href=""mailto:"+Email+@" target=""_blank"">"+Email+@"</a>&nbsp; على ملزمتي.</td></tr>
+      <tr><td id = ""m_-1042003640292068949i4"" style= ""padding:0;padding-top:25px;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a""> فيما يلي الرمز الخاص بك: 
+      <span id = ""CodeId"" style= ""font-family:'Segoe UI Bold','Segoe UI Semibold','Segoe UI','Helvetica Neue Medium',Arial,sans-serif;font-size:14px;font-weight:bold;color:#2a2a2a""> "+Code+@" </span>
+                                    
+                                          <button onClick= ""copy()""> نسخ الرمز</button></td></tr>
+      <tr><td id = ""m_-1042003640292068949i5"" style= ""padding:0;padding-top:25px;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a"">
+                                    
+                                          <tr><td id= ""m_-1042003640292068949i6"" style= ""padding:0;padding-top:25px;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a""> شكرًا،</td></tr>
+      <tr><td id = ""m_-1042003640292068949i7"" style= ""padding:0;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a""> فريق حساب ملزمتي</td></tr>
+</tbody></table>
+
+</Body>
+<script>
+function copy() {
+            alert('Go');
+            var copyText = document.getElementById(''CodeId'');
             var textArea = document.createElement('textarea');
             textArea.value = copyText.textContent;
             document.body.appendChild(textArea);
             textArea.select();
             document.execCommand('Copy');
             textArea.remove();
-            }
-            </script>
-            </html>";
+        }
+</script>
+</html>";
         }
     }
 }
