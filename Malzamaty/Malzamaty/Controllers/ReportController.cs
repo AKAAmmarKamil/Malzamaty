@@ -6,6 +6,7 @@ using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace Malzamaty.Controllers
@@ -24,6 +25,7 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
         [HttpGet("{Id}",Name = "GetReportById")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<ReportReadDto>> GetReportById(Guid Id)
         {
             var result = await _reportService.FindById(Id);
@@ -35,6 +37,7 @@ namespace Malzamaty.Controllers
             return Ok(ReportModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber,int Count)
         {
             var result =await _reportService.All(PageNumber,Count);
@@ -42,6 +45,7 @@ namespace Malzamaty.Controllers
             return Ok(ReportModel);
         }
         [HttpPost]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<ReportReadDto>> AddReport([FromBody] ReportWriteDto ReportWriteDto)
         {
             var ReportModel = _mapper.Map<Report>(ReportWriteDto);
@@ -51,8 +55,13 @@ namespace Malzamaty.Controllers
             return CreatedAtRoute("GetReportById", new { Id = ReportReadDto.Id }, ReportReadDto);
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> UpdateReport(Guid Id, [FromBody] ReportWriteDto ReportWriteDto)
         {
+            if (GetClaim("Role") != "Admin" && GetClaim("ID") != Id.ToString())
+            {
+                return BadRequest(new { Error = "لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
+            }
             var ReportModelFromRepo = await _reportService.FindById(Id);
             if (ReportModelFromRepo == null)
             {
@@ -62,7 +71,9 @@ namespace Malzamaty.Controllers
             await _reportService.Modify(Id,ReportModel);
             return NoContent();
         }
+
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> DeleteReportes(Guid Id)
         {
             var Report = await _reportService.Delete(Id);

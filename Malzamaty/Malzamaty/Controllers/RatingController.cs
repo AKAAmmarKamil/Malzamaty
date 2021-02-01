@@ -28,6 +28,7 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
         [HttpGet("{Id}",Name = "GetRatingById")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<RatingReadDto>> GetRatingById(Guid Id)
         {
             var result = await _ratingService.FindById(Id);
@@ -39,6 +40,7 @@ namespace Malzamaty.Controllers
             return Ok(RatingModel);
         }
         [HttpGet("{Id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<RatingReadDto>> GetRatingByFile(Guid Id)
         {
             var result = await _ratingService.GetRatingByFile(Id);
@@ -50,27 +52,33 @@ namespace Malzamaty.Controllers
             return Ok(RatingModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber,int Count)
         {
             var result =await _ratingService.All(PageNumber,Count);
             var RatingModel = _mapper.Map<IList<RatingReadDto>>(result);
             return Ok(RatingModel);
         }
-        [Authorize]
         [HttpPost]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<RatingReadDto>> AddRating([FromBody] RatingWriteDto RatingWriteDto)
         {
             GetClaim("ID");
             var RatingModel = _mapper.Map<Rating>(RatingWriteDto);
-            RatingModel.File =await _fileService.FindById(RatingWriteDto.FileID);
+            RatingModel.File = await _fileService.FindById(RatingWriteDto.FileID);
             RatingModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             var Result = await _ratingService.Create(RatingModel);
             var RatingReadDto = _mapper.Map<RatingReadDto>(Result);
             return CreatedAtRoute("GetRatingById", new { Id = RatingReadDto.Id }, RatingReadDto);
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> UpdateRating(Guid Id, [FromBody] RatingWriteDto RatingWriteDto)
         {
+            if (GetClaim("Role") != "Admin" && GetClaim("ID") != Id.ToString())
+            {
+                return BadRequest(new { Error = "لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
+            }
             var RatingModelFromRepo = await _ratingService.FindById(Id);
             if (RatingModelFromRepo == null)
             {
@@ -81,6 +89,7 @@ namespace Malzamaty.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> DeleteRatinges(Guid Id)
         {
             var Rating = await _ratingService.Delete(Id);

@@ -2,7 +2,7 @@
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using System;
-
+ushort RatingValueResolver;
 namespace Malzamaty
 {
     public class RatingProfile : Profile
@@ -11,8 +11,7 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap<Rating, RatingReadDto>();
-            CreateMap<RatingWriteDto, Rating>().ForMember(d => d.File,
-                 opt => opt.MapFrom(s => s));
+            CreateMap<RatingWriteDto, Rating>();
             CreateMap<Rating, RatingWriteDto>();
         }
     }

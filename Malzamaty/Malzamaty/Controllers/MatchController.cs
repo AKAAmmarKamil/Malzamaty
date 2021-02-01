@@ -6,6 +6,7 @@ using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
+    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
     [ApiController]
     public class MatchController : BaseController
     {

@@ -96,6 +96,7 @@ namespace Malzamaty.Controllers
             else return BadRequest();
         }
         [HttpGet("{Id}",Name = "GetUserById")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
         {
             var User = await _userService.FindById(Id);
@@ -110,6 +111,7 @@ namespace Malzamaty.Controllers
             return Ok(UserModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber,int Count)
         {
             var Users = _userService.All(PageNumber,Count).Result.ToList();
@@ -142,8 +144,8 @@ namespace Malzamaty.Controllers
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
             return CreatedAtRoute("GetUserById", new { Id = UserReadDto.ID }, UserReadDto);
         }
-        [Authorize]
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordForm ChangePasswordForm)
         {
             var Email = GetClaim("Email");
@@ -161,8 +163,13 @@ namespace Malzamaty.Controllers
             return BadRequest(new { Message = "الرمز غير صحيح" });
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> UpdateUser(Guid Id, [FromBody] UserUpdateDto UserUpdateDto)
         {
+            if (GetClaim("Role") != "Admin" && GetClaim("ID")!= Id.ToString())
+            {
+                return BadRequest(new { Error="لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
+            }
             var UserModelFromRepo =await _userService.FindById(Id);
             if (UserModelFromRepo == null)
             {
@@ -172,8 +179,8 @@ namespace Malzamaty.Controllers
             await _userService.Modify(Id,UserModel);
             return NoContent();
         }
-        [Authorize]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SendCode([FromBody] CodeForm CodeForm )
         {
             var Code= GetClaim("Code");
@@ -188,6 +195,7 @@ namespace Malzamaty.Controllers
         }
        
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> DeleteUser(Guid Id)
         {
             var User =await _userService.Delete(Id);

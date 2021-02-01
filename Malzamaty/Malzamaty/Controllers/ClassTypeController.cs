@@ -2,6 +2,7 @@
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
+    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
     [ApiController]
     public class ClassTypeController : BaseController
     {

@@ -6,12 +6,11 @@ using System.Data;
 
 namespace Malzamaty.Repositories.Profiles
 {
-    //public class CustomResolver : IValueResolver<RatingWriteDto, File, File>
-    //{
-
-    //    public File Resolve(RatingWriteDto source, File destination, File destMember, ResolutionContext context)
-    //    {
-    //        return destination.Find(destMember);
-    //    }
-    //}
+    public class RatingValueResolver : IValueResolver<RatingWriteDto, File, File>
+    {
+        public File Resolve(RatingWriteDto source, File destination, File destMember, ResolutionContext context)
+        {
+            return new File() {ID=destination.ID };
+        }
+    }
 }

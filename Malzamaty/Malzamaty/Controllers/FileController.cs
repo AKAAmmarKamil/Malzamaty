@@ -41,6 +41,7 @@ namespace Malzamaty.Controllers
             _ratingService = ratingService;
         }
         [HttpGet("{Id}",Name = "GetFileById")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
         {
             var result = await _fileService.FindById(Id);
@@ -52,14 +53,15 @@ namespace Malzamaty.Controllers
             return Ok(FileModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber,int Count)
         {
             var result =await _fileService.All(PageNumber,Count);
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
-        [Authorize]
         [HttpGet]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> TopRatingFiles(bool WithReports)
         {
             var User = GetClaim("ID");
@@ -75,8 +77,8 @@ namespace Malzamaty.Controllers
                 return Ok(FileReadDto);
             }
         }
-        [Authorize]
         [HttpGet]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> MostDownloadedFiles(bool WithReports)
         {
             var User = GetClaim("ID");
@@ -92,16 +94,16 @@ namespace Malzamaty.Controllers
                 return Ok(FileReadDto);
             }
         }
-        [Authorize]
         [HttpGet]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> RelatedFiles(Guid Id)
         {
             var result = await _fileService.RelatedFiles(Id);
             var FileModel = _mapper.Map<List<FileWithReportsReadDto>>(result);
             return Ok(FileModel);
         }
-        [Authorize]
         [HttpGet]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> NewFiles(bool WithReports)
         {
             var User = GetClaim("ID");
@@ -118,6 +120,7 @@ namespace Malzamaty.Controllers
             }
         }
         [HttpPost]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<AttachmentString>> AddAttachment(string Path)
         {
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
@@ -128,8 +131,8 @@ namespace Malzamaty.Controllers
             var Upload = await Attachment.Attachment.Upload(bytes, FullPath,Type);
             return Ok(Upload);
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
             var FileModel = _mapper.Map<File>(FileWriteDto);
@@ -153,6 +156,7 @@ namespace Malzamaty.Controllers
             return BadRequest(new { Error="الملف لم يتم تحميله" });
         }
         [HttpGet]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<FileStreamResult> DownloadFile(Guid Id)
         {
             var File = await _fileService.FindById(Id);
@@ -170,6 +174,7 @@ namespace Malzamaty.Controllers
             return null;
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> UpdateFile(Guid Id, [FromBody] FileUpdateDto FileUpdateDto)
         {
             var FileModelFromRepo = await _fileService.FindById(Id);
@@ -182,6 +187,7 @@ namespace Malzamaty.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> DeleteFiles(Guid Id)
         {
             var File = await _fileService.FindById(Id);

@@ -27,6 +27,7 @@ namespace Malzamaty.Controllers
             _scheduleService = scheduleService;
             _mapper = mapper;
         }
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         [HttpGet("{Id}",Name = "GetInterestById")]
         public async Task<ActionResult<InterestReadDto>> GetInterestById(Guid Id)
         {
@@ -38,6 +39,7 @@ namespace Malzamaty.Controllers
             var InterestModel = _mapper.Map<InterestReadDto>(result);
             return Ok(InterestModel);
         }
+        [Authorize(Roles = UserRole.Admin)]
         [HttpGet("{PageNumber}/{Count}")]
         public async Task<ActionResult<InterestReadDto>> GetAllInterests(int PageNumber,int Count)
         {
@@ -75,7 +77,7 @@ namespace Malzamaty.Controllers
             }
             return NoContent();
         }
-        [Authorize]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student+ "," + UserRole.Teacher)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInterest(Guid Id, [FromBody] InterestWriteDto InterestWriteDto)
         {
@@ -88,6 +90,7 @@ namespace Malzamaty.Controllers
             await _interestService.Modify(Id,InterestModel);
             return NoContent();
         }
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInterests(Guid Id)
         {

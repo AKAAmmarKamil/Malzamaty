@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
-    [ApiController]
     [Authorize(Roles = UserRole.Admin + "," + UserRole.Student)]
+    [ApiController]
     public class ScheduleController : BaseController
     {
         private readonly IScheduleService _scheduleService;
@@ -45,22 +45,23 @@ namespace Malzamaty.Controllers
             return Ok(ScheduleModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<ScheduleReadDto>> GetAllSchedules(int PageNumber,int Count)
         {
             var result =await _scheduleService.All(PageNumber,Count);
             var ScheduleModel = _mapper.Map<IList<ScheduleReadDto>>(result);
             return Ok(ScheduleModel);
         }
-        [Authorize]
         [HttpGet("{PageNumber}/{Count}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student)]
         public async Task<ActionResult<ScheduleReadDto>> GetUserSchedules(int PageNumber, int Count)
         {
             var result =await _scheduleService.GetUserSchedules(PageNumber, Count, Guid.Parse(GetClaim("ID")));
             var ScheduleModel = _mapper.Map<IList<ScheduleReadDto>>(result);
             return Ok(ScheduleModel);
         }
-        [Authorize]
         [HttpPost]
+        [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<ScheduleReadDto>> AddSchedule([FromBody] ScheduleWriteDto ScheduleWriteDto)
         {
             var Schedules = _scheduleService.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
@@ -86,8 +87,13 @@ namespace Malzamaty.Controllers
             return CreatedAtRoute("GetScheduleById", new { Id = ScheduleReadDto.Id }, ScheduleReadDto);
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student)]
         public async Task<IActionResult> UpdateSchedule(Guid Id, [FromBody] ScheduleWriteDto ScheduleWriteDto)
         {
+            if (GetClaim("Role") != "Admin" && GetClaim("ID") != Id.ToString())
+            {
+                return BadRequest(new { Error = "لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
+            }
             var ScheduleModelFromRepo = await _scheduleService.FindById(Id);
             if (ScheduleModelFromRepo == null)
             {
@@ -98,8 +104,13 @@ namespace Malzamaty.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student)]
         public async Task<IActionResult> DeleteSchedules(Guid Id)
         {
+            if (GetClaim("Role") != "Admin" && GetClaim("ID") != Id.ToString())
+            {
+                return BadRequest(new { Error = "لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
+            }
             var Schedule = await _scheduleService.Delete(Id);
             if (Schedule == null)
             {
