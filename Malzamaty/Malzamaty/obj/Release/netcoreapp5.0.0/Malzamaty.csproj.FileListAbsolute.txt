@@ -87,3 +87,4 @@ F:\Malzamaty\Malzamaty\Malzamaty\obj\Release\netcoreapp5.0.0\Malzamaty.dll
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Release\netcoreapp5.0.0\ref\Malzamaty.dll
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Release\netcoreapp5.0.0\Malzamaty.pdb
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Release\netcoreapp5.0.0\Malzamaty.genruntimeconfig.cache
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\BCrypt.Net-Next.dll

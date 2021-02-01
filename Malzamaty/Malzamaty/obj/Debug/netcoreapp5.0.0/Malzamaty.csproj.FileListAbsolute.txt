@@ -9,6 +9,7 @@ F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\ref\Malzamaty.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Malzamaty.pdb
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\AutoMapper.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\BCrypt.Net-Next.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Dapper.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Humanizer.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
@@ -87,4 +88,3 @@ F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.dll
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\ref\Malzamaty.dll
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.pdb
 F:\Malzamaty\Malzamaty\Malzamaty\obj\Debug\netcoreapp5.0.0\Malzamaty.genruntimeconfig.cache
-F:\Malzamaty\Malzamaty\Malzamaty\bin\Debug\netcoreapp5.0.0\BCrypt.Net-Next.dll
