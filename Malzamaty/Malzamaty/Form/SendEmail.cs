@@ -10,8 +10,7 @@ namespace Malzamaty.Form
         {
             var Code = new Random().Next(0, 1000000).ToString("D6");
             var Domain = "@" + Email.Split("@")[1];
-            var StarsToString = "*****";
-            var HideEmail = Email.Substring(0, 2) + StarsToString + Domain;
+            var HideEmail = Email.Substring(0, 2) + "*****" + Domain;
             var Message = GetMessage(Code, HideEmail);
             var mail = new MailMessage("malzamatyplatform@gmail.com", Email, "تغيير كلمة مرور", Message)
             {
@@ -39,7 +38,7 @@ namespace Malzamaty.Form
       <tr><td id = ""m_-1042003640292068949i4"" style= ""padding:0;padding-top:25px;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a""> فيما يلي الرمز الخاص بك: 
       <span id = ""CodeId"" style= ""font-family:'Segoe UI Bold','Segoe UI Semibold','Segoe UI','Helvetica Neue Medium',Arial,sans-serif;font-size:14px;font-weight:bold;color:#2a2a2a""> " + Code + @" </span>
                                     
-                                          <button onClick= ""copy()""> نسخ الرمز</button></td></tr>
+                                          </td></tr>
       <tr><td id = ""m_-1042003640292068949i5"" style= ""padding:0;padding-top:25px;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a"">
                                     
                                           <tr><td id= ""m_-1042003640292068949i6"" style= ""padding:0;padding-top:25px;font-family:'Segoe UI',Tahoma,Verdana,Arial,sans-serif;font-size:14px;color:#2a2a2a""> شكرًا،</td></tr>
@@ -47,18 +46,6 @@ namespace Malzamaty.Form
 </tbody></table>
 
 </Body>
-<script>
-function copy() {
-            alert(""Go"");
-            var copyText = document.getElementById(""CodeId"");
-            var textArea = document.createElement('textarea');
-            textArea.value = copyText.textContent;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('Copy');
-            textArea.remove();
-        }
-</script>
 </html>";
         }
     }
