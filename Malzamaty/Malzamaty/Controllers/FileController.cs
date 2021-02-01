@@ -76,6 +76,15 @@ namespace Malzamaty.Controllers
         }
         [HttpGet]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+        public async Task<ActionResult<FileReadDto>> GetAppropriateFile()
+        {
+            var User = GetClaim("ID");
+            var result = await _fileService.GetAppropriateFile(Guid.Parse(User));
+            var FileReadDto = _mapper.Map<FileWithRatingReadDto>(result);
+            return Ok(FileReadDto);
+        }
+        [HttpGet]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> MostDownloadedFiles(bool WithReports)
         {
             var User = GetClaim("ID");

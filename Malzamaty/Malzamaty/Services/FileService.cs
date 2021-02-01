@@ -8,6 +8,7 @@ namespace Malzamaty.Services
     {
         Task<bool> IsExist(string FilePath);
         Task<List<File>> TopRating(Guid Id, bool WithReports);
+        Task<File> GetAppropriateFile(Guid Id);
         Task<List<File>> MostDownloaded(Guid Id, bool WithReports);
         Task<List<File>> NewFiles(Guid Id, bool WithReports);
         Task<List<File>> RelatedFiles(Guid Id);
@@ -69,5 +70,7 @@ namespace Malzamaty.Services
 
         public async Task<List<File>> TopRating(Guid Id, bool WithReports) => await
         _repositoryWrapper.File.TopRating(Id, WithReports);
+        public async Task<File> GetAppropriateFile(Guid Id) => await
+       _repositoryWrapper.File.GetAppropriateFile(Id);
     }
 }

@@ -16,6 +16,7 @@ namespace Malzamaty.Services
         Task<List<File>> MostDownloaded(Guid Id, bool WithReports);
         Task<List<File>> NewFiles(Guid Id, bool WithReports);
         Task<List<File>> RelatedFiles(Guid Id);
+        Task<File> GetAppropriateFile(Guid Id);
     }
     public class FileRepository : BaseRepository<File>, IFileRepository
     {
@@ -73,14 +74,22 @@ namespace Malzamaty.Services
         {
             var Files = new List<File>();
             if (WithReports == true)
-                Files = await _db.File.Where(x => x.Rating.Count() > 0 && _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID))
+                Files = await _db.File.Where(x => x.Rating.Any() && _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID))
                     .Include(h => h.Rating).Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
                     .OrderByDescending(x => x.Rating.Average(o => (double?)o.Rate)).Take(5).ToListAsync();
             else
-                Files = await _db.File.Where(x => x.Rating.Count() > 0 && _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) &&
+                Files = await _db.File.Where(x => x.Rating.Any() && _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) &&
                      !_db.Report.Any(y => y.File.ID == x.ID) && x.User.ID == Id)
                      .Include(h => h.Rating).Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
                      .OrderByDescending(x => x.Rating.Average(o => (double?)o.Rate)).Take(5).ToListAsync();
+            return Files;
+        }
+        public async Task<File> GetAppropriateFile(Guid Id)
+        {
+            var Files = await _db.File.Where(x => x.Rating.Any() && _db.Interests.Any(y => y.ClassID == x.Class.ID && y.SubjectID == x.Subject.ID) &&
+                     !_db.Report.Any(y => y.File.ID == x.ID) && x.User.ID == Id)
+                     .Include(h => h.Rating).Include(x => x.Report).Include(x => x.User).Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType)
+                     .OrderByDescending(x => x.Rating.Average(o => (double?)o.Rate)).ThenByDescending(x=>x.DownloadCount).ThenByDescending(x=>x.PublishDate).ThenByDescending(x=>x.UploadDate).FirstOrDefaultAsync();
             return Files;
         }
         public async Task<List<File>> RelatedFiles(Guid Id)
