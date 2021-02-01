@@ -12,7 +12,7 @@ namespace Malzamaty.Profiles
             CreateMap<User, UserReadDto>();
             CreateMap<InterestReadDto, UserReadDto>();
             CreateMap<UserWriteDto, User>();
-            CreateMap<User,UserWriteDto >();
+            CreateMap<User, UserWriteDto>();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +19,8 @@ namespace Malzamaty.Services
         public RatingRepository(MalzamatyContext context, IMapper mapper) : base(context, mapper)
         {
             _db = context;
-        }        
-        public async Task<List<Rating>> GetRatingByFile(Guid Id)=>
+        }
+        public async Task<List<Rating>> GetRatingByFile(Guid Id) =>
         await _db.Rating.Where(x => x.File.ID == Id).ToListAsync();
     }
 }

@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using Brith.Model.Dto;
 using Malzamaty.Dto;
 using Malzamaty.Form;
 using Malzamaty.Model;
@@ -15,11 +7,14 @@ using Malzamaty.Model.Form;
 using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using RestSharp;
-
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
@@ -29,7 +24,7 @@ namespace Malzamaty.Controllers
         private readonly IUserService _userService;
         private readonly IInterestService _interestService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService,IInterestService interestService,IMapper mapper)
+        public UserController(IUserService userService, IInterestService interestService, IMapper mapper)
         {
             _userService = userService;
             _interestService = interestService;
@@ -40,9 +35,23 @@ namespace Malzamaty.Controllers
         public async Task<IActionResult> Login([FromBody] LoginForm form)
         {
             var user = await _userService.Authintication(form);
-            if (user != null)
-            {  
-                var claims = new[]
+            if (user == null)
+                return BadRequest(new Authintication
+                {
+                    Token = null,
+                    Error = "UserName or Password Incorrect"
+                });
+            bool validPassword = BCrypt.Net.BCrypt.Verify(form.Password, user.Password);
+
+            if (!validPassword)
+            {
+                return BadRequest(new Authintication
+                {
+                    Token = null,
+                    Error = "UserName or Password Incorrect"
+                });
+            }
+            var claims = new[]
                 {
                    new Claim("ID", user.ID.ToString()),
                    new Claim("Username", user.UserName),
@@ -62,15 +71,13 @@ namespace Malzamaty.Controllers
                 var expire = DateTime.UtcNow.AddDays(30);
                 return Ok(new { Token = Token, Expire = expire });
 
-            }
-            else return BadRequest();
-
+            
         }
         [HttpPost]
         public async Task<IActionResult> ForgetPassword([FromBody] EmailForm EmailForm)
         {
-            var Code=SendEmail.SendMessage(EmailForm.Email);
-            var User =await _userService.GetUserByEmail(EmailForm.Email);
+            var Code = SendEmail.SendMessage(EmailForm.Email);
+            var User = await _userService.GetUserByEmail(EmailForm.Email);
             if (User == null)
                 return BadRequest(new { ERROR = "لم يتم العثور على حسابك" });
             await _userService.ChangeStatus(User.ID, false);
@@ -95,13 +102,13 @@ namespace Malzamaty.Controllers
             }
             else return BadRequest();
         }
-        [HttpGet("{Id}",Name = "GetUserById")]
+        [HttpGet("{Id}", Name = "GetUserById")]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<UserReadDto>> GetUserById(Guid Id)
         {
             var User = await _userService.FindById(Id);
             var Interest = await _interestService.GetInterests(Id);
-            var InterestModel= _mapper.Map<List<InterestReadDto>>(Interest);
+            var InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
             if (User == null)
             {
                 return NotFound();
@@ -112,36 +119,39 @@ namespace Malzamaty.Controllers
         }
         [HttpGet("{PageNumber}/{Count}")]
         [Authorize(Roles = UserRole.Admin)]
-        public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber,int Count)
+        public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber, int Count)
         {
-            var Users = _userService.All(PageNumber,Count).Result.ToList();
+            var Users = _userService.All(PageNumber, Count).Result.ToList();
             var Interest = new List<Interests>();
             var InterestModel = new List<InterestReadDto>();
-            var UserModel= _mapper.Map<List<UserReadDto>>(Users);
+            var UserModel = _mapper.Map<List<UserReadDto>>(Users);
             for (int i = 0; i < Users.Count(); i++)
             {
                 Interest = await _interestService.GetInterests(Users[i].ID);
                 InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
                 UserModel[i].Interests = InterestModel;
             }
-             return Ok(UserModel);
+            return Ok(UserModel);
         }
         [HttpPost]
-        public async Task<ActionResult<UserReadDto>> AddUser([FromBody]UserWriteDto UserWriteDto)
+        public async Task<ActionResult<UserReadDto>> AddUser([FromBody] UserWriteDto UserWriteDto)
         {
+            UserWriteDto.Password = BCrypt.Net.BCrypt.HashPassword(UserWriteDto.Password);
             var UserModel = _mapper.Map<User>(UserWriteDto);
-            await _userService.Create(UserModel);
-            var Interest = new InterestWriteDto();
+            var User=await _userService.Create(UserModel);
+            var InterestWriteDto = new InterestWriteDto();
             var InterestModel = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
             {
-                Interest.Class = UserWriteDto.Interests[i].ClassID;
-                Interest.Subject = UserWriteDto.Interests[i].SubjectID;
-                InterestModel = _mapper.Map<Interests>(Interest);
+                InterestWriteDto.Class = UserWriteDto.Interests[i].ClassID;
+                InterestWriteDto.Subject = UserWriteDto.Interests[i].SubjectID;
+                InterestModel = _mapper.Map<Interests>(InterestWriteDto);
+                InterestModel.UserID = User.ID;
                 await _interestService.Create(InterestModel);
             }
-
+            var Interest = await _interestService.GetInterests(User.ID);
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
+            UserReadDto.Interests = _mapper.Map<List<InterestReadDto>>(Interest);
             return CreatedAtRoute("GetUserById", new { Id = UserReadDto.ID }, UserReadDto);
         }
         [HttpPut]
@@ -149,7 +159,7 @@ namespace Malzamaty.Controllers
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordForm ChangePasswordForm)
         {
             var Email = GetClaim("Email");
-            var User =await _userService.GetUserByEmail(Email);
+            var User = await _userService.GetUserByEmail(Email);
             if (User.Activated == true)
             {
                 var UserModelFromRepo = await _userService.GetUserByEmail(Email);
@@ -157,7 +167,8 @@ namespace Malzamaty.Controllers
                 {
                     return NotFound();
                 }
-                await _userService.ChangePassword(UserModelFromRepo.ID,ChangePasswordForm.Password);
+                ChangePasswordForm.Password = BCrypt.Net.BCrypt.HashPassword(ChangePasswordForm.Password);
+                await _userService.ChangePassword(UserModelFromRepo.ID, ChangePasswordForm.Password);
                 return NoContent();
             }
             return BadRequest(new { Message = "الرمز غير صحيح" });
@@ -166,39 +177,39 @@ namespace Malzamaty.Controllers
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> UpdateUser(Guid Id, [FromBody] UserUpdateDto UserUpdateDto)
         {
-            if (GetClaim("Role") != "Admin" && GetClaim("ID")!= Id.ToString())
+            if (GetClaim("Role") != "Admin" && GetClaim("ID") != Id.ToString())
             {
-                return BadRequest(new { Error="لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
+                return BadRequest(new { Error = "لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
             }
-            var UserModelFromRepo =await _userService.FindById(Id);
+            var UserModelFromRepo = await _userService.FindById(Id);
             if (UserModelFromRepo == null)
             {
                 return NotFound();
             }
             var UserModel = _mapper.Map<User>(UserUpdateDto);
-            await _userService.Modify(Id,UserModel);
+            await _userService.Modify(Id, UserModel);
             return NoContent();
         }
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> SendCode([FromBody] CodeForm CodeForm )
+        public async Task<IActionResult> SendCode([FromBody] CodeForm CodeForm)
         {
-            var Code= GetClaim("Code");
+            var Code = GetClaim("Code");
             var Email = GetClaim("Email");
-            var User =await _userService.GetUserByEmail(Email);
+            var User = await _userService.GetUserByEmail(Email);
             if (CodeForm.Code.ToString() == Code)
             {
-                await _userService.ChangeStatus(User.ID,true);
-                return Ok(new {Message="تم تفعيل حساب المستخدم" });
+                await _userService.ChangeStatus(User.ID, true);
+                return Ok(new { Message = "تم تفعيل حساب المستخدم" });
             }
             return BadRequest(new { Message = "الرمز غير صحيح" });
         }
-       
+
         [HttpDelete("{id}")]
         [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> DeleteUser(Guid Id)
         {
-            var User =await _userService.Delete(Id);
+            var User = await _userService.Delete(Id);
             if (User == null)
             {
                 return NotFound();

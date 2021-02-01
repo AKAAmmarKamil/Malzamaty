@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Malzamaty.Form;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Malzamaty.Form;
-namespace Malzamaty.Attachment {
-    public class Attachment {
+namespace Malzamaty.Attachment
+{
+    public class Attachment
+    {
         public static async Task<byte[]> ConvertToBytes(string Path) => File.ReadAllBytes(Path);
         public static async Task<AttachmentString> Upload(byte[] bytes, string filepath, string Type)
         {

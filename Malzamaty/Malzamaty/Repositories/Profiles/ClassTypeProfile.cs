@@ -9,7 +9,7 @@ namespace Malzamaty
         public ClassTypeProfile()
         {
             //Source -> Target
-            CreateMap <ClassType, ClassTypeReadDto> ();
+            CreateMap<ClassType, ClassTypeReadDto>();
             CreateMap<ClassTypeWriteDto, ClassType>();
             CreateMap<ClassType, ClassTypeWriteDto>();
         }

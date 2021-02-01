@@ -25,7 +25,7 @@ namespace Malzamaty.Services
         }
         public async Task<IEnumerable<Interests>> FindAll(int PageNumber, int count) => await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
 
-        public async Task<List<Interests>> GetInterests(Guid Id)=>  await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType).Where(x => x.UserID == Id).ToListAsync();
+        public async Task<List<Interests>> GetInterests(Guid Id) => await _db.Interests.Include(x => x.Subject).Include(x => x.Class).ThenInclude(x => x.Stage).Include(x => x.Class).ThenInclude(x => x.ClassType).Where(x => x.UserID == Id).ToListAsync();
         public async Task<Interests> FindById(Guid Id)
         {
             var Result = await _db.Interests.Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync(x => x.ID == Id);
@@ -35,7 +35,7 @@ namespace Malzamaty.Services
         }
         public async Task<Interests> FindByUser(Guid Id)
         {
-            var Result = await _db.Interests.Where(x=>x.UserID==Id).Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync();
+            var Result = await _db.Interests.Where(x => x.UserID == Id).Include(x => x.User).Include(x => x.Class).Include(x => x.Subject).FirstOrDefaultAsync();
 
             if (Result == null) return null;
             return Result;

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
@@ -20,14 +18,14 @@ namespace Malzamaty.Controllers
         private readonly IUserService _userService;
 
         private readonly IMapper _mapper;
-        public RatingController(IRatingService ratingService,IFileService fileService,IUserService userService, IMapper mapper)
+        public RatingController(IRatingService ratingService, IFileService fileService, IUserService userService, IMapper mapper)
         {
             _ratingService = ratingService;
             _fileService = fileService;
             _userService = userService;
             _mapper = mapper;
         }
-        [HttpGet("{Id}",Name = "GetRatingById")]
+        [HttpGet("{Id}", Name = "GetRatingById")]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<RatingReadDto>> GetRatingById(Guid Id)
         {
@@ -53,9 +51,9 @@ namespace Malzamaty.Controllers
         }
         [HttpGet("{PageNumber}/{Count}")]
         [Authorize(Roles = UserRole.Admin)]
-        public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber,int Count)
+        public async Task<ActionResult<RatingReadDto>> GetAllRatings(int PageNumber, int Count)
         {
-            var result =await _ratingService.All(PageNumber,Count);
+            var result = await _ratingService.All(PageNumber, Count);
             var RatingModel = _mapper.Map<IList<RatingReadDto>>(result);
             return Ok(RatingModel);
         }

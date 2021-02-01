@@ -1,12 +1,10 @@
+using Malzamaty.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using Malzamaty.Dto;
-using Malzamaty.Model;
 namespace Malzamaty.Services
 {
-    public interface IFileService : IBaseService<File,Guid>
+    public interface IFileService : IBaseService<File, Guid>
     {
         Task<bool> IsExist(string FilePath);
         Task<List<File>> TopRating(Guid Id, bool WithReports);
@@ -24,13 +22,13 @@ namespace Malzamaty.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<IEnumerable<File>> All(int PageNumber, int Count) =>await _repositoryWrapper.File.FindAll(PageNumber, Count);
-        public async Task<File> Create(File File) =>await
+        public async Task<IEnumerable<File>> All(int PageNumber, int Count) => await _repositoryWrapper.File.FindAll(PageNumber, Count);
+        public async Task<File> Create(File File) => await
              _repositoryWrapper.File.Create(File);
-        public async Task<File> Delete(Guid id)=> await
+        public async Task<File> Delete(Guid id) => await
         _repositoryWrapper.File.Delete(id);
 
-        public async Task<File> FindById(Guid id)=> await
+        public async Task<File> FindById(Guid id) => await
         _repositoryWrapper.File.FindById(id);
 
         public Task<bool> IsExist(string FilePath) =>
@@ -38,7 +36,7 @@ namespace Malzamaty.Services
 
         public async Task<File> Modify(Guid id, File File)
         {
-            var FileModelFromRepo =await _repositoryWrapper.File.FindById(id);
+            var FileModelFromRepo = await _repositoryWrapper.File.FindById(id);
             if (FileModelFromRepo == null)
             {
                 return null;
@@ -47,7 +45,7 @@ namespace Malzamaty.Services
             FileModelFromRepo.Author = File.Author;
             FileModelFromRepo.Type = File.Type;
             _repositoryWrapper.Save();
-            return  File;
+            return File;
         }
         public async Task<File> ModifyDownloadCount(Guid id)
         {
@@ -61,15 +59,15 @@ namespace Malzamaty.Services
             return FileModelFromRepo;
         }
         public async Task<List<File>> MostDownloaded(Guid Id, bool WithReports) => await
-        _repositoryWrapper.File.MostDownloaded(Id,WithReports);
+        _repositoryWrapper.File.MostDownloaded(Id, WithReports);
 
         public async Task<List<File>> NewFiles(Guid Id, bool WithReports) => await
-        _repositoryWrapper.File.NewFiles(Id,WithReports);
+        _repositoryWrapper.File.NewFiles(Id, WithReports);
 
         public async Task<List<File>> RelatedFiles(Guid Id) => await
         _repositoryWrapper.File.RelatedFiles(Id);
 
         public async Task<List<File>> TopRating(Guid Id, bool WithReports) => await
-        _repositoryWrapper.File.TopRating(Id,WithReports);
+        _repositoryWrapper.File.TopRating(Id, WithReports);
     }
 }

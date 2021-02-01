@@ -3,7 +3,6 @@ using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace Malzamaty.Controllers
         private readonly IUserService _userService;
         private readonly IScheduleService _scheduleService;
         private readonly IMapper _mapper;
-        public InterestController(IInterestService interestService,IUserService userService,IScheduleService scheduleService, IMapper mapper)
+        public InterestController(IInterestService interestService, IUserService userService, IScheduleService scheduleService, IMapper mapper)
         {
             _interestService = interestService;
             _userService = userService;
@@ -28,7 +27,7 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        [HttpGet("{Id}",Name = "GetInterestById")]
+        [HttpGet("{Id}", Name = "GetInterestById")]
         public async Task<ActionResult<InterestReadDto>> GetInterestById(Guid Id)
         {
             var result = await _interestService.FindById(Id);
@@ -41,9 +40,9 @@ namespace Malzamaty.Controllers
         }
         [Authorize(Roles = UserRole.Admin)]
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<InterestReadDto>> GetAllInterests(int PageNumber,int Count)
+        public async Task<ActionResult<InterestReadDto>> GetAllInterests(int PageNumber, int Count)
         {
-            var result = await _interestService.All(PageNumber,Count);
+            var result = await _interestService.All(PageNumber, Count);
             var InterestModel = _mapper.Map<IList<InterestReadDto>>(result);
             return Ok(InterestModel);
         }
@@ -52,12 +51,12 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<InterestReadDto>> AddInterest([FromBody] InterestWriteDto InterestWriteDto)
         {
             var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
-            InterestModel.User =await _userService.FindById(Guid.Parse(GetClaim("ID")));
+            InterestModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             var Result = await _interestService.Create(InterestModel);
             var InterestReadDto = _mapper.Map<InterestReadDto>(Result);
             return CreatedAtRoute("GetInterestById", new { Id = InterestReadDto.ID }, InterestReadDto);
         }
-        [Authorize(Roles =UserRole.Admin+","+UserRole.Student)]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student)]
         [HttpPut]
         public async Task<IActionResult> UpdateInterestBySchedule()
         {
@@ -72,22 +71,22 @@ namespace Malzamaty.Controllers
             {
                 if (await _scheduleService.IsBewteenTwoDates(Now, Schedules[i].StartStudy, Schedules[i].FinishStudy) == true)
                 {
-                   await _interestService.ModifyBySchedule(Guid.Parse(GetClaim("ID")), Schedules[i].Subject.ID);
+                    await _interestService.ModifyBySchedule(Guid.Parse(GetClaim("ID")), Schedules[i].Subject.ID);
                 }
             }
             return NoContent();
         }
-        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student+ "," + UserRole.Teacher)]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateInterest(Guid Id, [FromBody] InterestWriteDto InterestWriteDto)
         {
-            var InterestModelFromRepo =await _interestService.FindById(Id);
+            var InterestModelFromRepo = await _interestService.FindById(Id);
             if (InterestModelFromRepo == null)
             {
                 return NotFound();
             }
             var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
-            await _interestService.Modify(Id,InterestModel);
+            await _interestService.Modify(Id, InterestModel);
             return NoContent();
         }
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]

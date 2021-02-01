@@ -9,7 +9,7 @@ namespace Malzamaty
         public CountryProfile()
         {
             //Source -> Target
-            CreateMap <Country, CountryReadDto> ();
+            CreateMap<Country, CountryReadDto>();
             CreateMap<CountryWriteDto, Country>();
             CreateMap<Country, CountryWriteDto>();
         }

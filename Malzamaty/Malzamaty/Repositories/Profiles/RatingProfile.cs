@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
-using System;
-ushort RatingValueResolver;
 namespace Malzamaty
 {
     public class RatingProfile : Profile

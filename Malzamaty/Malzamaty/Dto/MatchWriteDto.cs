@@ -1,8 +1,5 @@
-﻿using Malzamaty.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Malzamaty.Dto
 {

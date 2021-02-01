@@ -1,11 +1,10 @@
-﻿using Malzamaty.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Malzamaty.Dto
 {
     public class FileWithReportsAndRatingReadDto
-    {          
+    {
         public Guid Id { get; set; }
         public string FileDescription { get; set; }
         public string FilePath { get; set; }

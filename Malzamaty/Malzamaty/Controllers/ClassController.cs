@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
-    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+    [Authorize(Roles = UserRole.Admin)]
     [ApiController]
     public class ClassController : BaseController
     {
@@ -23,7 +21,7 @@ namespace Malzamaty.Controllers
             _classService = classService;
             _mapper = mapper;
         }
-        [HttpGet("{Id}",Name = "GetClassById")]
+        [HttpGet("{Id}", Name = "GetClassById")]
         public async Task<ActionResult<ClassReadDto>> GetClassById(Guid Id)
         {
             var result = await _classService.FindById(Id);
@@ -35,9 +33,9 @@ namespace Malzamaty.Controllers
             return Ok(ClassModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<ClassReadDto>> GetAllClasses(int PageNumber,int Count)
+        public async Task<ActionResult<ClassReadDto>> GetAllClasses(int PageNumber, int Count)
         {
-            var result = await _classService.All(PageNumber,Count);
+            var result = await _classService.All(PageNumber, Count);
             var ClassModel = _mapper.Map<IList<ClassReadDto>>(result);
             return Ok(ClassModel);
         }
@@ -52,7 +50,7 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClass(Guid Id, [FromBody] ClassUpdateDto ClassUpdateDto)
         {
-            var ClassModelFromRepo =await _classService.FindById(Id);
+            var ClassModelFromRepo = await _classService.FindById(Id);
             if (ClassModelFromRepo == null)
             {
                 return NotFound();
@@ -64,7 +62,7 @@ namespace Malzamaty.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClass(Guid Id)
         {
-            var Class =await _classService.Delete(Id);
+            var Class = await _classService.Delete(Id);
             if (Class == null)
             {
                 return NotFound();

@@ -1,4 +1,5 @@
-﻿namespace Malzamaty {
+﻿namespace Malzamaty
+{
     public static class UserRole
     {
         public const string Admin = "Admin";

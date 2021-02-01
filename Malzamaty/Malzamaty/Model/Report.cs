@@ -10,6 +10,6 @@ namespace Malzamaty.Model
         public string Description { get; set; }
         public DateTimeOffset Date { get; set; }
         [ForeignKey("FileID")]
-         public File File { get; set; }
+        public File File { get; set; }
     }
 }

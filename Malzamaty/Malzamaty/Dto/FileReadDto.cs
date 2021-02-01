@@ -1,11 +1,9 @@
-﻿using Malzamaty.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace Malzamaty.Dto
 {
     public class FileReadDto
-    {          
+    {
         public Guid Id { get; set; }
         public string FileDescription { get; set; }
         public string FilePath { get; set; }

@@ -10,7 +10,7 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap<Schedule, ScheduleReadDto>();
-            CreateMap<ScheduleWriteDto, Schedule>().ForMember(x=>x.User,opt=>opt.Ignore()).ForMember(x => x.Subject, opt => opt.Ignore());
+            CreateMap<ScheduleWriteDto, Schedule>().ForMember(x => x.User, opt => opt.Ignore()).ForMember(x => x.Subject, opt => opt.Ignore());
             CreateMap<Schedule, ScheduleWriteDto>();
         }
     }

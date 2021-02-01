@@ -1,8 +1,7 @@
-﻿using System;
-using AutoMapper;
-using Malzamaty.Model;
+﻿using AutoMapper;
 using Malzamaty.Repository;
 using Malzamaty.Services;
+using System;
 
 namespace Malzamaty
 {
@@ -44,17 +43,17 @@ namespace Malzamaty
 
         public IUsersRepository User => _user ??= new UserRepository(_repoContext, _mapper);
 
-        public ICountryRepository Country =>_country ??= new CountryRepository(_repoContext, _mapper);
-        public IStageRepository Stage =>_stage ??= new StageRepository(_repoContext, _mapper);
-        public IClassTypeRepository ClassType =>_classType ??= new ClassTypeRepository(_repoContext, _mapper);
-        public IClassRepository Class =>_class ??= new ClassRepository(_repoContext, _mapper);
-        public IInterestRepository Interest =>_interest ??= new InterestsRepository(_repoContext, _mapper);
+        public ICountryRepository Country => _country ??= new CountryRepository(_repoContext, _mapper);
+        public IStageRepository Stage => _stage ??= new StageRepository(_repoContext, _mapper);
+        public IClassTypeRepository ClassType => _classType ??= new ClassTypeRepository(_repoContext, _mapper);
+        public IClassRepository Class => _class ??= new ClassRepository(_repoContext, _mapper);
+        public IInterestRepository Interest => _interest ??= new InterestsRepository(_repoContext, _mapper);
         public IMatchRepository Match => _match ??= new MatchRepository(_repoContext, _mapper);
-        public IReportRepository Report=> _report ??= new ReportRepository(_repoContext, _mapper);
-        public IFileRepository File =>_file ??= new FileRepository(_repoContext, _mapper);
-        public IRatingRepository Rating =>  _rating ??= new RatingRepository(_repoContext, _mapper);
-        public IScheduleRepository Schedule=>_schedule ??= new ScheduleRepository(_repoContext, _mapper);
-        public RepositoryWrapper(MalzamatyContext repositoryContext,IMapper mapper)
+        public IReportRepository Report => _report ??= new ReportRepository(_repoContext, _mapper);
+        public IFileRepository File => _file ??= new FileRepository(_repoContext, _mapper);
+        public IRatingRepository Rating => _rating ??= new RatingRepository(_repoContext, _mapper);
+        public IScheduleRepository Schedule => _schedule ??= new ScheduleRepository(_repoContext, _mapper);
+        public RepositoryWrapper(MalzamatyContext repositoryContext, IMapper mapper)
         {
             _repoContext = repositoryContext;
             _mapper = mapper;

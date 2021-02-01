@@ -1,12 +1,10 @@
+using Malzamaty.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using Malzamaty.Dto;
-using Malzamaty.Model;
 namespace Malzamaty.Services
 {
-    public interface IRatingService : IBaseService<Rating,Guid>
+    public interface IRatingService : IBaseService<Rating, Guid>
     {
         Task<List<Rating>> GetRatingByFile(Guid Id);
     }
@@ -19,25 +17,25 @@ namespace Malzamaty.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<IEnumerable<Rating>> All(int PageNumber, int Count) =>await _repositoryWrapper.Rating.FindAll(PageNumber, Count);
+        public async Task<IEnumerable<Rating>> All(int PageNumber, int Count) => await _repositoryWrapper.Rating.FindAll(PageNumber, Count);
         public Task<Rating> Create(Rating Rating) =>
              _repositoryWrapper.Rating.Create(Rating);
-        public Task<Rating> Delete(Guid id)=>
+        public Task<Rating> Delete(Guid id) =>
         _repositoryWrapper.Rating.Delete(id);
 
-        public Task<Rating> FindById(Guid id)=>
+        public Task<Rating> FindById(Guid id) =>
         _repositoryWrapper.Rating.FindById(id);
 
         public async Task<List<Rating>> GetRatingByFile(Guid Id)
         {
-            var File =await _repositoryWrapper.File.FindById(Id);
+            var File = await _repositoryWrapper.File.FindById(Id);
             if (File != null)
                 return await _repositoryWrapper.Rating.GetRatingByFile(Id);
             else return null;
         }
         public async Task<Rating> Modify(Guid id, Rating Rating)
         {
-            var RatingModelFromRepo =await _repositoryWrapper.Rating.FindById(id);
+            var RatingModelFromRepo = await _repositoryWrapper.Rating.FindById(id);
             if (RatingModelFromRepo == null)
             {
                 return null;
@@ -45,7 +43,7 @@ namespace Malzamaty.Services
             RatingModelFromRepo.Comment = Rating.Comment;
             RatingModelFromRepo.Rate = Rating.Rate;
             _repositoryWrapper.Save();
-            return  Rating;
+            return Rating;
         }
 
     }

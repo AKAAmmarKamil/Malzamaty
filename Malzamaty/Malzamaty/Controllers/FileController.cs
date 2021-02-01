@@ -1,18 +1,15 @@
-﻿using System;
+﻿using AutoMapper;
+using Malzamaty.Dto;
+using Malzamaty.Form;
+using Malzamaty.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using AutoMapper;
-using Malzamaty.Dto;
-using Microsoft.AspNetCore.Mvc;
 using File = Malzamaty.Model.File;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
-using Malzamaty.Form;
-using System.Linq;
-using Malzamaty.Model;
-using Malzamaty.Services;
 
 namespace Malzamaty.Controllers
 {
@@ -29,8 +26,8 @@ namespace Malzamaty.Controllers
         private IHostingEnvironment _environment;
 
         [Obsolete]
-        public FileController(IHostingEnvironment environment, IFileService fileService,IUserService userService,
-            ISubjectService subjectService,IClassService classService,IRatingService ratingService, IMapper mapper)
+        public FileController(IHostingEnvironment environment, IFileService fileService, IUserService userService,
+            ISubjectService subjectService, IClassService classService, IRatingService ratingService, IMapper mapper)
         {
             _fileService = fileService;
             _userService = userService;
@@ -40,7 +37,7 @@ namespace Malzamaty.Controllers
             _environment = environment;
             _ratingService = ratingService;
         }
-        [HttpGet("{Id}",Name = "GetFileById")]
+        [HttpGet("{Id}", Name = "GetFileById")]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
         {
@@ -54,9 +51,9 @@ namespace Malzamaty.Controllers
         }
         [HttpGet("{PageNumber}/{Count}")]
         [Authorize(Roles = UserRole.Admin)]
-        public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber,int Count)
+        public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber, int Count)
         {
-            var result =await _fileService.All(PageNumber,Count);
+            var result = await _fileService.All(PageNumber, Count);
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
@@ -107,7 +104,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> NewFiles(bool WithReports)
         {
             var User = GetClaim("ID");
-            var result = await _fileService.NewFiles(Guid.Parse(User),WithReports);
+            var result = await _fileService.NewFiles(Guid.Parse(User), WithReports);
             if (WithReports == true)
             {
                 var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
@@ -128,7 +125,7 @@ namespace Malzamaty.Controllers
             var bytes = await Attachment.Attachment.ConvertToBytes(Path);
             var Type = Path.Split(".")[1];
             var FullPath = _environment.WebRootPath;
-            var Upload = await Attachment.Attachment.Upload(bytes, FullPath,Type);
+            var Upload = await Attachment.Attachment.Upload(bytes, FullPath, Type);
             return Ok(Upload);
         }
         [HttpPost]
@@ -136,13 +133,13 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
             var FileModel = _mapper.Map<File>(FileWriteDto);
-            FileModel.User =await _userService.FindById(Guid.Parse(GetClaim("ID")));
+            FileModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             FileModel.Class = await _classService.FindById(FileWriteDto.Class);
             FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
             _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
             var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
-            var File =await _fileService.IsExist(FileWriteDto.FilePath);
+            var File = await _fileService.IsExist(FileWriteDto.FilePath);
             if (File == false)
             {
                 return BadRequest(new { Error = "لا يمكن إضافة ملف موجود مسبقاً" });
@@ -152,8 +149,8 @@ namespace Malzamaty.Controllers
                 var Result = await _fileService.Create(FileModel);
                 var FileReadDto = _mapper.Map<FileReadDto>(Result);
                 return CreatedAtRoute("GetFileById", new { Id = FileReadDto.Id }, FileReadDto);
-            }    
-            return BadRequest(new { Error="الملف لم يتم تحميله" });
+            }
+            return BadRequest(new { Error = "الملف لم يتم تحميله" });
         }
         [HttpGet]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
@@ -163,9 +160,9 @@ namespace Malzamaty.Controllers
             var Path = File.FilePath;
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
-            var FullPath = _environment.WebRootPath +Path;
+            var FullPath = _environment.WebRootPath + Path;
             var Type = Path.Split(".")[1];
-            if (File != null&& System.IO.File.Exists(FullPath))
+            if (File != null && System.IO.File.Exists(FullPath))
             {
                 await _fileService.ModifyDownloadCount(Id);
                 var result = await Attachment.Attachment.ConvertToBytes(FullPath);
@@ -183,7 +180,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             var FileModel = _mapper.Map<File>(FileUpdateDto);
-            await _fileService.Modify(Id,FileModel);
+            await _fileService.Modify(Id, FileModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
@@ -204,7 +201,7 @@ namespace Malzamaty.Controllers
             {
                 System.IO.File.Delete(FullPath);
             }
-                return NoContent();
+            return NoContent();
         }
     }
 }

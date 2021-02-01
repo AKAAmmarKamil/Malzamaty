@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Malzamaty.Model;
+﻿using Malzamaty.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Malzamaty
 {
-    public class MalzamatyContext:DbContext 
+    public class MalzamatyContext : DbContext
     {
         public MalzamatyContext(DbContextOptions<MalzamatyContext> options) : base(options)
         {
@@ -21,6 +21,6 @@ namespace Malzamaty
         public DbSet<Interests> Interests { get; set; }
         public DbSet<Stage> Stage { get; set; }
         public DbSet<ClassType> ClassType { get; set; }
-       
+
     }
 }

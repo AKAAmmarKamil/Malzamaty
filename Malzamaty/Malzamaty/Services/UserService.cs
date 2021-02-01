@@ -1,18 +1,16 @@
+using Malzamaty.Model;
+using Malzamaty.Model.Form;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using Malzamaty.Dto;
-using Malzamaty.Model;
-using Malzamaty.Model.Form;
 
 namespace Malzamaty.Services
 {
-    public interface IUserService : IBaseService<User,Guid>
+    public interface IUserService : IBaseService<User, Guid>
     {
         Task<User> Authintication(LoginForm login);
         Task<User> GetUserByEmail(string Email);
-        Task<bool> ChangePassword(Guid Id,string Password);
+        Task<bool> ChangePassword(Guid Id, string Password);
         Task<bool> ChangeStatus(Guid Id, bool Status);
 
     }
@@ -25,9 +23,9 @@ namespace Malzamaty.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<IEnumerable<User>> All(int PageNumber, int Count) =>await _repositoryWrapper.User.FindAll(PageNumber, Count);
+        public async Task<IEnumerable<User>> All(int PageNumber, int Count) => await _repositoryWrapper.User.FindAll(PageNumber, Count);
 
-        public Task<User> Authintication(LoginForm login)=>
+        public Task<User> Authintication(LoginForm login) =>
             _repositoryWrapper.User.Authintication(login);
 
         public async Task<bool> ChangePassword(Guid Id, string Password)
@@ -52,13 +50,13 @@ namespace Malzamaty.Services
             _repositoryWrapper.Save();
             return true;
         }
-        public async Task<User> Create(User User) =>await
+        public async Task<User> Create(User User) => await
              _repositoryWrapper.User.Create(User);
 
-        public async Task<User> Delete(Guid id)=> await
+        public async Task<User> Delete(Guid id) => await
         _repositoryWrapper.User.Delete(id);
 
-        public async Task<User> FindById(Guid id)=> await
+        public async Task<User> FindById(Guid id) => await
         _repositoryWrapper.User.FindById(id);
 
         public Task<User> GetUserByEmail(string Email) =>

@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Malzamaty.Repositories
+﻿namespace Malzamaty.Repositories
 {
     //public class EntityConverter<T> : ITypeConverter<int, T>
     //{

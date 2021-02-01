@@ -1,11 +1,11 @@
-﻿using Malzamaty.Model;
+﻿using AutoMapper;
+using Malzamaty.Model;
 using Malzamaty.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using AutoMapper;
 
 namespace Malzamaty.Services
 {
@@ -23,8 +23,8 @@ namespace Malzamaty.Services
             _db = context;
         }
         public async Task<bool> IsBewteenTwoDates(DateTimeOffset dt, DateTimeOffset start, DateTimeOffset end)
-        { 
-            return dt >= start && dt <= end;
+        {
+            return  dt >= start && dt <= end;
         }
         public async Task<Schedule> FindById(Guid id)
         {
@@ -37,7 +37,7 @@ namespace Malzamaty.Services
         {
             return await _db.Schedules.Include(x => x.Subject).Skip((PageNumber - 1) * Count).Take(Count).ToListAsync();
         }
-        public async Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count,Guid Id)=> await _db.Schedules.Include(x=>x.Subject).Where(x=>x.User.ID==Id).Skip((PageNumber - 1) * Count).Take(Count).ToListAsync();
+        public async Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count, Guid Id) => await _db.Schedules.Include(x => x.Subject).Where(x => x.User.ID == Id).Skip((PageNumber - 1) * Count).Take(Count).ToListAsync();
         public async Task<IEnumerable<Schedule>> GetUserSchedules(Guid Id) => await _db.Schedules.Include(x => x.Subject).Where(x => x.User.ID == Id).ToListAsync();
 
     }

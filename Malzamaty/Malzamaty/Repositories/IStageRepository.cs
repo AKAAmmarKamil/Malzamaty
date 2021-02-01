@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Malzamaty.Model;
 using Malzamaty.Repositories;
-using System;
 
 namespace Malzamaty.Services
 {

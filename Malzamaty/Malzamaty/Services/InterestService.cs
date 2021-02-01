@@ -1,10 +1,10 @@
+using Malzamaty.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Malzamaty.Model;
 namespace Malzamaty.Services
 {
-    public interface IInterestService : IBaseService<Interests,Guid>
+    public interface IInterestService : IBaseService<Interests, Guid>
     {
         Task<bool> CheckIfLast(Guid id);
         Task<Interests> FindByUser(Guid Id);
@@ -20,20 +20,20 @@ namespace Malzamaty.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<IEnumerable<Interests>> All(int PageNumber, int Count) =>await _repositoryWrapper.Interest.FindAll(PageNumber, Count);
+        public async Task<IEnumerable<Interests>> All(int PageNumber, int Count) => await _repositoryWrapper.Interest.FindAll(PageNumber, Count);
 
-        public Task<bool> CheckIfLast(Guid id)=>
+        public Task<bool> CheckIfLast(Guid id) =>
          _repositoryWrapper.Interest.CheckIfLast(id);
 
-        public async Task<Interests> Create(Interests Interest) =>await
+        public async Task<Interests> Create(Interests Interest) => await
              _repositoryWrapper.Interest.Create(Interest);
-        public async Task<Interests> Delete(Guid id)=> await
+        public async Task<Interests> Delete(Guid id) => await
         _repositoryWrapper.Interest.Delete(id);
 
-        public async Task<Interests> FindById(Guid id)=> await
+        public async Task<Interests> FindById(Guid id) => await
         _repositoryWrapper.Interest.FindById(id);
 
-        public Task<Interests> FindByUser(Guid Id)=>
+        public Task<Interests> FindByUser(Guid Id) =>
         _repositoryWrapper.Interest.FindByUser(Id);
 
         public Task<List<Interests>> GetInterests(Guid Id) =>
@@ -41,7 +41,7 @@ namespace Malzamaty.Services
 
         public async Task<Interests> Modify(Guid id, Interests Interest)
         {
-            var InterestModelFromRepo =await _repositoryWrapper.Interest.FindById(id);
+            var InterestModelFromRepo = await _repositoryWrapper.Interest.FindById(id);
             if (InterestModelFromRepo == null)
             {
                 return null;
@@ -49,7 +49,7 @@ namespace Malzamaty.Services
             InterestModelFromRepo.SubjectID = Interest.SubjectID;
             InterestModelFromRepo.ClassID = Interest.ClassID;
             _repositoryWrapper.Save();
-            return  Interest;
+            return Interest;
         }
 
         public async Task<Interests> ModifyBySchedule(Guid id, Guid Subject)

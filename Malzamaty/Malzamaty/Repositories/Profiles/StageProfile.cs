@@ -9,9 +9,9 @@ namespace Malzamaty
         public StageProfile()
         {
             //Source -> Target
-            CreateMap <Stage, StageReadDto> ();
+            CreateMap<Stage, StageReadDto>();
             CreateMap<StageWriteDto, Stage>();
-            CreateMap<Stage,StageWriteDto > ();
+            CreateMap<Stage, StageWriteDto>();
         }
     }
 }

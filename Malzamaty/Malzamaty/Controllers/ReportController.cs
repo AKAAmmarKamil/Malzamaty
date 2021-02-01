@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
@@ -18,13 +16,13 @@ namespace Malzamaty.Controllers
         private readonly IReportService _reportService;
         private readonly IFileService _fileService;
         private readonly IMapper _mapper;
-        public ReportController(IReportService reportService,IFileService fileService, IMapper mapper)
+        public ReportController(IReportService reportService, IFileService fileService, IMapper mapper)
         {
             _reportService = reportService;
             _fileService = fileService;
             _mapper = mapper;
         }
-        [HttpGet("{Id}",Name = "GetReportById")]
+        [HttpGet("{Id}", Name = "GetReportById")]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<ReportReadDto>> GetReportById(Guid Id)
         {
@@ -38,9 +36,9 @@ namespace Malzamaty.Controllers
         }
         [HttpGet("{PageNumber}/{Count}")]
         [Authorize(Roles = UserRole.Admin)]
-        public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber,int Count)
+        public async Task<ActionResult<ReportReadDto>> GetAllReports(int PageNumber, int Count)
         {
-            var result =await _reportService.All(PageNumber,Count);
+            var result = await _reportService.All(PageNumber, Count);
             var ReportModel = _mapper.Map<IList<ReportReadDto>>(result);
             return Ok(ReportModel);
         }
@@ -49,7 +47,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<ReportReadDto>> AddReport([FromBody] ReportWriteDto ReportWriteDto)
         {
             var ReportModel = _mapper.Map<Report>(ReportWriteDto);
-            ReportModel.File =await _fileService.FindById(ReportWriteDto.FileID);
+            ReportModel.File = await _fileService.FindById(ReportWriteDto.FileID);
             var Result = await _reportService.Create(ReportModel);
             var ReportReadDto = _mapper.Map<ReportReadDto>(Result);
             return CreatedAtRoute("GetReportById", new { Id = ReportReadDto.Id }, ReportReadDto);
@@ -68,7 +66,7 @@ namespace Malzamaty.Controllers
                 return NotFound();
             }
             var ReportModel = _mapper.Map<Report>(ReportWriteDto);
-            await _reportService.Modify(Id,ReportModel);
+            await _reportService.Modify(Id, ReportModel);
             return NoContent();
         }
 

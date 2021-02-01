@@ -11,20 +11,20 @@ using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
-    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+    [Authorize(Roles = UserRole.Admin)]
 
     [ApiController]
     public class CountryController : BaseController
     {
         private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
-        public CountryController(IMapper mapper,ICountryService countryService)
+        public CountryController(IMapper mapper, ICountryService countryService)
         {
             _countryService = countryService;
             _mapper = mapper;
         }
 
-        [HttpGet("{Id}",Name = "GetCountryById")]
+        [HttpGet("{Id}", Name = "GetCountryById")]
         public async Task<ActionResult<CountryWriteDto>> GetCountryById(Guid Id)
         {
             var result = await _countryService.FindById(Id);
@@ -53,7 +53,7 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCountry(Guid Id, [FromBody] CountryWriteDto countryWriteDto)
         {
-            var CountryModelFromRepo =await _countryService.FindById(Id);
+            var CountryModelFromRepo = await _countryService.FindById(Id);
             if (CountryModelFromRepo == null)
             {
                 return NotFound();
@@ -65,7 +65,7 @@ namespace Malzamaty.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(Guid Id)
         {
-            var Country =await _countryService.Delete(Id);
+            var Country = await _countryService.Delete(Id);
             if (Country == null)
             {
                 return NotFound();

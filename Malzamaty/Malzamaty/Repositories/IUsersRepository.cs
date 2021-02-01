@@ -20,13 +20,13 @@ namespace Malzamaty.Repository
             _db = context;
         }
         public async Task<User> Authintication(LoginForm login) =>
-             await _db.Users.Where(x => x.Email == login.EmailAddress && x.Password == login.Password)
+             await _db.Users.Where(x => x.Email == login.EmailAddress)
                  .FirstOrDefaultAsync();
         public async Task<User> GetUserByEmail(string Email)
         {
-           var result= await _db.Users.Where(x => x.Email == Email)
-                .FirstOrDefaultAsync();
-            if (result==null)
+            var result = await _db.Users.Where(x => x.Email == Email)
+                 .FirstOrDefaultAsync();
+            if (result == null)
             {
                 return null;
             }

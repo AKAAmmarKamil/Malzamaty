@@ -1,10 +1,10 @@
+using Malzamaty.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Malzamaty.Model;
 namespace Malzamaty.Services
 {
-    public interface IScheduleService : IBaseService<Schedule,Guid>
+    public interface IScheduleService : IBaseService<Schedule, Guid>
     {
         Task<IEnumerable<Schedule>> GetUserSchedules(Guid Id);
         Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count, Guid Id);
@@ -19,35 +19,35 @@ namespace Malzamaty.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<IEnumerable<Schedule>> All(int PageNumber, int Count) =>await _repositoryWrapper.Schedule.FindAll(PageNumber, Count);
-        public async Task<Schedule> Create(Schedule Schedule) =>await
+        public async Task<IEnumerable<Schedule>> All(int PageNumber, int Count) => await _repositoryWrapper.Schedule.FindAll(PageNumber, Count);
+        public async Task<Schedule> Create(Schedule Schedule) => await
              _repositoryWrapper.Schedule.Create(Schedule);
-        public async Task<Schedule> Delete(Guid id)=> await
+        public async Task<Schedule> Delete(Guid id) => await
         _repositoryWrapper.Schedule.Delete(id);
 
-        public async Task<Schedule> FindById(Guid id)=> await
+        public async Task<Schedule> FindById(Guid id) => await
         _repositoryWrapper.Schedule.FindById(id);
 
-        public async Task<IEnumerable<Schedule>> GetUserSchedules(Guid Id) =>await _repositoryWrapper.Schedule.GetUserSchedules(Id);
+        public async Task<IEnumerable<Schedule>> GetUserSchedules(Guid Id) => await _repositoryWrapper.Schedule.GetUserSchedules(Id);
 
         public async Task<IEnumerable<Schedule>> GetUserSchedules(int PageNumber, int Count, Guid Id) => await
-        _repositoryWrapper.Schedule.GetUserSchedules(PageNumber,Count,Id);
+        _repositoryWrapper.Schedule.GetUserSchedules(PageNumber, Count, Id);
 
-        public async Task<bool> IsBewteenTwoDates(DateTimeOffset dt, DateTimeOffset start, DateTimeOffset end) =>await
-       _repositoryWrapper.Schedule.IsBewteenTwoDates(dt,start,end);
+        public async Task<bool> IsBewteenTwoDates(DateTimeOffset dt, DateTimeOffset start, DateTimeOffset end) => await
+       _repositoryWrapper.Schedule.IsBewteenTwoDates(dt, start, end);
 
         public async Task<Schedule> Modify(Guid id, Schedule Schedule)
         {
-            var ScheduleModelFromRepo =await _repositoryWrapper.Schedule.FindById(id);
+            var ScheduleModelFromRepo = await _repositoryWrapper.Schedule.FindById(id);
             if (ScheduleModelFromRepo == null)
             {
                 return null;
             }
             ScheduleModelFromRepo.StartStudy = Schedule.StartStudy;
             ScheduleModelFromRepo.FinishStudy = Schedule.FinishStudy;
-            ScheduleModelFromRepo.Subject =await _repositoryWrapper.Subject.FindById(Schedule.Subject.ID);
+            ScheduleModelFromRepo.Subject = await _repositoryWrapper.Subject.FindById(Schedule.Subject.ID);
             _repositoryWrapper.Save();
-            return  Schedule;
+            return Schedule;
         }
 
     }

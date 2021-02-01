@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
-    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+    [Authorize(Roles = UserRole.Admin)]
     [ApiController]
     public class ClassTypeController : BaseController
     {
@@ -23,7 +23,7 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{Id}",Name = "GetClassTypeById")]
+        [HttpGet("{Id}", Name = "GetClassTypeById")]
         public async Task<ActionResult<ClassTypeWriteDto>> GetClassTypeById(Guid Id)
         {
             var result = await _classTypeService.FindById(Id);
@@ -35,9 +35,9 @@ namespace Malzamaty.Controllers
             return Ok(ClassTypeModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<ClassTypeReadDto>> GetAllClassTypes(int PageNumber,int Count)
+        public async Task<ActionResult<ClassTypeReadDto>> GetAllClassTypes(int PageNumber, int Count)
         {
-            var result = await _classTypeService.All(PageNumber,Count);
+            var result = await _classTypeService.All(PageNumber, Count);
             var ClassTypesModel = _mapper.Map<IList<ClassTypeReadDto>>(result);
             return Ok(ClassTypesModel);
         }
@@ -52,7 +52,7 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateClassType(Guid Id, [FromBody] ClassTypeWriteDto ClassTypeWriteDto)
         {
-            var ClassTypeModelFromRepo =await _classTypeService.FindById(Id);
+            var ClassTypeModelFromRepo = await _classTypeService.FindById(Id);
             if (ClassTypeModelFromRepo == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace Malzamaty.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteClassType(Guid Id)
         {
-            var ClassType =await _classTypeService.Delete(Id);
+            var ClassType = await _classTypeService.Delete(Id);
             if (ClassType == null)
             {
                 return NotFound();

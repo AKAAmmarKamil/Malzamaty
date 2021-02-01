@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
 using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
-    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+    [Authorize(Roles = UserRole.Admin)]
     [ApiController]
     public class MatchController : BaseController
     {
@@ -25,10 +22,10 @@ namespace Malzamaty.Controllers
             _matchService = matchService;
             _mapper = mapper;
         }
-        [HttpGet("{Id}",Name = "GetMatchById")]
+        [HttpGet("{Id}", Name = "GetMatchById")]
         public async Task<ActionResult<MatchReadDto>> GetMatchById(Guid Id)
         {
-            var result = await  _matchService.FindById(Id);
+            var result = await _matchService.FindById(Id);
             if (result == null)
             {
                 return NotFound();
@@ -37,9 +34,9 @@ namespace Malzamaty.Controllers
             return Ok(MatchModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<MatchReadDto>> GetAllMatches(int PageNumber,int Count)
+        public async Task<ActionResult<MatchReadDto>> GetAllMatches(int PageNumber, int Count)
         {
-            var result =await _matchService.All(PageNumber,Count);
+            var result = await _matchService.All(PageNumber, Count);
             var MatchModel = _mapper.Map<IList<MatchReadDto>>(result);
             return Ok(MatchModel);
         }
@@ -59,14 +56,14 @@ namespace Malzamaty.Controllers
             {
                 return NotFound();
             }
-             var MatchModel = _mapper.Map<Match>(MatchWriteDto);
+            var MatchModel = _mapper.Map<Match>(MatchWriteDto);
             await _matchService.Modify(Id, MatchModel);
             return NoContent();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMatches(Guid Id)
         {
-            var Match =await _matchService.Delete(Id);
+            var Match = await _matchService.Delete(Id);
             if (Match == null)
             {
                 return NotFound();

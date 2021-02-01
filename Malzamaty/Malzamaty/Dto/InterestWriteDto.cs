@@ -1,10 +1,5 @@
-﻿using Malzamaty.Controllers;
-using Malzamaty.Model;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 namespace Malzamaty.Dto
 {
     public class InterestWriteDto //: IValidatableObject

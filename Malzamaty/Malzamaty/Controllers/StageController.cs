@@ -11,19 +11,19 @@ using System.Threading.Tasks;
 namespace Malzamaty.Controllers
 {
     [Route("api/[action]")]
-    [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+    [Authorize(Roles = UserRole.Admin)]
     [ApiController]
     public class StageController : BaseController
     {
         private readonly IStageService _stageService;
         private readonly IMapper _mapper;
-        public StageController(IMapper mapper,IStageService stageService)
+        public StageController(IMapper mapper, IStageService stageService)
         {
             _stageService = stageService;
             _mapper = mapper;
         }
 
-        [HttpGet("{Id}",Name = "GetStageById")]
+        [HttpGet("{Id}", Name = "GetStageById")]
         public async Task<ActionResult<StageWriteDto>> GetStageById(Guid Id)
         {
             var result = await _stageService.FindById(Id);
@@ -35,9 +35,9 @@ namespace Malzamaty.Controllers
             return Ok(StageModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<StageReadDto>> GetAllStages(int PageNumber,int Count)
+        public async Task<ActionResult<StageReadDto>> GetAllStages(int PageNumber, int Count)
         {
-            var result = await _stageService.All(PageNumber,Count);
+            var result = await _stageService.All(PageNumber, Count);
             var StageModel = _mapper.Map<IList<StageReadDto>>(result);
             return Ok(StageModel);
         }
@@ -52,7 +52,7 @@ namespace Malzamaty.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStage(Guid Id, [FromBody] StageWriteDto StageWriteDto)
         {
-            var StageModelFromRepo =await _stageService.FindById(Id);
+            var StageModelFromRepo = await _stageService.FindById(Id);
             if (StageModelFromRepo == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace Malzamaty.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStage(Guid Id)
         {
-            var Stage =await _stageService.Delete(Id);
+            var Stage = await _stageService.Delete(Id);
             if (Stage == null)
             {
                 return NotFound();

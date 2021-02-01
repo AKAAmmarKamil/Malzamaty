@@ -31,7 +31,7 @@ namespace Malzamaty.Services
         public async Task<IEnumerable<Match>> FindAll(int PageNumber, int count) =>
         await _db.Matches.Include(x => x.Class).Include(x => x.Subject)
                   .Skip((PageNumber - 1) * count).Take(count).ToListAsync();
-        public async Task<IEnumerable<Match>> FindByClass(Guid Class,Guid Subject)=>
-        await _db.Matches.Where(x=>x.ClassID==Class && x.SubjectID==Subject).Include(x => x.Class).Include(x => x.Subject).ToListAsync();
+        public async Task<IEnumerable<Match>> FindByClass(Guid Class, Guid Subject) =>
+        await _db.Matches.Where(x => x.ClassID == Class && x.SubjectID == Subject).Include(x => x.Class).Include(x => x.Subject).ToListAsync();
     }
 }

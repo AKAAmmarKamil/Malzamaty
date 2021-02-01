@@ -9,9 +9,9 @@ namespace Malzamaty
         public SubjectProfile()
         {
             //Source -> Target
-            CreateMap <Subject, SubjectReadDto > ();
+            CreateMap<Subject, SubjectReadDto>();
             CreateMap<SubjectWriteDto, Subject>();
-            CreateMap<Subject,SubjectWriteDto >();
+            CreateMap<Subject, SubjectWriteDto>();
         }
     }
 }
