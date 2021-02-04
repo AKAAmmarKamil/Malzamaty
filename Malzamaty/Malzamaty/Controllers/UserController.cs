@@ -134,7 +134,7 @@ namespace Malzamaty.Controllers
             return Ok(UserModel);
         }
         [HttpPost]
-        public async Task<ActionResult<UserReadDto>> AddUser([FromBody] UserWriteDto UserWriteDto)
+        public async Task<IActionResult> AddUser([FromBody] UserWriteDto UserWriteDto)
         {
             UserWriteDto.Password = BCrypt.Net.BCrypt.HashPassword(UserWriteDto.Password);
             var UserModel = _mapper.Map<User>(UserWriteDto);

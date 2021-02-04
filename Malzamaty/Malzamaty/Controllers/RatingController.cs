@@ -59,7 +59,7 @@ namespace Malzamaty.Controllers
         }
         [HttpPost]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<ActionResult<RatingReadDto>> AddRating([FromBody] RatingWriteDto RatingWriteDto)
+        public async Task<IActionResult> AddRating([FromBody] RatingWriteDto RatingWriteDto)
         {
             GetClaim("ID");
             var RatingModel = _mapper.Map<Rating>(RatingWriteDto);

@@ -41,7 +41,7 @@ namespace Malzamaty.Controllers
             return Ok(MatchModel);
         }
         [HttpPost]
-        public async Task<ActionResult<MatchReadDto>> AddMatch([FromBody] MatchWriteDto MatchWriteDto)
+        public async Task<IActionResult> AddMatch([FromBody] MatchWriteDto MatchWriteDto)
         {
             var MatchModel = _mapper.Map<Match>(MatchWriteDto);
             var Result = await _matchService.Create(MatchModel);

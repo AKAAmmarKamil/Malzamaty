@@ -42,7 +42,7 @@ namespace Malzamaty.Controllers
             return Ok(StageModel);
         }
         [HttpPost]
-        public async Task<ActionResult<StageReadDto>> AddStage([FromBody] StageWriteDto StageWriteDto)
+        public async Task<IActionResult> AddStage([FromBody] StageWriteDto StageWriteDto)
         {
             var StageModel = _mapper.Map<Stage>(StageWriteDto);
             await _stageService.Create(StageModel);

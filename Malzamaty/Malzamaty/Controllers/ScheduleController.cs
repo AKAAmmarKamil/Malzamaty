@@ -61,7 +61,7 @@ namespace Malzamaty.Controllers
         }
         [HttpPost]
         [Authorize(Roles = UserRole.Admin)]
-        public async Task<ActionResult<ScheduleReadDto>> AddSchedule([FromBody] ScheduleWriteDto ScheduleWriteDto)
+        public async Task<IActionResult> AddSchedule([FromBody] ScheduleWriteDto ScheduleWriteDto)
         {
             var Schedules = _scheduleService.GetUserSchedules(Guid.Parse(GetClaim("ID"))).Result.ToList();
             var UserClass = await _interestService.FindByUser(Guid.Parse(GetClaim("ID")));

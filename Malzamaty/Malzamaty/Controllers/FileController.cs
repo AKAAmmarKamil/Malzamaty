@@ -127,7 +127,7 @@ namespace Malzamaty.Controllers
         }
         [HttpPost]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<ActionResult<AttachmentString>> AddAttachment(string Path)
+        public async Task<IActionResult> AddAttachment(string Path)
         {
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Path = Path.Replace("\\", @"\");
@@ -139,7 +139,7 @@ namespace Malzamaty.Controllers
         }
         [HttpPost]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<ActionResult<FileReadDto>> AddFile([FromBody] FileWriteDto FileWriteDto)
+        public async Task<IActionResult> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
             var FileModel = _mapper.Map<File>(FileWriteDto);
             FileModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));

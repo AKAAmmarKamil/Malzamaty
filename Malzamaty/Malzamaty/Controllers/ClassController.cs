@@ -40,7 +40,7 @@ namespace Malzamaty.Controllers
             return Ok(ClassModel);
         }
         [HttpPost]
-        public async Task<ActionResult<ClassReadDto>> AddClass([FromBody] ClassWriteDto ClassWriteDto)
+        public async Task<IActionResult> AddClass([FromBody] ClassWriteDto ClassWriteDto)
         {
             var ClassModel = _mapper.Map<Class>(ClassWriteDto);
             var Result = await _classService.Create(ClassModel);

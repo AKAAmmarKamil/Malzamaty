@@ -44,7 +44,7 @@ namespace Malzamaty.Controllers
         }
         [HttpPost]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<ActionResult<ReportReadDto>> AddReport([FromBody] ReportWriteDto ReportWriteDto)
+        public async Task<IActionResult> AddReport([FromBody] ReportWriteDto ReportWriteDto)
         {
             var ReportModel = _mapper.Map<Report>(ReportWriteDto);
             ReportModel.File = await _fileService.FindById(ReportWriteDto.FileID);

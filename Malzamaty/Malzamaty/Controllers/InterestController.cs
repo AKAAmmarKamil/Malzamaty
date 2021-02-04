@@ -48,7 +48,7 @@ namespace Malzamaty.Controllers
         }
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Teacher)]
         [HttpPost]
-        public async Task<ActionResult<InterestReadDto>> AddInterest([FromBody] InterestWriteDto InterestWriteDto)
+        public async Task<IActionResult> AddInterest([FromBody] InterestWriteDto InterestWriteDto)
         {
             var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
             InterestModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));

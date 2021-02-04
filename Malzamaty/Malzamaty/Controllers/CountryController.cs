@@ -43,7 +43,7 @@ namespace Malzamaty.Controllers
             return Ok(CountryModel);
         }
         [HttpPost]
-        public async Task<ActionResult<CountryReadDto>> AddCountry([FromBody] CountryWriteDto countryWriteDto)
+        public async Task<IActionResult> AddCountry([FromBody] CountryWriteDto countryWriteDto)
         {
             var CountryModel = _mapper.Map<Country>(countryWriteDto);
             await _countryService.Create(CountryModel);

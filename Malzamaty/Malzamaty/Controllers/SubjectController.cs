@@ -40,7 +40,7 @@ namespace Malzamaty.Controllers
             return Ok(SubjectModel);
         }
         [HttpPost]
-        public async Task<ActionResult<SubjectReadDto>> AddSubject([FromBody] SubjectWriteDto subjectWriteDto)
+        public async Task<IActionResult> AddSubject([FromBody] SubjectWriteDto subjectWriteDto)
         {
             var SubjectModel = _mapper.Map<Subject>(subjectWriteDto);
             await _subjectService.Create(SubjectModel);
