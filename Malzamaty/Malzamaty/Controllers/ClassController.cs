@@ -33,9 +33,9 @@ namespace Malzamaty.Controllers
             return Ok(ClassModel);
         }
         [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<ClassReadDto>> GetAllClasses(int PageNumber, int Count)
+        public async Task<ActionResult<ClassReadDto>> GetAllClasses(int PageNumber, int Count,Guid Country)
         {
-            var result = await _classService.All(PageNumber, Count);
+            var result = await _classService.AllInCountry(PageNumber, Count,Country);
             var ClassModel = _mapper.Map<IList<ClassReadDto>>(result);
             return Ok(ClassModel);
         }

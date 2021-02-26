@@ -11,6 +11,7 @@ namespace Malzamaty
 {
     public interface IClassRepository : IBaseRepository<Class>
     {
+        Task<IEnumerable<Class>> AllInCountry(int PageNumber, int count, Guid Country);
     }
     public class ClassRepository : BaseRepository<Class>, IClassRepository
     {
@@ -25,7 +26,11 @@ namespace Malzamaty
             if (Result == null) return null;
             return Result;
         }
-        public async Task<IEnumerable<Class>> FindAll(int PageNumber, int count) => await _db.Class.Include(x => x.Stage).Include(x => x.ClassType).Include(x => x.Country).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
+        public async Task<IEnumerable<Class>> AllInCountry(int PageNumber, int count,Guid Country) => await _db.Class.Include(x => x.Stage).Include(x => x.ClassType).Include(x => x.Country).Where(x=>x.Country.ID==Country).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
 
+        public Task<IEnumerable<Class>> GetAll(int PageNumber, int count, Guid Country)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
