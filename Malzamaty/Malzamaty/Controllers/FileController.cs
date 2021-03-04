@@ -57,6 +57,14 @@ namespace Malzamaty.Controllers
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
+        [HttpGet("{FileName}")]
+        [Authorize(Roles = UserRole.Admin)]
+        public async Task<ActionResult<FileReadDto>> GetByName(string FileName)
+        {
+            var result = await _fileService.GetByName(FileName);
+            var FileModel = _mapper.Map<IList<FileReadDto>>(result);
+            return Ok(FileModel);
+        }
         [HttpGet]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<ActionResult<FileReadDto>> TopRatingFiles(bool WithReports)

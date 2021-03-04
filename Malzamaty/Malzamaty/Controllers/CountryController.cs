@@ -35,10 +35,10 @@ namespace Malzamaty.Controllers
             var CountryModel = _mapper.Map<CountryWriteDto>(result);
             return Ok(CountryModel);
         }
-        [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<CountryReadDto>> GetAllCountries(int PageNumber, int Count)
+        [HttpGet]
+        public async Task<ActionResult<CountryReadDto>> GetAllCountries()
         {
-            var result = await _countryService.All(PageNumber, Count);
+            var result = await _countryService.GetAll();
             var CountryModel = _mapper.Map<IList<CountryReadDto>>(result);
             return Ok(CountryModel);
         }

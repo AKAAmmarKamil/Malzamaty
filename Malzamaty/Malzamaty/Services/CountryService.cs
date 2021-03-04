@@ -6,7 +6,7 @@ namespace Malzamaty.Services
 {
     public interface ICountryService : IBaseService<Country, Guid>
     {
-
+        Task<IEnumerable<Country>> GetAll();
     }
 
     public class CountryService : ICountryService
@@ -17,7 +17,11 @@ namespace Malzamaty.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<IEnumerable<Country>> All(int PageNumber, int Count) => await _repositoryWrapper.Country.FindAll(PageNumber, Count);
+        public Task<IEnumerable<Country>> All(int PageNumber, int Count)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Country> Create(Country Country) => await
              _repositoryWrapper.Country.Create(Country);
         public async Task<Country> Delete(Guid id) => await
@@ -25,6 +29,8 @@ namespace Malzamaty.Services
 
         public async Task<Country> FindById(Guid id) => await
         _repositoryWrapper.Country.FindById(id);
+
+        public async Task<IEnumerable<Country>> GetAll()=>await _repositoryWrapper.Country.GetAll();
 
         public async Task<Country> Modify(Guid id, Country Country)
         {

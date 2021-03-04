@@ -13,6 +13,7 @@ namespace Malzamaty.Services
     {
         Task<bool> IsExist(string FilePath);
         Task<List<File>> TopRating(Guid Id, bool WithReports);
+        Task<List<File>> GetByName(string FileName);
         Task<List<File>> MostDownloaded(Guid Id, bool WithReports);
         Task<List<File>> NewFiles(Guid Id, bool WithReports);
         Task<List<File>> RelatedFiles(Guid Id);
@@ -98,5 +99,8 @@ namespace Malzamaty.Services
             var Files = await _db.File.Where(x => x.Class.ID == File.Class.ID && x.Subject.ID == File.Subject.ID && x.ID != Id).Include(x => x.Class).Include(x => x.Subject).Include(x => x.Report).Take(5).ToListAsync();
             return Files;
         }
+
+        public async Task<List<File>> GetByName(string FileName)=> await _db.File.Include(x => x.Subject).Include(x => x.User).Include(x => x.Class)
+            .ThenInclude(x => x.ClassType).Include(x => x.Class).ThenInclude(x => x.Stage).Where(x=>x.Description.Contains(FileName)).ToListAsync();
     }
 }

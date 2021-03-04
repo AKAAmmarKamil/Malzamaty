@@ -13,6 +13,7 @@ namespace Malzamaty.Services
         Task<List<File>> NewFiles(Guid Id, bool WithReports);
         Task<List<File>> RelatedFiles(Guid Id);
         Task<File> ModifyDownloadCount(Guid id);
+        Task<List<File>> GetByName(string FileName);
     }
 
     public class FileService : IFileService
@@ -72,5 +73,8 @@ namespace Malzamaty.Services
         _repositoryWrapper.File.TopRating(Id, WithReports);
         public async Task<File> GetAppropriateFile(Guid Id) => await
        _repositoryWrapper.File.GetAppropriateFile(Id);
+
+        public Task<List<File>> GetByName(string FileName)=>
+            _repositoryWrapper.File.GetByName(FileName);
     }
 }
