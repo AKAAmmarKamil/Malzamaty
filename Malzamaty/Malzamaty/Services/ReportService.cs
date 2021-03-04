@@ -6,9 +6,8 @@ namespace Malzamaty.Services
 {
     public interface IReportService : IBaseService<Report, Guid>
     {
-
+        Task<List<Report>> GetReportsByFileId(Guid Id);
     }
-
     public class ReportService : IReportService
     {
         private readonly IRepositoryWrapper _repositoryWrapper;
@@ -25,7 +24,8 @@ namespace Malzamaty.Services
 
         public Task<Report> FindById(Guid id) =>
         _repositoryWrapper.Report.FindById(id);
-
+        public async Task<List<Report>> GetReportsByFileId(Guid id) =>
+        await _repositoryWrapper.Report.GetReportsByFileId(id);
         public async Task<Report> Modify(Guid id, Report Report)
         {
             var ReportModelFromRepo = await _repositoryWrapper.Report.FindById(id);

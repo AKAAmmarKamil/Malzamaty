@@ -42,6 +42,23 @@ namespace Malzamaty.Controllers
             var ReportModel = _mapper.Map<IList<ReportReadDto>>(result);
             return Ok(ReportModel);
         }
+        [HttpGet("{Id}")]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+        public async Task<ActionResult<ReportReadDto>> GetReportsByFileId(Guid Id)
+        {
+            var File = await _fileService.FindById(Id);
+            if (GetClaim("Role") != "Admin" && GetClaim("ID") != File.User.ID.ToString())
+            {
+                return BadRequest(new { Error = "لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
+            }
+            var result = await _reportService.GetReportsByFileId(Id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            var ReportModel = _mapper.Map<IList<ReportReadDto>>(result);
+            return Ok(ReportModel);
+        }
         [HttpPost]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> AddReport([FromBody] ReportWriteDto ReportWriteDto)
