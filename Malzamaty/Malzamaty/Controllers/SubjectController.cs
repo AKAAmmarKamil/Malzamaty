@@ -32,10 +32,10 @@ namespace Malzamaty.Controllers
             var SubjectModel = _mapper.Map<SubjectWriteDto>(result);
             return Ok(SubjectModel);
         }
-        [HttpGet("{PageNumber}/{Count}")]
-        public async Task<ActionResult<SubjectReadDto>> GetAllSubjects(int PageNumber, int Count)
+        [HttpGet]
+        public async Task<ActionResult<SubjectReadDto>> GetAllSubjects()
         {
-            var result = await _subjectService.All(PageNumber, Count);
+            var result = await _subjectService.GetAll();
             var SubjectModel = _mapper.Map<IList<SubjectReadDto>>(result);
             return Ok(SubjectModel);
         }

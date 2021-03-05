@@ -6,7 +6,7 @@ namespace Malzamaty.Services
 {
     public interface ISubjectService : IBaseService<Subject, Guid>
     {
-
+        Task<IEnumerable<Subject>> GetAll();
     }
 
     public class SubjectService : ISubjectService
@@ -25,7 +25,7 @@ namespace Malzamaty.Services
 
         public Task<Subject> FindById(Guid id) =>
         _repositoryWrapper.Subject.FindById(id);
-
+        public async Task<IEnumerable<Subject>> GetAll() => await _repositoryWrapper.Subject.GetAll();
         public async Task<Subject> Modify(Guid id, Subject subject)
         {
             var SubjectModelFromRepo = await _repositoryWrapper.Subject.FindById(id);

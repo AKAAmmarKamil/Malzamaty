@@ -6,7 +6,7 @@ namespace Malzamaty.Services
 {
     public interface IClassService : IBaseService<Class, Guid>
     {
-        Task<IEnumerable<Class>> AllInCountry(int PageNumber, int Count, Guid Country);
+        Task<IEnumerable<Class>> AllInCountry(Guid Country);
     }
 
     public class ClassService : IClassService
@@ -17,7 +17,7 @@ namespace Malzamaty.Services
             _repositoryWrapper = repositoryWrapper;
         }
 
-        public async Task<IEnumerable<Class>> AllInCountry(int PageNumber, int Count,Guid Country) => await _repositoryWrapper.Class.AllInCountry(PageNumber, Count,Country);
+        public async Task<IEnumerable<Class>> AllInCountry(Guid Country) => await _repositoryWrapper.Class.AllInCountry(Country);
 
         public Task<IEnumerable<Class>> All(int PageNumber, int Count)
         {
