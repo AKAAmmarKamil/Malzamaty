@@ -57,6 +57,12 @@ namespace Malzamaty.Controllers
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
+        [HttpGet]
+        public async Task<ActionResult<List<string>>> GetYears()
+        {
+            var result = await _fileService.GetYears();
+            return Ok(result);
+        }
         [HttpGet("{FileName}")]
         [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<FileReadDto>> GetByName(string FileName)

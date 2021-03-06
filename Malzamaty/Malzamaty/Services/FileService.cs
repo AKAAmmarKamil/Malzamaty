@@ -7,6 +7,7 @@ namespace Malzamaty.Services
     public interface IFileService : IBaseService<File, Guid>
     {
         Task<bool> IsExist(string FilePath);
+        Task<List<string>> GetYears();
         Task<List<File>> TopRating(Guid Id, bool WithReports);
         Task<File> GetAppropriateFile(Guid Id);
         Task<List<File>> MostDownloaded(Guid Id, bool WithReports);
@@ -76,5 +77,16 @@ namespace Malzamaty.Services
 
         public Task<List<File>> GetByName(string FileName)=>
             _repositoryWrapper.File.GetByName(FileName);
+
+        public async Task<List<string>> GetYears()
+        {
+            var CurrentYear = DateTimeOffset.UtcNow.Year;
+            var Years = new List<string>();
+            for (int i = CurrentYear; i >= 1950; i--)
+            {
+               Years.Add(i.ToString());
+            }
+            return  Years;
+        }
     }
 }
