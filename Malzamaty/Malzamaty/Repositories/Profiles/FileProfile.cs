@@ -38,7 +38,7 @@ namespace Malzamaty
                                                       .ForMember(x => x.Rate, opt => opt.MapFrom(x => x.Rating.Average(a => a.Rate)));
             CreateMap<FileWriteDto, File>()
                 .ForMember(x => x.UploadDate, opt => opt.MapFrom(x => DateTime.Now))
-                .ForMember(x => x.Class, opt => opt.Ignore())
+                .ForMember(x => x.Class,opt=>opt.Ignore())
                 .ForMember(x => x.User, opt => opt.Ignore())
                 .ForMember(source => source.Subject, opt => opt.Ignore());
 
