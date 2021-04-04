@@ -1,4 +1,4 @@
-﻿namespace Brith.Model.Dto
+﻿namespace Malzamaty.Model.Dto
 {
    public class Authintication
     {

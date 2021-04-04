@@ -165,7 +165,7 @@ namespace Malzamaty.Controllers
             var File = await _fileService.IsExist(FileWriteDto.FilePath);
             if (File == false)
             {
-                return BadRequest(new { Error = "لا يمكن إضافة ملف موجود مسبقاً" });
+                return BadRequest(new { Error = "لا يمكن إضافة ملف موجود مسبقاً" +" "});
             }
             if (System.IO.File.Exists(FullPath))
             {

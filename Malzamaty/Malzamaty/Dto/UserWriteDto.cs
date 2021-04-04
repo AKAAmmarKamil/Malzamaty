@@ -1,6 +1,5 @@
 ﻿using Malzamaty.Model;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Linq;
 namespace Malzamaty.Dto
 {
 
-    public class UserWriteDto// : IValidatableObject
+    public class UserWriteDto : IValidatableObject
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string UserName { get; set; }

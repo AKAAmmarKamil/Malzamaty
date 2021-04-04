@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Brith.Model.Dto;
 using Malzamaty.Dto;
 using Malzamaty.Form;
 using Malzamaty.Model;
+using Malzamaty.Model.Dto;
 using Malzamaty.Model.Form;
 using Malzamaty.Services;
 using Microsoft.AspNetCore.Authorization;

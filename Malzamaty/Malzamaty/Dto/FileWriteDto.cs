@@ -20,7 +20,6 @@ namespace Malzamaty.Dto
         public Guid Subject { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid Class { get; set; }
-
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!Enumerable.Range(1900, DateTime.Now.Year).Contains(PublishDate))
