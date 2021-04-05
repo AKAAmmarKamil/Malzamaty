@@ -143,8 +143,7 @@ namespace Malzamaty.Controllers
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> AddAttachment(string Path)
         {
-            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
-            Path = Path.Replace("\\", @"\");
+            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
             var bytes = await Attachment.Attachment.ConvertToBytes(Path);
             var Type = Path.Split(".")[1];
             var FullPath = _environment.WebRootPath;
