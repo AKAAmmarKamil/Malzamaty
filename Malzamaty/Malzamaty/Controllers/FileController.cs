@@ -156,7 +156,6 @@ namespace Malzamaty.Controllers
             FileModel.Class = await _classService.FindById(FileWriteDto.Class);
             FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
             _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
-            Console.WriteLine(_environment.WebRootPath);
             var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
             var File = await _fileService.IsExist(FileWriteDto.FilePath);
             if (File == false)
