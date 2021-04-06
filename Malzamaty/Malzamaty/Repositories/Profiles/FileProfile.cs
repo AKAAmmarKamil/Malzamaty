@@ -41,10 +41,7 @@ namespace Malzamaty
                 .ForMember(x => x.Class,opt=>opt.Ignore())
                 .ForMember(x => x.User, opt => opt.Ignore())
                 .ForMember(source => source.Subject, opt => opt.Ignore());
-
             CreateMap<File, FileWriteDto>();
-
-
         }
     }
 }

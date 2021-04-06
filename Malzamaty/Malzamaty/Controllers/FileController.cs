@@ -20,14 +20,12 @@ namespace Malzamaty.Controllers
         private readonly IFileService _fileService;
         private readonly IUserService _userService;
         private readonly ISubjectService _subjectService;
-        private readonly IRatingService _ratingService;
         private readonly IClassService _classService;
         private readonly IMapper _mapper;
         private IHostingEnvironment _environment;
-
         [Obsolete]
         public FileController(IHostingEnvironment environment, IFileService fileService, IUserService userService,
-            ISubjectService subjectService, IClassService classService, IRatingService ratingService, IMapper mapper)
+            ISubjectService subjectService, IClassService classService, IMapper mapper)
         {
             _fileService = fileService;
             _userService = userService;
@@ -35,7 +33,6 @@ namespace Malzamaty.Controllers
             _classService = classService;
             _mapper = mapper;
             _environment = environment;
-            _ratingService = ratingService;
         }
         [HttpGet("{Id}", Name = "GetFileById")]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
@@ -158,7 +155,7 @@ namespace Malzamaty.Controllers
             FileModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             FileModel.Class = await _classService.FindById(FileWriteDto.Class);
             FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
-            _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
+            _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
             Console.WriteLine(_environment.WebRootPath);
             var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
             var File = await _fileService.IsExist(FileWriteDto.FilePath);
