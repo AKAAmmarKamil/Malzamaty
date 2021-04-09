@@ -12,8 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
-using MySql.Data.MySqlClient;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 namespace Malzamaty
 {
     public class Startup
