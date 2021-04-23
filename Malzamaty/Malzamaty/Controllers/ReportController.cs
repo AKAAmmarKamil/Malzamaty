@@ -47,7 +47,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<ReportReadDto>> GetReportsByFileId(Guid Id)
         {
             var File = await _fileService.FindById(Id);
-            if (GetClaim("Role") != "Admin" && GetClaim("ID") != File.User.ID.ToString())
+            if (GetClaim("Role") != "Admin" && GetClaim("ID") != File.Author.ID.ToString())
             {
                 return BadRequest(new { Error = "لا يمكن تعديل بيانات تخص مستخدم آخر من دون صلاحية المدير" });
             }

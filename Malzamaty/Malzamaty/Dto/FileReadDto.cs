@@ -11,11 +11,10 @@ namespace Malzamaty.Dto
         public string Type { get; set; }
         public int PublishDate { get; set; }
         public DateTimeOffset UploadDate { get; set; }
-        public int DownloadCount { get; set; }
+        public int OrderCount { get; set; }
         public string SubjectName { get; set; }
         public string ClassName { get; set; }
         public string ClassType { get; set; }
         public string Stage { get; set; }
-        public string UserName { get; set; }
     }
 }

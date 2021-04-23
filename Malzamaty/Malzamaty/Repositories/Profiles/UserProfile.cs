@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Malzamaty.Dto;
 using Malzamaty.Model;
-
 namespace Malzamaty.Profiles
 {
     public class UserProfile : Profile
@@ -11,6 +10,7 @@ namespace Malzamaty.Profiles
             //Source -> Target
             CreateMap<User, UserReadDto>();
             CreateMap<InterestReadDto, UserReadDto>();
+            CreateMap<AddressReadDto, UserReadDto>();
             CreateMap<UserWriteDto, User>();
             CreateMap<User, UserWriteDto>();
         }

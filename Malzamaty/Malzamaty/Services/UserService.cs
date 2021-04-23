@@ -12,7 +12,7 @@ namespace Malzamaty.Services
         Task<User> GetUserByEmail(string Email);
         Task<bool> ChangePassword(Guid Id, string Password);
         Task<bool> ChangeStatus(Guid Id, bool Status);
-
+        Task<IEnumerable<User>> FindAll(int PageNumber, int Count);
     }
 
     public class UserService : IUserService
@@ -55,6 +55,8 @@ namespace Malzamaty.Services
 
         public async Task<User> Delete(Guid id) => await
         _repositoryWrapper.User.Delete(id);
+
+        public Task<IEnumerable<User>> FindAll(int PageNumber, int Count) => _repositoryWrapper.User.FindAll(PageNumber,Count);
 
         public async Task<User> FindById(Guid id) => await
         _repositoryWrapper.User.FindById(id);

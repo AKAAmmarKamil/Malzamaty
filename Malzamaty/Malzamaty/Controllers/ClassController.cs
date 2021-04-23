@@ -15,10 +15,17 @@ namespace Malzamaty.Controllers
     public class ClassController : BaseController
     {
         private readonly IClassService _classService;
+        private readonly IStageService _stageService;
+        private readonly IClassTypeService _classTypeService;
+        private readonly ICountryService _countryService;
+
         private readonly IMapper _mapper;
-        public ClassController(IClassService classService, IMapper mapper)
+        public ClassController(IClassService classService, IStageService stageService, IClassTypeService classTypeService,ICountryService countryService, IMapper mapper)
         {
             _classService = classService;
+            _stageService = stageService;
+            _classTypeService = classTypeService;
+            _countryService = countryService;
             _mapper = mapper;
         }
         [HttpGet("{Id}", Name = "GetClassById")]
@@ -44,6 +51,9 @@ namespace Malzamaty.Controllers
         {
             var ClassModel = _mapper.Map<Class>(ClassWriteDto);
             var Result = await _classService.Create(ClassModel);
+            Result.Country =await _countryService.FindById(Result.CountryID);
+            Result.Stage = await _stageService.FindById(Result.StageID);
+            Result.ClassType = await _classTypeService.FindById(Result.ClassTypeID);
             var ClassReadDto = _mapper.Map<ClassReadDto>(Result);
             return CreatedAtRoute("GetClassById", new { Id = ClassReadDto.ID }, ClassReadDto);
         }

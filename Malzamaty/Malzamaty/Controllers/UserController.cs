@@ -24,11 +24,13 @@ namespace Malzamaty.Controllers
         private readonly IUserService _userService;
         private readonly IInterestService _interestService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IInterestService interestService, IMapper mapper)
+        private readonly IAddressService _addressService;
+        public UserController(IUserService userService, IInterestService interestService, IMapper mapper, IAddressService addressService)
         {
             _userService = userService;
             _interestService = interestService;
             _mapper = mapper;
+            _addressService = addressService;
         }
 
         [HttpPost]
@@ -108,11 +110,13 @@ namespace Malzamaty.Controllers
         {
             var User = await _userService.FindById(Id);
             var Interest = await _interestService.GetInterests(Id);
+            var Address = await _addressService.FindById(User.AddressID);
             var InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
             if (User == null)
             {
                 return NotFound();
             }
+            User.Address = Address;
             var UserModel = _mapper.Map<UserReadDto>(User);
             UserModel.Interests = InterestModel;
             return Ok(UserModel);
@@ -121,15 +125,20 @@ namespace Malzamaty.Controllers
         [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<UserReadDto>> GetAllUsers(int PageNumber, int Count)
         {
-            var Users = _userService.All(PageNumber, Count).Result.ToList();
+            var Users = _userService.FindAll(PageNumber, Count).Result.ToList();
             var Interest = new List<Interests>();
             var InterestModel = new List<InterestReadDto>();
+            var Address = new Address();
+            var AddressModel = new AddressReadDto();
             var UserModel = _mapper.Map<List<UserReadDto>>(Users);
             for (int i = 0; i < Users.Count(); i++)
             {
-                Interest = await _interestService.GetInterests(Users[i].ID);
-                InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
-                UserModel[i].Interests = InterestModel;
+                    Interest = await _interestService.GetInterests(Users[i].ID);
+                    InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
+                    Address= await _addressService.FindById(Users[i].AddressID);
+                    AddressModel = _mapper.Map<AddressReadDto>(Address);
+                    UserModel[i].Interests = InterestModel;
+                    UserModel[i].Address = AddressModel;
             }
             return Ok(UserModel);
         }
@@ -139,6 +148,7 @@ namespace Malzamaty.Controllers
             UserWriteDto.Password = BCrypt.Net.BCrypt.HashPassword(UserWriteDto.Password);
             var UserModel = _mapper.Map<User>(UserWriteDto);
             var User=await _userService.Create(UserModel);
+            var Address = await _addressService.FindById(User.AddressID);
             var InterestWriteDto = new InterestWriteDto();
             var InterestModel = new Interests();
             for (int i = 0; i < UserWriteDto.Interests.Count; i++)
@@ -150,6 +160,7 @@ namespace Malzamaty.Controllers
                 await _interestService.Create(InterestModel);
             }
             var Interest = await _interestService.GetInterests(User.ID);
+            User.Address = Address;
             var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
             UserReadDto.Interests = _mapper.Map<List<InterestReadDto>>(Interest);
             return CreatedAtRoute("GetUserById", new { Id = UserReadDto.ID }, UserReadDto);

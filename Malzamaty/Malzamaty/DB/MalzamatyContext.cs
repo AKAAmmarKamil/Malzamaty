@@ -21,6 +21,11 @@ namespace Malzamaty
         public DbSet<Interests> Interests { get; set; }
         public DbSet<Stage> Stage { get; set; }
         public DbSet<ClassType> ClassType { get; set; }
-
+        public DbSet<Province> Province { get; set; }
+        public DbSet<District> District { get; set; }
+        public DbSet<Mahallah> Mahallah { get; set; }
+        public DbSet<Address> Address { get; set; }
+        public DbSet<Library> Library { get; set; }
+        public DbSet<Order> Order { get; set; }
     }
 }

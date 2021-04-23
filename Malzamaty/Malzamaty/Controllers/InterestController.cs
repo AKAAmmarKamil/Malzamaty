@@ -17,13 +17,17 @@ namespace Malzamaty.Controllers
     {
         private readonly IInterestService _interestService;
         private readonly IUserService _userService;
+        private readonly IClassService _classService;
+        private readonly ISubjectService _subjectService;
         private readonly IScheduleService _scheduleService;
         private readonly IMapper _mapper;
-        public InterestController(IInterestService interestService, IUserService userService, IScheduleService scheduleService, IMapper mapper)
+        public InterestController(IInterestService interestService,ISubjectService subjectService,IClassService classService, IUserService userService, IScheduleService scheduleService, IMapper mapper)
         {
             _interestService = interestService;
             _userService = userService;
             _scheduleService = scheduleService;
+            _classService = classService;
+            _subjectService = subjectService;
             _mapper = mapper;
         }
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
@@ -53,6 +57,8 @@ namespace Malzamaty.Controllers
             var InterestModel = _mapper.Map<Interests>(InterestWriteDto);
             InterestModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             var Result = await _interestService.Create(InterestModel);
+            Result.Subject = await _subjectService.FindById(Result.SubjectID);
+            Result.Class = await _classService.FindById(Result.ClassID);
             var InterestReadDto = _mapper.Map<InterestReadDto>(Result);
             return CreatedAtRoute("GetInterestById", new { Id = InterestReadDto.ID }, InterestReadDto);
         }

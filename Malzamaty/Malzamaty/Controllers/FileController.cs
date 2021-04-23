@@ -152,9 +152,9 @@ namespace Malzamaty.Controllers
         public async Task<IActionResult> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
             var FileModel = _mapper.Map<File>(FileWriteDto);
-            FileModel.User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
-            FileModel.Class = await _classService.FindById(FileWriteDto.Class);
-            FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
+            FileModel.Author = await _userService.FindById(Guid.Parse(GetClaim("ID")));
+            //FileModel.Class = await _classService.FindById(FileWriteDto.Class);
+            //FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
             _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
             var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
             var File = await _fileService.IsExist(FileWriteDto.FilePath);

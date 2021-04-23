@@ -16,10 +16,14 @@ namespace Malzamaty.Controllers
     public class MatchController : BaseController
     {
         private readonly IMatchService _matchService;
+        private readonly IClassService _classService;
+        private readonly ISubjectService _subjectService;
         private readonly IMapper _mapper;
-        public MatchController(IMatchService matchService, IMapper mapper)
+        public MatchController(IMatchService matchService,IClassService classService,ISubjectService subjectService, IMapper mapper)
         {
             _matchService = matchService;
+            _classService = classService;
+            _subjectService = subjectService;
             _mapper = mapper;
         }
         [HttpGet("{Id}", Name = "GetMatchById")]
@@ -45,6 +49,8 @@ namespace Malzamaty.Controllers
         {
             var MatchModel = _mapper.Map<Match>(MatchWriteDto);
             var Result = await _matchService.Create(MatchModel);
+            Result.Subject =await _subjectService.FindById(Result.SubjectID);
+            Result.Class = await _classService.FindById(Result.ClassID);
             var MatchReadDto = _mapper.Map<MatchReadDto>(Result);
             return CreatedAtRoute("GetMatchById", new { Id = MatchReadDto.ID }, MatchReadDto);
         }

@@ -12,7 +12,7 @@ namespace Malzamaty.Dto
         public string Description { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string FilePath { get; set; }
-        public string Author { get; set; }
+        public Guid Author { get; set; }
         public string Type { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public int PublishDate { get; set; }

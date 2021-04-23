@@ -19,7 +19,11 @@ namespace Malzamaty
         IFileRepository File { get; }
         IRatingRepository Rating { get; }
         IScheduleRepository Schedule { get; }
-
+        IAddressRepository Address { get; }
+        IProvinceRepository Province { get; }
+        IDistrictRepository District { get; }
+        IMahallahRepository Mahallah { get; }
+        ILibraryRepository Library { get; }
         void Save();
     }
 
@@ -39,6 +43,11 @@ namespace Malzamaty
         private IFileRepository _file;
         private IRatingRepository _rating;
         private IScheduleRepository _schedule;
+        private IAddressRepository _address;
+        private IProvinceRepository _province;
+        private IDistrictRepository _district;
+        private IMahallahRepository _mahallah;
+        private ILibraryRepository _library;
         public ISubjectRepository Subject => _subect ??= new SubjectRepository(_repoContext, _mapper);
 
         public IUsersRepository User => _user ??= new UserRepository(_repoContext, _mapper);
@@ -53,6 +62,11 @@ namespace Malzamaty
         public IFileRepository File => _file ??= new FileRepository(_repoContext, _mapper);
         public IRatingRepository Rating => _rating ??= new RatingRepository(_repoContext, _mapper);
         public IScheduleRepository Schedule => _schedule ??= new ScheduleRepository(_repoContext, _mapper);
+        public IAddressRepository Address => _address ??= new AddressRepository(_repoContext, _mapper);
+        public IProvinceRepository Province => _province ??= new ProvinceRepository(_repoContext, _mapper);
+        public IDistrictRepository District => _district ??= new DistrictRepository(_repoContext, _mapper);
+        public IMahallahRepository Mahallah => _mahallah ??= new MahallahRepository(_repoContext, _mapper);
+        public ILibraryRepository Library => _library ??= new LibraryRepository(_repoContext, _mapper);
         public RepositoryWrapper(MalzamatyContext repositoryContext, IMapper mapper)
         {
             _repoContext = repositoryContext;

@@ -3,6 +3,7 @@ using Malzamaty.Model;
 using Malzamaty.Model.Form;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 namespace Malzamaty.Repository
@@ -32,7 +33,7 @@ namespace Malzamaty.Repository
             }
             return result;
         }
-
+        public async Task<IEnumerable<User>> FindAll(int PageNumber,int Count) => await _db.Users.Include(x=>x.Address).Skip((PageNumber - 1) * Count).Take(Count).ToListAsync();
 
     }
 

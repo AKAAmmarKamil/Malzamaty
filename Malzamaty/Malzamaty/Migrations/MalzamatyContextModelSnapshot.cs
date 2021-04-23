@@ -19,6 +19,40 @@ namespace Malzamaty.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
+            modelBuilder.Entity("Malzamaty.Model.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CountryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("DistrictID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MahallahID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProvinceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryID");
+
+                    b.HasIndex("DistrictID");
+
+                    b.HasIndex("MahallahID");
+
+                    b.HasIndex("ProvinceID");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("Malzamaty.Model.Class", b =>
                 {
                     b.Property<Guid>("ID")
@@ -76,14 +110,33 @@ namespace Malzamaty.Migrations
                     b.ToTable("Country");
                 });
 
+            modelBuilder.Entity("Malzamaty.Model.District", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProvinceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinceID");
+
+                    b.ToTable("District");
+                });
+
             modelBuilder.Entity("Malzamaty.Model.File", b =>
                 {
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Author")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("AuthorID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ClassID")
                         .HasColumnType("uniqueidentifier");
@@ -91,11 +144,14 @@ namespace Malzamaty.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DownloadCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("LibraryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("OrderCount")
+                        .HasColumnType("int");
 
                     b.Property<int>("PublishDate")
                         .HasColumnType("int");
@@ -109,16 +165,15 @@ namespace Malzamaty.Migrations
                     b.Property<DateTimeOffset>("UploadDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid?>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("ID");
+
+                    b.HasIndex("AuthorID");
 
                     b.HasIndex("ClassID");
 
-                    b.HasIndex("SubjectID");
+                    b.HasIndex("LibraryID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("SubjectID");
 
                     b.ToTable("File");
                 });
@@ -149,6 +204,47 @@ namespace Malzamaty.Migrations
                     b.ToTable("Interests");
                 });
 
+            modelBuilder.Entity("Malzamaty.Model.Library", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AddressID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressID");
+
+                    b.ToTable("Library");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Mahallah", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DistrictID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistrictID");
+
+                    b.ToTable("Mahallah");
+                });
+
             modelBuilder.Entity("Malzamaty.Model.Match", b =>
                 {
                     b.Property<Guid>("ID")
@@ -168,6 +264,49 @@ namespace Malzamaty.Migrations
                     b.HasIndex("SubjectID");
 
                     b.ToTable("Matches");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDelivered")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("LibraryAddressID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserAddressID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LibraryAddressID");
+
+                    b.HasIndex("UserAddressID");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Province", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CountryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryID");
+
+                    b.ToTable("Province");
                 });
 
             modelBuilder.Entity("Malzamaty.Model.Rating", b =>
@@ -283,10 +422,16 @@ namespace Malzamaty.Migrations
                     b.Property<bool>("Activated")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("AddressID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
@@ -297,7 +442,44 @@ namespace Malzamaty.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("AddressID");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Address", b =>
+                {
+                    b.HasOne("Malzamaty.Model.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Malzamaty.Model.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Malzamaty.Model.Mahallah", "Mahallah")
+                        .WithMany()
+                        .HasForeignKey("MahallahID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Malzamaty.Model.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Mahallah");
+
+                    b.Navigation("Province");
                 });
 
             modelBuilder.Entity("Malzamaty.Model.Class", b =>
@@ -327,25 +509,42 @@ namespace Malzamaty.Migrations
                     b.Navigation("Stage");
                 });
 
+            modelBuilder.Entity("Malzamaty.Model.District", b =>
+                {
+                    b.HasOne("Malzamaty.Model.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Province");
+                });
+
             modelBuilder.Entity("Malzamaty.Model.File", b =>
                 {
+                    b.HasOne("Malzamaty.Model.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorID");
+
                     b.HasOne("Malzamaty.Model.Class", "Class")
                         .WithMany()
                         .HasForeignKey("ClassID");
+
+                    b.HasOne("Malzamaty.Model.Library", "Library")
+                        .WithMany()
+                        .HasForeignKey("LibraryID");
 
                     b.HasOne("Malzamaty.Model.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectID");
 
-                    b.HasOne("Malzamaty.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID");
+                    b.Navigation("Author");
 
                     b.Navigation("Class");
 
-                    b.Navigation("Subject");
+                    b.Navigation("Library");
 
-                    b.Navigation("User");
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("Malzamaty.Model.Interests", b =>
@@ -375,6 +574,28 @@ namespace Malzamaty.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Malzamaty.Model.Library", b =>
+                {
+                    b.HasOne("Malzamaty.Model.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Mahallah", b =>
+                {
+                    b.HasOne("Malzamaty.Model.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("District");
+                });
+
             modelBuilder.Entity("Malzamaty.Model.Match", b =>
                 {
                     b.HasOne("Malzamaty.Model.Class", "Class")
@@ -392,6 +613,36 @@ namespace Malzamaty.Migrations
                     b.Navigation("Class");
 
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Order", b =>
+                {
+                    b.HasOne("Malzamaty.Model.Address", "LibraryAddress")
+                        .WithMany()
+                        .HasForeignKey("LibraryAddressID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Malzamaty.Model.Address", "UserAddress")
+                        .WithMany()
+                        .HasForeignKey("UserAddressID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LibraryAddress");
+
+                    b.Navigation("UserAddress");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Province", b =>
+                {
+                    b.HasOne("Malzamaty.Model.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Malzamaty.Model.Rating", b =>
@@ -431,6 +682,17 @@ namespace Malzamaty.Migrations
                     b.Navigation("Subject");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.User", b =>
+                {
+                    b.HasOne("Malzamaty.Model.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Malzamaty.Model.File", b =>

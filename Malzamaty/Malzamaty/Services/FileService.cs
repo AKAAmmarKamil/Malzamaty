@@ -57,7 +57,7 @@ namespace Malzamaty.Services
             {
                 return null;
             }
-            FileModelFromRepo.DownloadCount = Convert.ToInt32(FileModelFromRepo.DownloadCount) + 1;
+            FileModelFromRepo.OrderCount = Convert.ToInt32(FileModelFromRepo.OrderCount) + 1;
             _repositoryWrapper.Save();
             return FileModelFromRepo;
         }

@@ -97,3 +97,16 @@ F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\runtimes\win-x64\na
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\runtimes\win-x86\native\sni.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\BouncyCastle.Crypto.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\Google.Protobuf.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\K4os.Compression.LZ4.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\K4os.Compression.LZ4.Streams.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\K4os.Hash.xxHash.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\MySql.Data.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\Ubiety.Dns.Core.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\Zstandard.Net.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\MySqlConnector.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\Pomelo.EntityFrameworkCore.MySql.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\Pomelo.JsonObject.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\Renci.SshNet.dll
+F:\Malzamaty\Malzamaty\Malzamaty\bin\Release\netcoreapp5.0.0\SshNet.Security.Cryptography.dll

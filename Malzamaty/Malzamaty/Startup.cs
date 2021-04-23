@@ -30,7 +30,7 @@ namespace Malzamaty
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<MalzamatyContext>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(jwtBearerOptions =>
             {
                 jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
@@ -61,7 +61,11 @@ namespace Malzamaty
             services.AddScoped<IStageService, StageService>();
             services.AddScoped<ISubjectService, SubjectService>();
             services.AddScoped<IUserService, UserService>();
-
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IProvinceService, ProvinceService>();
+            services.AddScoped<IDistrictService, DistrictService>();
+            services.AddScoped<IMahallahService, MahallahService>();
+            services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
