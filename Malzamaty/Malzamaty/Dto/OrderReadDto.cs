@@ -7,5 +7,6 @@ namespace Malzamaty.Dto
         public Guid Id { get; set; }
         public AddressReadDto From { get; set; }
         public AddressReadDto To { get; set; }
+        public bool IsBestCustomer { get; set; }
     }
 }

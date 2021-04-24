@@ -13,6 +13,7 @@ namespace Malzamaty.Services
         Task<bool> ChangePassword(Guid Id, string Password);
         Task<bool> ChangeStatus(Guid Id, bool Status);
         Task<IEnumerable<User>> FindAll(int PageNumber, int Count);
+        Task<User> GetUserByAddress(Guid Address);
     }
 
     public class UserService : IUserService
@@ -27,7 +28,8 @@ namespace Malzamaty.Services
 
         public Task<User> Authintication(LoginForm login) =>
             _repositoryWrapper.User.Authintication(login);
-
+        public Task<User> GetUserByAddress(Guid Address) =>
+           _repositoryWrapper.User.GetUserByAddress(Address);
         public async Task<bool> ChangePassword(Guid Id, string Password)
         {
             var UserModelFromRepo = await _repositoryWrapper.User.FindById(Id);

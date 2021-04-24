@@ -3,6 +3,7 @@ using Malzamaty.Model;
 using Malzamaty.Model.Form;
 using Malzamaty.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Malzamaty.Repository
     {
         Task<User> Authintication(LoginForm login);
         Task<User> GetUserByEmail(string Email);
+        Task<User> GetUserByAddress(Guid Address);
+
     }
     public class UserRepository : BaseRepository<User>, IUsersRepository
     {
@@ -26,6 +29,16 @@ namespace Malzamaty.Repository
         public async Task<User> GetUserByEmail(string Email)
         {
             var result = await _db.Users.Where(x => x.Email == Email)
+                 .FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
+        }
+        public async Task<User> GetUserByAddress(Guid Address)
+        {
+            var result = await _db.Users.Where(x => x.Address.Id == Address)
                  .FirstOrDefaultAsync();
             if (result == null)
             {

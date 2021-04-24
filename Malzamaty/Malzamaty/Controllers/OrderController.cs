@@ -15,12 +15,14 @@ namespace Malzamaty.Controllers
     public class OrderController : BaseController
     {
         private readonly IOrderService _orderService;
+        private readonly IUserService _userService;
         private readonly IAddressService _addressService;
         private readonly IMapper _mapper;
-        public OrderController(IOrderService orderService, IAddressService addressService, IMapper mapper)
+        public OrderController(IOrderService orderService, IAddressService addressService,IUserService userService, IMapper mapper)
         {
             _orderService = orderService;
             _addressService = addressService;
+            _userService = userService;
             _mapper = mapper;
         }
         [HttpGet("{Id}", Name = "GetOrderById")]
@@ -28,7 +30,6 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<OrderReadDto>> GetOrderById(Guid Id)
         {
             var result = await _orderService.FindById(Id);
-            
             if (GetClaim("Role") == "DeliveryRepresentative" && result.OrderStatus == 1)
             {
                 return BadRequest(new { Error = "لايمكن للمندوب الإطلاع على الطلبات التي تم تسليمها" });
@@ -40,6 +41,10 @@ namespace Malzamaty.Controllers
             result.LibraryAddress = await _addressService.FindById(result.LibraryAddressID);
             result.UserAddress = await _addressService.FindById(result.UserAddressID);
             var OrderModel = _mapper.Map<OrderReadDto>(result);
+            var User = await _userService.GetUserByAddress(result.UserAddressID);
+            var IsBestCustomer = await _orderService.IsBestCustomer(User.ID);
+            if (IsBestCustomer)
+                OrderModel.IsBestCustomer = true;
             return Ok(OrderModel);
         }
         [HttpGet]
@@ -47,6 +52,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<OrderReadDto>> GetAllOrders(int OrderStatus)
         {
             var result = _orderService.GetAll(OrderStatus).Result.ToList();
+            var OrderModel = _mapper.Map<IList<OrderReadDto>>(result);
             for (int i = 0; i < result.Count; i++)
             {
                 if (GetClaim("Role") == "DeliveryRepresentative" && result[i].OrderStatus == 1)
@@ -55,8 +61,13 @@ namespace Malzamaty.Controllers
                 }
                 result[i].LibraryAddress = await _addressService.FindById(result[i].LibraryAddressID);
                 result[i].UserAddress = await _addressService.FindById(result[i].UserAddressID);
+                OrderModel[i].From = _mapper.Map<AddressReadDto>(result[i].LibraryAddress);
+                OrderModel[i].To = _mapper.Map<AddressReadDto>(result[i].UserAddress);
+                var User = await _userService.GetUserByAddress(result[i].UserAddressID);
+                var IsBestCustomer = await _orderService.IsBestCustomer(User.ID);
+                if (IsBestCustomer)
+                    OrderModel[i].IsBestCustomer = true;
             }
-            var OrderModel = _mapper.Map<IList<OrderReadDto>>(result);
             return Ok(OrderModel);
         }
         [HttpPut("{id}")]

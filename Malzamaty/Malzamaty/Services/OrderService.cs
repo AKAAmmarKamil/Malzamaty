@@ -7,6 +7,7 @@ namespace Malzamaty.Services
     public interface IOrderService : IBaseService<Order, Guid>
     {
         Task<IEnumerable<Order>> GetAll(int OrderStatus);
+        Task<bool> IsBestCustomer(Guid Id);
     }
 
     public class OrderService : IOrderService
@@ -26,6 +27,9 @@ namespace Malzamaty.Services
         public Task<Order> FindById(Guid id) =>
         _repositoryWrapper.Order.FindById(id);
         public async Task<IEnumerable<Order>> GetAll(int OrderStatus) => await _repositoryWrapper.Order.GetAll(OrderStatus);
+
+        public async Task<bool> IsBestCustomer(Guid Id) => await _repositoryWrapper.Order.IsBestCustomer(Id);
+
         public async Task<Order> Modify(Guid id, Order Order)
         {
             var OrderModelFromRepo = await _repositoryWrapper.Order.FindById(id);

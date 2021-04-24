@@ -19,5 +19,7 @@ namespace Malzamaty.Model
         [ForeignKey("MahallahID")]
         public Mahallah Mahallah { get; set; }
         public string? Details { get; set; }
+        public virtual User User { get; set; }
+        public virtual Library Library { get; set; }
     }
 }
