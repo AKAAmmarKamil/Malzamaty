@@ -21,16 +21,22 @@ namespace Malzamaty.Controllers
         private readonly IUserService _userService;
         private readonly ISubjectService _subjectService;
         private readonly IClassService _classService;
+        private readonly ILibraryService _libraryService;
+        private readonly IOrderService _orderService;
+        private readonly IAddressService _addressService;
         private readonly IMapper _mapper;
         private IHostingEnvironment _environment;
         [Obsolete]
         public FileController(IHostingEnvironment environment, IFileService fileService, IUserService userService,
-            ISubjectService subjectService, IClassService classService, IMapper mapper)
+            ISubjectService subjectService, IClassService classService,ILibraryService libraryService,IOrderService orderService,IAddressService addressService, IMapper mapper)
         {
             _fileService = fileService;
             _userService = userService;
             _subjectService = subjectService;
             _classService = classService;
+            _libraryService = libraryService;
+            _orderService = orderService;
+            _addressService = addressService;
             _mapper = mapper;
             _environment = environment;
         }
@@ -153,8 +159,8 @@ namespace Malzamaty.Controllers
         {
             var FileModel = _mapper.Map<File>(FileWriteDto);
             FileModel.Author = await _userService.FindById(Guid.Parse(GetClaim("ID")));
-            //FileModel.Class = await _classService.FindById(FileWriteDto.Class);
-            //FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
+            FileModel.Class = await _classService.FindById(FileWriteDto.Class);
+            FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
             _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
             var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
             var File = await _fileService.IsExist(FileWriteDto.FilePath);
@@ -170,18 +176,26 @@ namespace Malzamaty.Controllers
         }
         [HttpGet]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<FileStreamResult> DownloadFile(Guid Id)
+        public async Task<FileStreamResult> OrderFile(Guid Id)
         {
             var File = await _fileService.FindById(Id);
+            var User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
+            var Library = await _libraryService.FindById(File.LibraryID.GetValueOrDefault());
+            var LibraryAddress = await _addressService.FindById(Library.AddressID);
+            var UserAddress = await _addressService.FindById(User.AddressID);
+            var Order = new Model.Order();
             var Path = File.FilePath;
-            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
-            Console.WriteLine(_environment.WebRootPath);
+            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
             var FullPath = _environment.WebRootPath + Path;
             var Type = Path.Split(".")[1];
             if (File != null && System.IO.File.Exists(FullPath))
             {
                 await _fileService.ModifyDownloadCount(Id);
                 var result = await Attachment.Attachment.ConvertToBytes(FullPath);
+                Order.LibraryAddress = LibraryAddress;
+                Order.UserAddress = UserAddress;
+                Order.OrderStatus = 0;
+                await _orderService.Create(Order);
                 return new FileStreamResult(new MemoryStream(result), "application/" + Type.ToString());
             }
             return null;
