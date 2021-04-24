@@ -24,10 +24,15 @@ namespace Malzamaty.Controllers
             _mapper = mapper;
         }
         [HttpGet("{Id}", Name = "GetOrderById")]
-        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.DeliveryAdmin + "," + UserRole.DeliveryRepresentative)]
         public async Task<ActionResult<OrderReadDto>> GetOrderById(Guid Id)
         {
             var result = await _orderService.FindById(Id);
+            
+            if (GetClaim("Role") == "DeliveryRepresentative" && result.OrderStatus == 1)
+            {
+                return BadRequest(new { Error = "لايمكن للمندوب الإطلاع على الطلبات التي تم تسليمها" });
+            }
             if (result == null)
             {
                 return NotFound();
@@ -38,12 +43,16 @@ namespace Malzamaty.Controllers
             return Ok(OrderModel);
         }
         [HttpGet]
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.DeliveryAdmin + "," + UserRole.DeliveryRepresentative)]
         public async Task<ActionResult<OrderReadDto>> GetAllOrders(int OrderStatus)
         {
             var result = _orderService.GetAll(OrderStatus).Result.ToList();
             for (int i = 0; i < result.Count; i++)
             {
+                if (GetClaim("Role") == "DeliveryRepresentative" && result[i].OrderStatus == 1)
+                {
+                    return BadRequest(new { Error = "لايمكن للمندوب الإطلاع على الطلبات التي تم تسليمها" });
+                }
                 result[i].LibraryAddress = await _addressService.FindById(result[i].LibraryAddressID);
                 result[i].UserAddress = await _addressService.FindById(result[i].UserAddressID);
             }
@@ -51,7 +60,7 @@ namespace Malzamaty.Controllers
             return Ok(OrderModel);
         }
         [HttpPut("{id}")]
-        [Authorize(Roles = UserRole.Admin)]
+        [Authorize(Roles = UserRole.Admin + "," + UserRole.DeliveryAdmin + "," + UserRole.DeliveryRepresentative)]
         public async Task<IActionResult> UpdateOrder(Guid Id, [FromBody] OrderUpdateDto OrderUpdateDto)
         {
             var OrderModelFromRepo = await _orderService.FindById(Id);

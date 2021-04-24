@@ -23,9 +23,7 @@ namespace Malzamaty.Dto
         public string ReWritePassword { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string Role { get; set; }
-        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public List<Interests> Interests { get; set; }
-        [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public AddressWriteDto Address { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -36,12 +34,12 @@ namespace Malzamaty.Dto
             {
                 yield return new ValidationResult("البريد الألكتروني غير صحيح");
             }
-            //var Address = service.Address.FirstOrDefault(x => x.Id ==this.Address);
+            //var Address = service.Address.FirstOrDefault(x => x.Id == this.Address.);
             //if (Address == null)
             //{
             //    yield return new ValidationResult("العنوان غير موجود");
             //}
-            if (Role != null)
+            if (Role != null&&(Role=="Student"||Role=="Teacher"))
             {
                 for (int i = 0; i < Interests.Count; i++)
                 {

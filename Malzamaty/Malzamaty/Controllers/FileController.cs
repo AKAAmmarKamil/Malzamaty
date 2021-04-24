@@ -182,7 +182,7 @@ namespace Malzamaty.Controllers
             var User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             var Library = await _libraryService.FindById(File.LibraryID.GetValueOrDefault());
             var LibraryAddress = await _addressService.FindById(Library.AddressID);
-            var UserAddress = await _addressService.FindById(User.AddressID);
+            var UserAddress = await _addressService.FindById(User.AddressID.GetValueOrDefault());
             var Order = new Model.Order();
             var Path = File.FilePath;
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");

@@ -110,7 +110,7 @@ namespace Malzamaty.Controllers
         {
             var User = await _userService.FindById(Id);
             var Interest = await _interestService.GetInterests(Id);
-            var Address = await _addressService.FindById(User.AddressID);
+            var Address = await _addressService.FindById(User.AddressID.GetValueOrDefault());
             var InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
             if (User == null)
             {
@@ -135,7 +135,7 @@ namespace Malzamaty.Controllers
             {
                     Interest = await _interestService.GetInterests(Users[i].ID);
                     InterestModel = _mapper.Map<List<InterestReadDto>>(Interest);
-                    Address= await _addressService.FindById(Users[i].AddressID);
+                    Address= await _addressService.FindById(Users[i].AddressID.GetValueOrDefault());
                     AddressModel = _mapper.Map<AddressReadDto>(Address);
                     UserModel[i].Interests = InterestModel;
                     UserModel[i].Address = AddressModel;
@@ -148,22 +148,28 @@ namespace Malzamaty.Controllers
             UserWriteDto.Password = BCrypt.Net.BCrypt.HashPassword(UserWriteDto.Password);
             var UserModel = _mapper.Map<User>(UserWriteDto);
             var User=await _userService.Create(UserModel);
-            var Address = await _addressService.FindById(User.AddressID);
-            var InterestWriteDto = new InterestWriteDto();
-            var InterestModel = new Interests();
-            for (int i = 0; i < UserWriteDto.Interests.Count; i++)
+            var UserReadDto = new UserReadDto();
+            var UserAdminReadDto = _mapper.Map<UserAdminsReadDto>(UserModel);
+            if (UserWriteDto.Role!= "Admin" && UserWriteDto.Role != "DeliveryRepresentative" && UserWriteDto.Role != "DeliveryAdmin")
             {
-                InterestWriteDto.Class = UserWriteDto.Interests[i].ClassID;
-                InterestWriteDto.Subject = UserWriteDto.Interests[i].SubjectID;
-                InterestModel = _mapper.Map<Interests>(InterestWriteDto);
-                InterestModel.UserID = User.ID;
-                await _interestService.Create(InterestModel);
+                var Address = await _addressService.FindById(User.AddressID.GetValueOrDefault());
+                User.Address = Address;
+                var InterestWriteDto = new InterestWriteDto();
+                var InterestModel = new Interests();
+                for (int i = 0; i < UserWriteDto.Interests.Count; i++)
+                {
+                    InterestWriteDto.Class = UserWriteDto.Interests[i].ClassID;
+                    InterestWriteDto.Subject = UserWriteDto.Interests[i].SubjectID;
+                    InterestModel = _mapper.Map<Interests>(InterestWriteDto);
+                    InterestModel.UserID = User.ID;
+                    await _interestService.Create(InterestModel);
+                }
+                var Interest = await _interestService.GetInterests(User.ID);
+                UserReadDto = _mapper.Map<UserReadDto>(UserModel);
+                UserReadDto.Interests = _mapper.Map<List<InterestReadDto>>(Interest);
+                return CreatedAtRoute("GetUserById", new { Id = UserReadDto.ID }, UserReadDto);
             }
-            var Interest = await _interestService.GetInterests(User.ID);
-            User.Address = Address;
-            var UserReadDto = _mapper.Map<UserReadDto>(UserModel);
-            UserReadDto.Interests = _mapper.Map<List<InterestReadDto>>(Interest);
-            return CreatedAtRoute("GetUserById", new { Id = UserReadDto.ID }, UserReadDto);
+            return CreatedAtRoute("GetUserById", new { Id = UserAdminReadDto.ID }, UserAdminReadDto);
         }
         [HttpPut]
         [Authorize]

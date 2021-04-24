@@ -14,7 +14,7 @@ namespace Malzamaty.Model
         public string Password { get; set; }
         public string Role { get; set; }
         public bool Activated { get; set; }
-        public Guid AddressID { get; set; }
+        public Guid? AddressID { get; set; }
         [ForeignKey("AddressID")]
         public Address Address { get; set; } 
     }

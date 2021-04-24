@@ -9,6 +9,7 @@ namespace Malzamaty.Profiles
         {
             //Source -> Target
             CreateMap<User, UserReadDto>();
+            CreateMap<User, UserAdminsReadDto>();
             CreateMap<InterestReadDto, UserReadDto>();
             CreateMap<AddressReadDto, UserReadDto>();
             CreateMap<UserWriteDto, User>();
