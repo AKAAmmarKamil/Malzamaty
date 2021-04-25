@@ -13,5 +13,7 @@ namespace Malzamaty.Dto
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public Guid MahallahID { get; set; }
         public string? Details { get; set; }
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
     }
 }

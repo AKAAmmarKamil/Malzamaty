@@ -19,6 +19,9 @@ namespace Malzamaty.Model
         [ForeignKey("MahallahID")]
         public Mahallah Mahallah { get; set; }
         public string? Details { get; set; }
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
+
         public virtual User User { get; set; }
         public virtual Library Library { get; set; }
     }

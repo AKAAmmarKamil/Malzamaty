@@ -10,5 +10,7 @@ namespace Malzamaty.Dto
         public string District { get; set; }
         public string Mahallah { get; set; }
         public string Details { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
     }
 }

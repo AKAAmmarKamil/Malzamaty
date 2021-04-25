@@ -10,6 +10,8 @@ namespace Malzamaty
         {
             //Source -> Target
             CreateMap<Order, OrderReadDto>().ForMember(x => x.From, opt => opt.MapFrom(x => x.LibraryAddress)).ForMember(x => x.To, opt => opt.MapFrom(x => x.UserAddress));
+            CreateMap<Order, OrderFileReadDto>().ForMember(x => x.To, opt => opt.MapFrom(x => x.UserAddress));
+
         }
     }
 }

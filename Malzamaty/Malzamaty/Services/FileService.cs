@@ -6,7 +6,6 @@ namespace Malzamaty.Services
 {
     public interface IFileService : IBaseService<File, Guid>
     {
-        Task<bool> IsExist(string FilePath);
         Task<List<string>> GetYears();
         Task<List<File>> TopRating(Guid Id, bool WithReports);
         Task<File> GetAppropriateFile(Guid Id);
@@ -33,9 +32,6 @@ namespace Malzamaty.Services
 
         public async Task<File> FindById(Guid id) => await
         _repositoryWrapper.File.FindById(id);
-
-        public Task<bool> IsExist(string FilePath) =>
-        _repositoryWrapper.File.IsExist(FilePath);
 
         public async Task<File> Modify(Guid id, File File)
         {

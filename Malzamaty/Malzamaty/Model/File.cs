@@ -9,7 +9,7 @@ namespace Malzamaty.Model
         [Key]
         public Guid ID { get; set; }
         public string Description { get; set; }
-        public string FilePath { get; set; }
+        public double Price { get; set; }
         public string Type { get; set; }
         public int PublishDate { get; set; }
         public DateTimeOffset UploadDate { get; set; }

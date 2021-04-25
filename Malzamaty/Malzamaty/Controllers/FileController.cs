@@ -144,39 +144,19 @@ namespace Malzamaty.Controllers
         }
         [HttpPost]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<IActionResult> AddAttachment(string Path)
-        {
-            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
-            var bytes = await Attachment.Attachment.ConvertToBytes(Path);
-            var Type = Path.Split(".")[1];
-            var FullPath = _environment.WebRootPath;
-            var Upload = await Attachment.Attachment.Upload(bytes, FullPath, Type);
-            return Ok(Upload);
-        }
-        [HttpPost]
-        [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
         public async Task<IActionResult> AddFile([FromBody] FileWriteDto FileWriteDto)
         {
             var FileModel = _mapper.Map<File>(FileWriteDto);
             FileModel.Author = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             FileModel.Class = await _classService.FindById(FileWriteDto.Class);
             FileModel.Subject = await _subjectService.FindById(FileWriteDto.Subject);
-            _environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
-            var FullPath = _environment.WebRootPath + FileWriteDto.FilePath;
-            var File = await _fileService.IsExist(FileWriteDto.FilePath);
-            if (File == false)
-            return BadRequest(new { Error = "لا يمكن إضافة ملف موجود مسبقاً"});
-            if (System.IO.File.Exists(FullPath))
-            {
-                var Result = await _fileService.Create(FileModel);
-                var FileReadDto = _mapper.Map<FileReadDto>(Result);
-                return CreatedAtRoute("GetFileById", new { Id = FileReadDto.Id }, FileReadDto);
-            }
-            return BadRequest(new { Error = "الملف لم يتم تحميله" });
+            var Result = await _fileService.Create(FileModel);
+            var FileReadDto = _mapper.Map<FileReadDto>(Result);
+            return CreatedAtRoute("GetFileById", new { Id = FileReadDto.Id }, FileReadDto);
         }
         [HttpGet]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<FileStreamResult> OrderFile(Guid Id)
+        public async Task<ActionResult<FileReadDto>> OrderFile(Guid Id)
         {
             var File = await _fileService.FindById(Id);
             var User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
@@ -184,22 +164,14 @@ namespace Malzamaty.Controllers
             var LibraryAddress = await _addressService.FindById(Library.AddressID);
             var UserAddress = await _addressService.FindById(User.AddressID.GetValueOrDefault());
             var Order = new Model.Order();
-            var Path = File.FilePath;
-            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\");
-            var FullPath = _environment.WebRootPath + Path;
-            var Type = Path.Split(".")[1];
-            if (File != null && System.IO.File.Exists(FullPath))
-            {
-                await _fileService.ModifyDownloadCount(Id);
-                var result = await Attachment.Attachment.ConvertToBytes(FullPath);
-                Order.LibraryAddress = LibraryAddress;
-                Order.UserAddress = UserAddress;
-                Order.File = File;
-                Order.OrderStatus = 0;
-                await _orderService.Create(Order);
-                return new FileStreamResult(new MemoryStream(result), "application/" + Type.ToString());
-            }
-            return null;
+            await _fileService.ModifyDownloadCount(Id);
+            Order.LibraryAddress = LibraryAddress;
+            Order.UserAddress = UserAddress;
+            Order.File = File;
+            Order.OrderStatus = 0;
+            var Result=await _orderService.Create(Order);
+            var OrderFileReadDto = _mapper.Map<OrderFileReadDto>(Result);
+            return Ok(OrderFileReadDto);
         }
         [HttpPut("{id}")]
         [Authorize(Roles = UserRole.Admin)]
@@ -219,18 +191,12 @@ namespace Malzamaty.Controllers
         public async Task<IActionResult> DeleteFiles(Guid Id)
         {
             var File = await _fileService.FindById(Id);
-            var Path = File.FilePath;
             _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
             Console.WriteLine(_environment.WebRootPath);
-            var FullPath = _environment.WebRootPath + Path;
             var Result = await _fileService.Delete(Id);
             if (Result == null)
             {
                 return NotFound();
-            }
-            if (System.IO.File.Exists(FullPath))
-            {
-                System.IO.File.Delete(FullPath);
             }
             return NoContent();
         }

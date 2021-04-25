@@ -7,7 +7,7 @@ namespace Malzamaty.Dto
     {
         public Guid Id { get; set; }
         public string FileDescription { get; set; }
-        public string FilePath { get; set; }
+        public double Price { get; set; }
         public string Author { get; set; }
         public string Type { get; set; }
         public int PublishDate { get; set; }
