@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using File = Malzamaty.Model.File;
 
@@ -24,11 +25,13 @@ namespace Malzamaty.Controllers
         private readonly ILibraryService _libraryService;
         private readonly IOrderService _orderService;
         private readonly IAddressService _addressService;
+        private readonly ITaxesService _taxesService;
         private readonly IMapper _mapper;
         private IHostingEnvironment _environment;
         [Obsolete]
         public FileController(IHostingEnvironment environment, IFileService fileService, IUserService userService,
-            ISubjectService subjectService, IClassService classService,ILibraryService libraryService,IOrderService orderService,IAddressService addressService, IMapper mapper)
+            ISubjectService subjectService, IClassService classService,ILibraryService libraryService,IOrderService orderService,
+            IAddressService addressService,ITaxesService taxesService, IMapper mapper)
         {
             _fileService = fileService;
             _userService = userService;
@@ -37,6 +40,7 @@ namespace Malzamaty.Controllers
             _libraryService = libraryService;
             _orderService = orderService;
             _addressService = addressService;
+            _taxesService = taxesService;
             _mapper = mapper;
             _environment = environment;
         }
@@ -45,6 +49,7 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> GetFileById(Guid Id)
         {
             var result = await _fileService.FindById(Id);
+            result.Price = await _taxesService.GetFinalPrice(result.ID);
             if (result == null)
             {
                 return NotFound();
@@ -56,7 +61,11 @@ namespace Malzamaty.Controllers
         [Authorize(Roles = UserRole.Admin)]
         public async Task<ActionResult<FileReadDto>> GetAllFiles(int PageNumber, int Count)
         {
-            var result = await _fileService.All(PageNumber, Count);
+            var result = _fileService.All(PageNumber, Count).Result.ToList();
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].Price = await _taxesService.GetFinalPrice(result[i].ID);
+            }
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
@@ -71,6 +80,10 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> GetByName(string FileName)
         {
             var result = await _fileService.GetByName(FileName);
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].Price = await _taxesService.GetFinalPrice(result[i].ID);
+            }
             var FileModel = _mapper.Map<IList<FileReadDto>>(result);
             return Ok(FileModel);
         }
@@ -80,6 +93,10 @@ namespace Malzamaty.Controllers
         {
             var User = GetClaim("ID");
             var result = await _fileService.TopRating(Guid.Parse(User), WithReports);
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].Price = await _taxesService.GetFinalPrice(result[i].ID);
+            }
             if (WithReports == true)
             {
                 var FileReadDto = _mapper.Map<List<FileWithReportsAndRatingReadDto>>(result);
@@ -97,15 +114,20 @@ namespace Malzamaty.Controllers
         {
             var User = GetClaim("ID");
             var result = await _fileService.GetAppropriateFile(Guid.Parse(User));
+            result.Price = await _taxesService.GetFinalPrice(result.ID);
             var FileReadDto = _mapper.Map<FileWithRatingReadDto>(result);
             return Ok(FileReadDto);
         }
         [HttpGet]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<ActionResult<FileReadDto>> MostDownloadedFiles(bool WithReports)
+        public async Task<ActionResult<FileReadDto>> MostOrderedFiles(bool WithReports)
         {
             var User = GetClaim("ID");
-            var result = await _fileService.MostDownloaded(Guid.Parse(User), WithReports);
+            var result = await _fileService.MostOrdered(Guid.Parse(User), WithReports);
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].Price = await _taxesService.GetFinalPrice(result[i].ID);
+            }
             if (WithReports == true)
             {
                 var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
@@ -122,6 +144,10 @@ namespace Malzamaty.Controllers
         public async Task<ActionResult<FileReadDto>> RelatedFiles(Guid Id)
         {
             var result = await _fileService.RelatedFiles(Id);
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].Price = await _taxesService.GetFinalPrice(result[i].ID);
+            }
             var FileModel = _mapper.Map<List<FileWithReportsReadDto>>(result);
             return Ok(FileModel);
         }
@@ -131,6 +157,10 @@ namespace Malzamaty.Controllers
         {
             var User = GetClaim("ID");
             var result = await _fileService.NewFiles(Guid.Parse(User), WithReports);
+            for (int i = 0; i < result.Count; i++)
+            {
+                result[i].Price = await _taxesService.GetFinalPrice(result[i].ID);
+            }
             if (WithReports == true)
             {
                 var FileWithReportsReadDto = _mapper.Map<List<FileWithReportsReadDto>>(result);
@@ -156,19 +186,21 @@ namespace Malzamaty.Controllers
         }
         [HttpGet]
         [Authorize(Roles = UserRole.Admin + "," + UserRole.Student + "," + UserRole.Teacher)]
-        public async Task<ActionResult<FileReadDto>> OrderFile(Guid Id)
+        public async Task<ActionResult<FileReadDto>> OrderFile(OrderFile OrderFile)
         {
-            var File = await _fileService.FindById(Id);
+            var File = await _fileService.FindById(OrderFile.FileId);
             var User = await _userService.FindById(Guid.Parse(GetClaim("ID")));
             var Library = await _libraryService.FindById(File.LibraryID.GetValueOrDefault());
             var LibraryAddress = await _addressService.FindById(Library.AddressID);
             var UserAddress = await _addressService.FindById(User.AddressID.GetValueOrDefault());
             var Order = new Model.Order();
-            await _fileService.ModifyDownloadCount(Id);
+            await _fileService.ModifyOrderCount(OrderFile.FileId);
             Order.LibraryAddress = LibraryAddress;
             Order.UserAddress = UserAddress;
+            File.Price =await _taxesService.GetFinalPrice(File.ID);
             Order.File = File;
             Order.OrderStatus = 0;
+            Order.OrderedDate = DateTime.Now;
             var Result=await _orderService.Create(Order);
             var OrderFileReadDto = _mapper.Map<OrderFileReadDto>(Result);
             return Ok(OrderFileReadDto);
@@ -190,9 +222,6 @@ namespace Malzamaty.Controllers
         [Authorize(Roles = UserRole.Admin)]
         public async Task<IActionResult> DeleteFiles(Guid Id)
         {
-            var File = await _fileService.FindById(Id);
-            _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Files\").Replace("\\", @"\");
-            Console.WriteLine(_environment.WebRootPath);
             var Result = await _fileService.Delete(Id);
             if (Result == null)
             {

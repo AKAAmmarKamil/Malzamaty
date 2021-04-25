@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Malzamaty.Migrations
 {
     [DbContext(typeof(MalzamatyContext))]
-    [Migration("20210425071339_File")]
-    partial class File
+    [Migration("20210425162008_Test")]
+    partial class Test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,6 +35,12 @@ namespace Malzamaty.Migrations
 
                     b.Property<Guid>("DistrictID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("MahallahID")
                         .HasColumnType("uniqueidentifier");
@@ -146,14 +152,14 @@ namespace Malzamaty.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("LibraryID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("OrderCount")
                         .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("PublishDate")
                         .HasColumnType("int");
@@ -278,11 +284,17 @@ namespace Malzamaty.Migrations
                     b.Property<Guid>("FileID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset>("LastUpdateDate")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<Guid>("LibraryAddressID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("OrderedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("UserAddressID")
                         .HasColumnType("uniqueidentifier");
@@ -419,6 +431,29 @@ namespace Malzamaty.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Subject");
+                });
+
+            modelBuilder.Entity("Malzamaty.Model.Taxes", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("DeliveryDiscount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("DeliveryTaxes")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MalzamatyDiscount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MalzamatyTaxes")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Taxes");
                 });
 
             modelBuilder.Entity("Malzamaty.Model.User", b =>

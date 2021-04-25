@@ -15,5 +15,8 @@ namespace Malzamaty.Model
         [ForeignKey("FileID")]
         public File File { get; set; }
         public int OrderStatus { get; set; }
+        public DateTimeOffset OrderedDate { get; set; }
+        public DateTimeOffset LastUpdateDate { get; set; }
+
     }
 }

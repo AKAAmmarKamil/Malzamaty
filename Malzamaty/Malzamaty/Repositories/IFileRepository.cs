@@ -13,7 +13,7 @@ namespace Malzamaty.Services
     {
         Task<List<File>> TopRating(Guid Id, bool WithReports);
         Task<List<File>> GetByName(string FileName);
-        Task<List<File>> MostDownloaded(Guid Id, bool WithReports);
+        Task<List<File>> MostOrdered(Guid Id, bool WithReports);
         Task<List<File>> NewFiles(Guid Id, bool WithReports);
         Task<List<File>> RelatedFiles(Guid Id);
         Task<File> GetAppropriateFile(Guid Id);
@@ -35,7 +35,7 @@ namespace Malzamaty.Services
         }
         public async Task<IEnumerable<File>> FindAll(int PageNumber, int count) => await _db.File.Include(x => x.Subject).Include(x => x.Author).Include(x => x.Class)
             .ThenInclude(x => x.ClassType).Include(x => x.Class).ThenInclude(x => x.Stage).Skip((PageNumber - 1) * count).Take(count).ToListAsync();
-        public async Task<List<File>> MostDownloaded(Guid Id, bool WithReports)
+        public async Task<List<File>> MostOrdered(Guid Id, bool WithReports)
         {
             var Files = new List<File>();
             if (WithReports == true)

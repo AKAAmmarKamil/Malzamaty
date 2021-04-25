@@ -9,6 +9,8 @@ namespace Malzamaty.Dto
     public class OrderUpdateDto
     {
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
-        public int Status { get; set; }
+        [Range(0,2,ErrorMessage = "حالة الطلب غير صحيحة")]
+
+        public int OrderStatus { get; set; }
     }
 }

@@ -9,10 +9,10 @@ namespace Malzamaty.Services
         Task<List<string>> GetYears();
         Task<List<File>> TopRating(Guid Id, bool WithReports);
         Task<File> GetAppropriateFile(Guid Id);
-        Task<List<File>> MostDownloaded(Guid Id, bool WithReports);
+        Task<List<File>> MostOrdered(Guid Id, bool WithReports);
         Task<List<File>> NewFiles(Guid Id, bool WithReports);
         Task<List<File>> RelatedFiles(Guid Id);
-        Task<File> ModifyDownloadCount(Guid id);
+        Task<File> ModifyOrderCount(Guid id);
         Task<List<File>> GetByName(string FileName);
     }
 
@@ -46,7 +46,7 @@ namespace Malzamaty.Services
             _repositoryWrapper.Save();
             return File;
         }
-        public async Task<File> ModifyDownloadCount(Guid id)
+        public async Task<File> ModifyOrderCount(Guid id)
         {
             var FileModelFromRepo = await _repositoryWrapper.File.FindById(id);
             if (FileModelFromRepo == null)
@@ -57,8 +57,8 @@ namespace Malzamaty.Services
             _repositoryWrapper.Save();
             return FileModelFromRepo;
         }
-        public async Task<List<File>> MostDownloaded(Guid Id, bool WithReports) => await
-        _repositoryWrapper.File.MostDownloaded(Id, WithReports);
+        public async Task<List<File>> MostOrdered(Guid Id, bool WithReports) => await
+        _repositoryWrapper.File.MostOrdered(Id, WithReports);
 
         public async Task<List<File>> NewFiles(Guid Id, bool WithReports) => await
         _repositoryWrapper.File.NewFiles(Id, WithReports);

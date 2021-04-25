@@ -25,6 +25,7 @@ namespace Malzamaty
         IMahallahRepository Mahallah { get; }
         ILibraryRepository Library { get; }
         IOrderRepository Order { get; }
+        ITaxesRepository Taxes { get; }
         void Save();
     }
 
@@ -50,6 +51,7 @@ namespace Malzamaty
         private IMahallahRepository _mahallah;
         private ILibraryRepository _library;
         private IOrderRepository _order;
+        private ITaxesRepository _taxes;
         public ISubjectRepository Subject => _subect ??= new SubjectRepository(_repoContext, _mapper);
 
         public IUsersRepository User => _user ??= new UserRepository(_repoContext, _mapper);
@@ -70,6 +72,7 @@ namespace Malzamaty
         public IMahallahRepository Mahallah => _mahallah ??= new MahallahRepository(_repoContext, _mapper);
         public ILibraryRepository Library => _library ??= new LibraryRepository(_repoContext, _mapper);
         public IOrderRepository Order => _order ??= new OrderRepository(_repoContext, _mapper);
+        public ITaxesRepository Taxes => _taxes ??= new TaxesRepository(_repoContext,_file, _mapper);
         public RepositoryWrapper(MalzamatyContext repositoryContext, IMapper mapper)
         {
             _repoContext = repositoryContext;

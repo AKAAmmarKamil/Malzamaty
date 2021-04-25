@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Malzamaty.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Test : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,6 +53,21 @@ namespace Malzamaty.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Subject", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Taxes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DeliveryTaxes = table.Column<double>(type: "float", nullable: false),
+                    DeliveryDiscount = table.Column<double>(type: "float", nullable: false),
+                    MalzamatyTaxes = table.Column<double>(type: "float", nullable: false),
+                    MalzamatyDiscount = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Taxes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -179,7 +194,9 @@ namespace Malzamaty.Migrations
                     ProvinceID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DistrictID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MahallahID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Longitude = table.Column<double>(type: "float", nullable: true),
+                    Latitude = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -189,7 +206,7 @@ namespace Malzamaty.Migrations
                         column: x => x.CountryID,
                         principalTable: "Country",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Address_District_DistrictID",
                         column: x => x.DistrictID,
@@ -207,7 +224,7 @@ namespace Malzamaty.Migrations
                         column: x => x.ProvinceID,
                         principalTable: "Province",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,32 +248,6 @@ namespace Malzamaty.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Order",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserAddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LibraryAddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsDelivered = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Order", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Order_Address_LibraryAddressID",
-                        column: x => x.LibraryAddressID,
-                        principalTable: "Address",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Order_Address_UserAddressID",
-                        column: x => x.UserAddressID,
-                        principalTable: "Address",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -267,7 +258,7 @@ namespace Malzamaty.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Activated = table.Column<bool>(type: "bit", nullable: false),
-                    AddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    AddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -277,16 +268,16 @@ namespace Malzamaty.Migrations
                         column: x => x.AddressID,
                         principalTable: "Address",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
-            
+
             migrationBuilder.CreateTable(
                 name: "File",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublishDate = table.Column<int>(type: "int", nullable: false),
                     UploadDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -342,7 +333,7 @@ namespace Malzamaty.Migrations
                         column: x => x.ClassID,
                         principalTable: "Class",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Interests_Subject_SubjectID",
                         column: x => x.SubjectID,
@@ -380,6 +371,41 @@ namespace Malzamaty.Migrations
                         name: "FK_Schedules_Users_UserID",
                         column: x => x.UserID,
                         principalTable: "Users",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Order",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserAddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LibraryAddressID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderStatus = table.Column<int>(type: "int", nullable: false),
+                    OrderedDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    LastUpdateDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Order", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Order_Address_LibraryAddressID",
+                        column: x => x.LibraryAddressID,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Order_Address_UserAddressID",
+                        column: x => x.UserAddressID,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Order_File_FileID",
+                        column: x => x.FileID,
+                        principalTable: "File",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -509,7 +535,8 @@ namespace Malzamaty.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Library_AddressID",
                 table: "Library",
-                column: "AddressID");
+                column: "AddressID",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Mahallah_DistrictID",
@@ -525,6 +552,11 @@ namespace Malzamaty.Migrations
                 name: "IX_Matches_SubjectID",
                 table: "Matches",
                 column: "SubjectID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Order_FileID",
+                table: "Order",
+                column: "FileID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_LibraryAddressID",
@@ -569,7 +601,9 @@ namespace Malzamaty.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressID",
                 table: "Users",
-                column: "AddressID");
+                column: "AddressID",
+                unique: true,
+                filter: "[AddressID] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -591,6 +625,9 @@ namespace Malzamaty.Migrations
 
             migrationBuilder.DropTable(
                 name: "Schedules");
+
+            migrationBuilder.DropTable(
+                name: "Taxes");
 
             migrationBuilder.DropTable(
                 name: "File");

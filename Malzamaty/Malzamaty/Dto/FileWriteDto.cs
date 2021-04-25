@@ -11,6 +11,7 @@ namespace Malzamaty.Dto
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
         public string Description { get; set; }
         [Required(ErrorMessage = "لا يمكنك ترك هذا الحقل فارغاً")]
+        [Range(0,100000,ErrorMessage = "السعر غير صحيح")]
         public double Price { get; set; }
         public Guid Author { get; set; }
         public string Type { get; set; }

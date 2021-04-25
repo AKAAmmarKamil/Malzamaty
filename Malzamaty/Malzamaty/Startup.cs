@@ -67,6 +67,7 @@ namespace Malzamaty
             services.AddScoped<IMahallahService, MahallahService>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ITaxesService, TaxesService>();
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

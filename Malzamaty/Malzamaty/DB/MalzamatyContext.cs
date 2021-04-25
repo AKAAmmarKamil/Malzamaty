@@ -27,5 +27,7 @@ namespace Malzamaty
         public DbSet<Address> Address { get; set; }
         public DbSet<Library> Library { get; set; }
         public DbSet<Order> Order { get; set; }
+        public DbSet<Taxes> Taxes { get; set; }
+
     }
 }

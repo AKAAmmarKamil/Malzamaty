@@ -68,7 +68,6 @@ namespace Malzamaty.Controllers
                 result[i].File = await _fileService.FindById(result[i].FileID);
                 OrderModel[i].From = _mapper.Map<AddressReadDto>(result[i].LibraryAddress);
                 OrderModel[i].To = _mapper.Map<AddressReadDto>(result[i].UserAddress);
-
                 var User = await _userService.GetUserByAddress(result[i].UserAddressID);
                 var IsBestCustomer = await _orderService.IsBestCustomer(User.ID);
                 if (IsBestCustomer)
