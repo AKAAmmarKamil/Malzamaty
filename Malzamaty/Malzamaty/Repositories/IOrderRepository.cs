@@ -29,7 +29,11 @@ namespace Malzamaty
         public async Task<bool> IsBestCustomer(Guid Id)
         {
             var Result = _db.Order.Include(x => x.UserAddress).ThenInclude(x => x.User).Where(x => x.OrderStatus == 1)
-                     .GroupBy(x => x.UserAddress.User.ID).Select(x => new BestCustomer { User=x.Key,Total = x.Count() }).OrderByDescending(x => x.Total).Take(1).ToListAsync();     
+                     .GroupBy(x => x.UserAddress.User.ID).Select(x => new BestCustomer { User=x.Key,Total = x.Count() }).OrderByDescending(x => x.Total).Take(1).ToListAsync();
+            if (Result.Result.Count() ==0)
+            {
+                return false;   
+            }
             if (Result.Result[0].User==Id)
             {
                 return true;

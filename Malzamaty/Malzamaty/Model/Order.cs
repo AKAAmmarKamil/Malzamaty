@@ -11,6 +11,9 @@ namespace Malzamaty.Model
         public Guid LibraryAddressID { get; set; }
         [ForeignKey("LibraryAddressID")]
         public Address LibraryAddress { get; set; }
+        public Guid FileID { get; set; }
+        [ForeignKey("FileID")]
+        public File File { get; set; }
         public int OrderStatus { get; set; }
     }
 }

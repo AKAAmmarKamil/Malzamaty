@@ -194,6 +194,7 @@ namespace Malzamaty.Controllers
                 var result = await Attachment.Attachment.ConvertToBytes(FullPath);
                 Order.LibraryAddress = LibraryAddress;
                 Order.UserAddress = UserAddress;
+                Order.File = File;
                 Order.OrderStatus = 0;
                 await _orderService.Create(Order);
                 return new FileStreamResult(new MemoryStream(result), "application/" + Type.ToString());
