@@ -197,12 +197,14 @@ namespace Malzamaty.Controllers
             await _fileService.ModifyOrderCount(OrderFile.FileId);
             Order.LibraryAddress = LibraryAddress;
             Order.UserAddress = UserAddress;
-            File.Price =await _taxesService.GetFinalPrice(File.ID);
             Order.File = File;
             Order.OrderStatus = 0;
             Order.OrderedDate = DateTime.Now;
-            var Result=await _orderService.Create(Order);
+            Order.UserAddress.Longitude = OrderFile.Longitude;
+            Order.UserAddress.Latitude = OrderFile.Latitude;
+            var Result =await _orderService.Create(Order);
             var OrderFileReadDto = _mapper.Map<OrderFileReadDto>(Result);
+            OrderFileReadDto.File.Price= await _taxesService.GetFinalPrice(File.ID);
             return Ok(OrderFileReadDto);
         }
         [HttpPut("{id}")]
